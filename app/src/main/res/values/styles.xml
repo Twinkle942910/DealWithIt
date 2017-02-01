@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -17,7 +18,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-   <!-- &lt;!&ndash; Tabs theme. &ndash;&gt;
+    <!-- Tabs theme. -->
     <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
         <item name="android:minHeight">@dimen/tab_max_height</item>
         <item name="tabIndicatorColor">#FFFFFF</item>
@@ -29,7 +30,7 @@
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
 
-    &lt;!&ndash; Tabs text theme. &ndash;&gt;
+    <!-- Tabs text theme. -->
     <style name="TabTextAppearanceStyle" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
@@ -38,11 +39,11 @@
         <item name="textAllCaps">true</item>
     </style>
 
-    &lt;!&ndash; Tabs icons theme. &ndash;&gt;
+    <!-- Tabs icons theme. -->
     <style name="TabIconStyle" >
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingTop">12dp</item>
-    </style>-->
+    </style>
 
   <!--  &lt;!&ndash; Text Input theme. &ndash;&gt;
     <style name="StyledTilEditTextFloatingLabel" parent="@android:style/TextAppearance">
