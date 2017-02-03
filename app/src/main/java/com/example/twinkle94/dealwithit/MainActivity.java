@@ -87,17 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         // int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-    /*    if (id == R.id.sort)
-        {
-            return true;
-        }
-
-        if (id == R.id.today)
-        {
-            return true;
-        }*/
-
         switch(item.getItemId())
         {
             case R.id.interests:
@@ -123,29 +112,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_notifications:
 
             case R.id.nav_settings:
-                //  Intent intent = new Intent(this, SettingsActivity.class);
-                //   startActivity(intent);
+
                 return true;
 
             case R.id.todo_page:
-          /*      intent = new Intent(this, EventActivity.class);
-                intent.putExtra("calling", "From Main Activity");
-                intent.putExtra("type", "ToDo");
-                startActivity(intent);*/
+
                 return true;
 
             case R.id.work_tasks_page:
-            /*    intent = new Intent(this, EventActivity.class);
-                intent.putExtra("calling", "From Main Activity");
-                intent.putExtra("type", "Work Task");
-                startActivity(intent);*/
+
                 return true;
 
             case R.id.birthday_page:
-               /* intent = new Intent(this, EventActivity.class);
-                intent.putExtra("calling", "From Main Activity");
-                intent.putExtra("type", "Birthday");
-                startActivity(intent);*/
+
                 return true;
         }
 
