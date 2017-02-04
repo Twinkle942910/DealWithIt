@@ -28,6 +28,8 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         addDataToComment(eventInfoDB);
         addDataToSubTask(eventInfoDB);
         addDataToInterest(eventInfoDB);
+        addDataToLocation(eventInfoDB);
+        addDataToNotification(eventInfoDB);
 
         return null;
     }
@@ -119,6 +121,53 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         long newRowId = db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValues);
 
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
+
+    }
+
+    private void addDataToLocation(EventInfoDB eventInfoDB)
+    {
+        int  event_Id = 1;
+        String  street = "Roksolany, 25";
+        String  city = "Lviv";
+        String  country = "Ukraine";
+
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.LocationEntry.ID_EVENT, event_Id);
+        contentValues.put(EventInfoContract.LocationEntry.STREET, street);
+        contentValues.put(EventInfoContract.LocationEntry.CITY, city);
+        contentValues.put(EventInfoContract.LocationEntry.COUNTRY, country);
+
+        long newRowId = db.insert(EventInfoContract.LocationEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.LocationEntry.TABLE_NAME);
+
+    }
+
+    private void addDataToNotification(EventInfoDB eventInfoDB)
+    {
+        int  event_Id = 1;
+        String  content = "buy grocery task";
+        int image = 123454;
+        String time = "01:12 PM";
+        String date = "January, 14";
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.NotificationEntry.ID_EVENT, event_Id);
+        contentValues.put(EventInfoContract.NotificationEntry.CONTENT, content);
+        contentValues.put(EventInfoContract.NotificationEntry.IMAGE, image);
+        contentValues.put(EventInfoContract.NotificationEntry.TIME, time);
+        contentValues.put(EventInfoContract.NotificationEntry.DATE, date);
+
+        long newRowId = db.insert(EventInfoContract.NotificationEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.NotificationEntry.TABLE_NAME);
 
     }
 

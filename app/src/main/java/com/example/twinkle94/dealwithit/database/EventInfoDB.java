@@ -60,6 +60,25 @@ public class EventInfoDB extends SQLiteOpenHelper
             " FOREIGN KEY (" + EventInfoContract.InterestEntry.ID_EVENT + ") REFERENCES " +
             EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
 
+    //Location table
+    private static final String CREATE_LOCATION_QUERY = "CREATE TABLE " + EventInfoContract.LocationEntry.TABLE_NAME + "(" +
+            EventInfoContract.LocationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+            EventInfoContract.LocationEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.LocationEntry.STREET  + " TEXT NOT NULL," +
+            EventInfoContract.LocationEntry.CITY  + " TEXT NOT NULL," +
+            EventInfoContract.LocationEntry.COUNTRY  + " TEXT NOT NULL);";
+
+    //Notification table
+    private static final String CREATE_NOTIFICATION_QUERY = "CREATE TABLE " + EventInfoContract.NotificationEntry.TABLE_NAME + "(" +
+            EventInfoContract.NotificationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+            EventInfoContract.NotificationEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.NotificationEntry.CONTENT  + " TEXT NOT NULL," +
+            EventInfoContract.NotificationEntry.IMAGE  + " INTEGER NOT NULL," +
+            EventInfoContract.NotificationEntry.TIME  + " TEXT NOT NULL, " +
+            EventInfoContract.NotificationEntry.DATE  + " TEXT NOT NULL);";
+
     //Delete tables
     //Delete event
     private static final String SQL_DELETE_EVENT_ENTRY =
@@ -77,6 +96,14 @@ public class EventInfoDB extends SQLiteOpenHelper
     private static final String SQL_DELETE_INTEREST_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.InterestEntry.TABLE_NAME;
 
+    //Delete location
+    private static final String SQL_DELETE_LOCATION_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.LocationEntry.TABLE_NAME;
+
+    //Delete notification
+    private static final String SQL_DELETE_NOTIFICATION_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.NotificationEntry.TABLE_NAME;
+
     public EventInfoDB(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -90,6 +117,8 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(CREATE_COMMENT_QUERY);
         db.execSQL(CREATE_SUB_TASK_QUERY);
         db.execSQL(CREATE_INTEREST_QUERY);
+        db.execSQL(CREATE_LOCATION_QUERY);
+        db.execSQL(CREATE_NOTIFICATION_QUERY);
         Log.d("EventInfoDB", "Database created...");
     }
 
@@ -102,6 +131,8 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(SQL_DELETE_COMMENT_ENTRY);
         db.execSQL(SQL_DELETE_SUB_TASK_ENTRY);
         db.execSQL(SQL_DELETE_INTEREST_ENTRY);
+        db.execSQL(SQL_DELETE_LOCATION_ENTRY);
+        db.execSQL(SQL_DELETE_NOTIFICATION_ENTRY);
         onCreate(db);
         Log.d("EventInfoDB", "Database updated...");
     }
