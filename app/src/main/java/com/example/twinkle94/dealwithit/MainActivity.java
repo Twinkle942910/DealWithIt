@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
+import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.util.Constants;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -37,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNavigationView();
         initTabs();
         initTabIcons();
+
+
+        //calling background database
+        FetchEventsTask fetchEventsTask = new FetchEventsTask(getApplicationContext());
+        fetchEventsTask.execute();
     }
 
     //get - select tab position (current page)

@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.database;
+package com.example.twinkle94.dealwithit.events;
 
 public abstract class Event
 {
@@ -9,14 +9,9 @@ public abstract class Event
     private String date;
     private String type;
     private String state;
-    private boolean comment;
-    private boolean sub_tasks;
-    private boolean interests;
-    private boolean location;
     private int importance;
 
-    public Event(int id, String title, String time_start, String time_end, String date, String type, String state,
-                 boolean comment, boolean sub_tasks, boolean interests, boolean location, int importance)
+    public Event(int id, String title, String time_start, String time_end, String date, String type, String state, int importance)
     {
         this.id = id;
         this.title = title;
@@ -25,10 +20,6 @@ public abstract class Event
         this.date = date;
         this.type = type;
         this.state = state;
-        this.comment = comment;
-        this.sub_tasks = sub_tasks;
-        this.interests = interests;
-        this.location = location;
         this.importance = importance;
     }
 
@@ -86,38 +77,6 @@ public abstract class Event
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public boolean isComment() {
-        return comment;
-    }
-
-    public void setComment(boolean comment) {
-        this.comment = comment;
-    }
-
-    public boolean isSub_tasks() {
-        return sub_tasks;
-    }
-
-    public void setSub_tasks(boolean sub_tasks) {
-        this.sub_tasks = sub_tasks;
-    }
-
-    public boolean isInterests() {
-        return interests;
-    }
-
-    public void setInterests(boolean interests) {
-        this.interests = interests;
-    }
-
-    public boolean isLocation() {
-        return location;
-    }
-
-    public void setLocation(boolean location) {
-        this.location = location;
     }
 
     public int getImportance() {

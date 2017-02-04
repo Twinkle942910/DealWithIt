@@ -2,6 +2,7 @@ package com.example.twinkle94.dealwithit.database;
 
 import android.provider.BaseColumns;
 
+//Schema of database
 public final class EventInfoContract
 {
     private EventInfoContract()
@@ -9,6 +10,7 @@ public final class EventInfoContract
 
     }
 
+    //Event table of database
     public static class EventEntry implements BaseColumns
     {
         public static final String TITLE = "title";
@@ -17,12 +19,17 @@ public final class EventInfoContract
         public static final String DATE = "date";
         public static final String TYPE = "type";
         public static final String STATE = "state";
-        public static final String COMMENT = "comment";
-        public static final String SUB_TASKS = "sub_tasks";
         public static final String IMPORTANCE = "importance";
-        public static final String INTERESTS = "interests";
-        public static final String LOCATION = "location";
 
         public static final String TABLE_NAME = "event_table";
+    }
+
+    //Event table of database
+    public static class CommentEntry implements BaseColumns
+    {
+        public static final String ID_EVENT = "id_event";
+        public static final String CONTENT = "content";
+
+        public static final String TABLE_NAME = "comment";
     }
 }
