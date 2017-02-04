@@ -27,13 +27,14 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         addDataToEvent(eventInfoDB);
         addDataToComment(eventInfoDB);
         addDataToSubTask(eventInfoDB);
+        addDataToInterest(eventInfoDB);
 
         return null;
     }
 
     private void addDataToEvent(EventInfoDB eventInfoDB)
     {
-        int  Id = 2;
+        int  Id = 1;
         String  title = "Check things3";
         String  date = "January 7";
         String  time_start = "12:00 PM";
@@ -64,7 +65,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
     private void addDataToComment(EventInfoDB eventInfoDB)
     {
         int  event_Id = 1;
-        String  content = "Take a list  das is fus";
+        String  content = "Take  das is fussssss";
 
 
         SQLiteDatabase db = eventInfoDB.getWritableDatabase();
@@ -84,7 +85,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
     private void addDataToSubTask(EventInfoDB eventInfoDB)
     {
         int  event_Id = 1;
-        String  content = "Do hust";
+        String  content = "Gustlers";
         int checked = 0;
 
         SQLiteDatabase db = eventInfoDB.getWritableDatabase();
@@ -98,6 +99,26 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         long newRowId = db.insert(EventInfoContract.SubTaskEntry.TABLE_NAME, null, contentValues);
 
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.SubTaskEntry.TABLE_NAME);
+
+    }
+
+    private void addDataToInterest(EventInfoDB eventInfoDB)
+    {
+        int  event_Id = 1;
+        String  title = "Boys";
+        int value = 53;
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.InterestEntry.ID_EVENT, event_Id);
+        contentValues.put(EventInfoContract.InterestEntry.TITLE, title);
+        contentValues.put(EventInfoContract.InterestEntry.VALUE, value);
+
+        long newRowId = db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
 
     }
 

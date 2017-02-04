@@ -48,6 +48,18 @@ public class EventInfoDB extends SQLiteOpenHelper
             " FOREIGN KEY (" + EventInfoContract.SubTaskEntry.ID_EVENT + ") REFERENCES " +
             EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
 
+    //Interest table
+    private static final String CREATE_INTEREST_QUERY = "CREATE TABLE " + EventInfoContract.InterestEntry.TABLE_NAME + "(" +
+            EventInfoContract.InterestEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+            EventInfoContract.InterestEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.InterestEntry.TITLE  + " TEXT NOT NULL," +
+            EventInfoContract.InterestEntry.VALUE  + " INTEGER NOT NULL," +
+
+            // Set up the event column as a foreign key to event table.
+            " FOREIGN KEY (" + EventInfoContract.InterestEntry.ID_EVENT + ") REFERENCES " +
+            EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
+
     //Delete tables
     //Delete event
     private static final String SQL_DELETE_EVENT_ENTRY =
@@ -59,7 +71,11 @@ public class EventInfoDB extends SQLiteOpenHelper
 
     //Delete sub_task
     private static final String SQL_DELETE_SUB_TASK_ENTRY =
-            "DROP TABLE IF EXISTS " + EventInfoContract.CommentEntry.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + EventInfoContract.SubTaskEntry.TABLE_NAME;
+
+    //Delete interest
+    private static final String SQL_DELETE_INTEREST_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.InterestEntry.TABLE_NAME;
 
     public EventInfoDB(Context context)
     {
@@ -73,6 +89,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(CREATE_EVENT_QUERY);
         db.execSQL(CREATE_COMMENT_QUERY);
         db.execSQL(CREATE_SUB_TASK_QUERY);
+        db.execSQL(CREATE_INTEREST_QUERY);
         Log.d("EventInfoDB", "Database created...");
     }
 
@@ -84,6 +101,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(SQL_DELETE_EVENT_ENTRY);
         db.execSQL(SQL_DELETE_COMMENT_ENTRY);
         db.execSQL(SQL_DELETE_SUB_TASK_ENTRY);
+        db.execSQL(SQL_DELETE_INTEREST_ENTRY);
         onCreate(db);
         Log.d("EventInfoDB", "Database updated...");
     }

@@ -33,7 +33,7 @@ public final class EventInfoContract
         public static final String TABLE_NAME = "comment";
     }
 
-    //Sub_tasks table of database
+    //Sub_task table of database
     public static class SubTaskEntry implements BaseColumns
     {
         public static final String ID_EVENT = "id_event";
@@ -41,5 +41,15 @@ public final class EventInfoContract
         public static final String CHECKED = "checked";
 
         public static final String TABLE_NAME = "sub_task";
+    }
+
+    //Interest table of database
+    public static class InterestEntry implements BaseColumns
+    {
+        public static final String ID_EVENT = "id_event";
+        public static final String TITLE = "title";
+        public static final String VALUE = "value";
+
+        public static final String TABLE_NAME = "interest";
     }
 }
