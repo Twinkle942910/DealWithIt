@@ -36,6 +36,18 @@ public class EventInfoDB extends SQLiteOpenHelper
             " FOREIGN KEY (" + EventInfoContract.CommentEntry.ID_EVENT + ") REFERENCES " +
             EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
 
+    //Sub_Task table
+    private static final String CREATE_SUB_TASK_QUERY = "CREATE TABLE " + EventInfoContract.SubTaskEntry.TABLE_NAME + "(" +
+            EventInfoContract.SubTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+            EventInfoContract.SubTaskEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.SubTaskEntry.CONTENT  + " TEXT NOT NULL," +
+            EventInfoContract.SubTaskEntry.CHECKED  + " INTEGER NOT NULL," +
+
+            // Set up the event column as a foreign key to event table.
+            " FOREIGN KEY (" + EventInfoContract.SubTaskEntry.ID_EVENT + ") REFERENCES " +
+            EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
+
     //Delete tables
     //Delete event
     private static final String SQL_DELETE_EVENT_ENTRY =
@@ -43,6 +55,10 @@ public class EventInfoDB extends SQLiteOpenHelper
 
     //Delete comment
     private static final String SQL_DELETE_COMMENT_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.CommentEntry.TABLE_NAME;
+
+    //Delete sub_task
+    private static final String SQL_DELETE_SUB_TASK_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.CommentEntry.TABLE_NAME;
 
     public EventInfoDB(Context context)
@@ -56,6 +72,7 @@ public class EventInfoDB extends SQLiteOpenHelper
     {
         db.execSQL(CREATE_EVENT_QUERY);
         db.execSQL(CREATE_COMMENT_QUERY);
+        db.execSQL(CREATE_SUB_TASK_QUERY);
         Log.d("EventInfoDB", "Database created...");
     }
 
@@ -66,6 +83,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_EVENT_ENTRY);
         db.execSQL(SQL_DELETE_COMMENT_ENTRY);
+        db.execSQL(SQL_DELETE_SUB_TASK_ENTRY);
         onCreate(db);
         Log.d("EventInfoDB", "Database updated...");
     }

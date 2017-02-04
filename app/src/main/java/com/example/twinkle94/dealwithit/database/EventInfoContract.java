@@ -24,12 +24,22 @@ public final class EventInfoContract
         public static final String TABLE_NAME = "event_table";
     }
 
-    //Event table of database
+    //Comment table of database
     public static class CommentEntry implements BaseColumns
     {
         public static final String ID_EVENT = "id_event";
         public static final String CONTENT = "content";
 
         public static final String TABLE_NAME = "comment";
+    }
+
+    //Sub_tasks table of database
+    public static class SubTaskEntry implements BaseColumns
+    {
+        public static final String ID_EVENT = "id_event";
+        public static final String CONTENT = "content";
+        public static final String CHECKED = "checked";
+
+        public static final String TABLE_NAME = "sub_task";
     }
 }

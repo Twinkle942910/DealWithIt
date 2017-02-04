@@ -26,14 +26,15 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
 
         addDataToEvent(eventInfoDB);
         addDataToComment(eventInfoDB);
+        addDataToSubTask(eventInfoDB);
 
         return null;
     }
 
     private void addDataToEvent(EventInfoDB eventInfoDB)
     {
-        int  Id = 3;
-        String  title = "Check things2";
+        int  Id = 2;
+        String  title = "Check things3";
         String  date = "January 7";
         String  time_start = "12:00 PM";
         String  time_end = "03:00 PM";
@@ -63,7 +64,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
     private void addDataToComment(EventInfoDB eventInfoDB)
     {
         int  event_Id = 1;
-        String  content = "Take a list";
+        String  content = "Take a list  das is fus";
 
 
         SQLiteDatabase db = eventInfoDB.getWritableDatabase();
@@ -77,6 +78,26 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         long newRowId = db.insert(EventInfoContract.CommentEntry.TABLE_NAME, null, contentValues);
 
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.CommentEntry.TABLE_NAME);
+
+    }
+
+    private void addDataToSubTask(EventInfoDB eventInfoDB)
+    {
+        int  event_Id = 1;
+        String  content = "Do hust";
+        int checked = 0;
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.SubTaskEntry.ID_EVENT, event_Id);
+        contentValues.put(EventInfoContract.SubTaskEntry.CONTENT, content);
+        contentValues.put(EventInfoContract.SubTaskEntry.CHECKED, checked);
+
+        long newRowId = db.insert(EventInfoContract.SubTaskEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.SubTaskEntry.TABLE_NAME);
 
     }
 
