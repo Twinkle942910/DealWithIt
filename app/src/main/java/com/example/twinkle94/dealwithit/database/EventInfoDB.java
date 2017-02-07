@@ -60,6 +60,13 @@ public class EventInfoDB extends SQLiteOpenHelper
             " FOREIGN KEY (" + EventInfoContract.InterestEntry.ID_EVENT + ") REFERENCES " +
             EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
 
+    //ScheduleType table
+    private static final String CREATE_SCHEDULE_TYPE_QUERY = "CREATE TABLE " + EventInfoContract.ScheduleTypeEntry.TABLE_NAME + "(" +
+            EventInfoContract.ScheduleTypeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+            EventInfoContract.ScheduleTypeEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.ScheduleTypeEntry.CONTENT  + " TEXT NOT NULL);";
+
     //Location table
     private static final String CREATE_LOCATION_QUERY = "CREATE TABLE " + EventInfoContract.LocationEntry.TABLE_NAME + "(" +
             EventInfoContract.LocationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -96,6 +103,10 @@ public class EventInfoDB extends SQLiteOpenHelper
     private static final String SQL_DELETE_INTEREST_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.InterestEntry.TABLE_NAME;
 
+    //Delete schedule_type
+    private static final String SQL_DELETE_SCHEDULE_TYPE_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.ScheduleTypeEntry.TABLE_NAME;
+
     //Delete location
     private static final String SQL_DELETE_LOCATION_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.LocationEntry.TABLE_NAME;
@@ -119,6 +130,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(CREATE_INTEREST_QUERY);
         db.execSQL(CREATE_LOCATION_QUERY);
         db.execSQL(CREATE_NOTIFICATION_QUERY);
+        db.execSQL(CREATE_SCHEDULE_TYPE_QUERY);
         Log.d("EventInfoDB", "Database created...");
     }
 
@@ -133,6 +145,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(SQL_DELETE_INTEREST_ENTRY);
         db.execSQL(SQL_DELETE_LOCATION_ENTRY);
         db.execSQL(SQL_DELETE_NOTIFICATION_ENTRY);
+        db.execSQL(SQL_DELETE_SCHEDULE_TYPE_ENTRY);
         onCreate(db);
         Log.d("EventInfoDB", "Database updated...");
     }

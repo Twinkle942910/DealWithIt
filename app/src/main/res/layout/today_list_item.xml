@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/colorListItemFont"
+    android:layout_height="48dp"
+    android:gravity="center_vertical">
+
+<View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/colorDivider" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/type_color"
+            android:layout_width="16dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorTypeSchedule" />
+
+        <TextView
+            android:id="@+id/schedule_task_title"
+            android:layout_width="121dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTitleText"
+            android:textSize="12sp"
+            android:text="Object - oriented programming"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp" />
+
+        <TextView
+            android:id="@+id/schedule_task_type"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTitleText"
+            android:textSize="12sp"
+            android:text="Lesson"
+            android:gravity="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp" />
+
+        <ImageView
+            android:id="@+id/lesson_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/ic_lesson_type" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/from_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTitleText"
+                android:textSize="12sp"
+                android:text="10:20 AM"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                android:id="@+id/to_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTitleText"
+                android:textSize="12sp"
+                android:text="11:55 AM"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/time_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/ic_time"/>
+
+        <TextView
+            android:id="@+id/importance_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTitleText"
+            android:textSize="12sp"
+            android:text="79%"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp" />
+
+        <ImageView
+            android:id="@+id/importance_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/ic_importance_icon"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -64,6 +64,15 @@ public final class EventInfoContract
         public static final String TABLE_NAME = "location";
     }
 
+    //Schedule_Type table of database
+    public static class ScheduleTypeEntry implements BaseColumns
+    {
+        public static final String ID_EVENT = "id_event";
+        public static final String CONTENT = "content";
+
+        public static final String TABLE_NAME = "schedule_type";
+    }
+
     //Notification table of database
     public static class NotificationEntry implements BaseColumns
     {

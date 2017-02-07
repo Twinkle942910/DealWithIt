@@ -1,15 +1,18 @@
 package com.example.twinkle94.dealwithit.events;
-
-public abstract class Event
+       //TODO: change back later
+public /*abstract*/ class Event
 {
     private int id;
     private String title;
     private String time_start;
     private String time_end;
     private String date;
-    private String type;
+  //  private EventType type;
+   private String type;
     private String state;
     private int importance;
+
+    private String schedule_type;
 
     public Event(int id, String title, String time_start, String time_end, String date, String type, String state, int importance)
     {
@@ -18,9 +21,16 @@ public abstract class Event
         this.time_start = time_start;
         this.time_end = time_end;
         this.date = date;
-        this.type = type;
+      //  this.type = this.type.getName(type);
+       this.type = type;
         this.state = state;
         this.importance = importance;
+    }
+
+    //Move later to class Schedule
+    public void setScheduleType(String schedule_type)
+    {
+      this.schedule_type = schedule_type;
     }
 
     public int getId() {
@@ -63,6 +73,14 @@ public abstract class Event
         this.date = date;
     }
 
+  /*  public EventType getType() {
+        return type;
+    }
+
+    public void setType(EventType type) {
+        this.type = type;
+    }*/
+
     public String getType() {
         return type;
     }
@@ -85,5 +103,17 @@ public abstract class Event
 
     public void setImportance(int importance) {
         this.importance = importance;
+    }
+
+    public String getSchedule_type() {
+        return schedule_type;
+    }
+
+    //For choosing the type of schedule (Move to Schedule class)
+    private enum ScheduleType
+    {
+        LESSON,
+        EXAM,
+        LABORATORY_WORK;
     }
 }

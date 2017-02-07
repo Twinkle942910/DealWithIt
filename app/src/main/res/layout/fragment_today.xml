@@ -1,13 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMainBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
 
     <TextView
-        android:text="TODAY!!!"
+        android:text="Monday, January 5"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:layout_width="wrap_content"
+        android:textSize="20sp"
+        android:layout_height="48dp"
+        style="@style/TextRobotoMedium"
+        android:textColor="@color/colorTitleText"
+        android:id="@+id/date"   />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_today_page_date"
+            android:id="@+id/date_icon" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:text="Schedule"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            style="@style/TextRobotoMedium"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:layout_height="48dp"
+            android:textColor="@color/colorMainBackground"
+            android:id="@+id/schedule_title"
+            android:background="@color/colorTypeSchedule"/>
+
+        <ListView
+            android:id="@+id/schedule_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            />
+
+
+    </LinearLayout>
+
 </LinearLayout>

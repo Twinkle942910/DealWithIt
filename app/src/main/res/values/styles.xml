@@ -7,6 +7,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -43,6 +44,18 @@
     <style name="TabIconStyle" >
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingTop">12dp</item>
+    </style>
+
+    <!-- Text Medium style. -->
+    <style name="TextRobotoMedium">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Text Regular style. -->
+    <style name="TextRobotoRegular">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
   <!--  &lt;!&ndash; Text Input theme. &ndash;&gt;

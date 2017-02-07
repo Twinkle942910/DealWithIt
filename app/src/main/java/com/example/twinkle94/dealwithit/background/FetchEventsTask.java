@@ -30,6 +30,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         addDataToInterest(eventInfoDB);
         addDataToLocation(eventInfoDB);
         addDataToNotification(eventInfoDB);
+        addDataToScheduleType(eventInfoDB);
 
         return null;
     }
@@ -121,6 +122,24 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
         long newRowId = db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValues);
 
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
+
+    }
+
+    private void addDataToScheduleType(EventInfoDB eventInfoDB)
+    {
+        int  event_Id = 1;
+        String  content = "Lesson";
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.ScheduleTypeEntry.ID_EVENT, event_Id);
+        contentValues.put(EventInfoContract.ScheduleTypeEntry.CONTENT, content);
+
+        long newRowId = db.insert(EventInfoContract.ScheduleTypeEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.ScheduleTypeEntry.TABLE_NAME);
 
     }
 

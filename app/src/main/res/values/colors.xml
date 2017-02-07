@@ -6,4 +6,12 @@
     <color name="colorMainBackground">#E0F2F1</color>
     <color name="colorWhite">#00695C</color>
     <color name="colorNotificationText">#455A64</color>
+
+    <!-- Today page -->
+    <color name="colorTitleText">#455A64</color>
+
+
+    <color name="colorTypeSchedule">#01bbde</color>
+    <color name="colorListItemFont">#c9e9e8</color>
+    <color name="colorDivider">#90455A64</color>
 </resources>
