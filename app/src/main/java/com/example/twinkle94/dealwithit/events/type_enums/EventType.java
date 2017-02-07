@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events;
+package com.example.twinkle94.dealwithit.events.type_enums;
 
 public enum EventType
 {
@@ -11,17 +11,9 @@ public enum EventType
 
     private final String title;
 
-    private EventType(String s)
+    EventType(String s)
     {
         title = s;
-    }
-
-    public EventType getName(String otherName)
-    {
-        if(title.equals(otherName))
-            return this;
-
-        return NO_TYPE;
     }
 
     public String toString()

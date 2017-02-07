@@ -1,5 +1,9 @@
 package com.example.twinkle94.dealwithit.events;
-       //TODO: change back later
+
+import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
+
+//TODO: change back later
 public /*abstract*/ class Event
 {
     private int id;
@@ -7,30 +11,23 @@ public /*abstract*/ class Event
     private String time_start;
     private String time_end;
     private String date;
-  //  private EventType type;
-   private String type;
+    private EventType type;
     private String state;
     private int importance;
 
-    private String schedule_type;
+    //Move to Schedule
+    private ScheduleType schedule_type;
 
-    public Event(int id, String title, String time_start, String time_end, String date, String type, String state, int importance)
+    public Event(int id, String title, String time_start, String time_end, String date, EventType type, String state, int importance)
     {
         this.id = id;
         this.title = title;
         this.time_start = time_start;
         this.time_end = time_end;
         this.date = date;
-      //  this.type = this.type.getName(type);
-       this.type = type;
+        this.type = type;
         this.state = state;
         this.importance = importance;
-    }
-
-    //Move later to class Schedule
-    public void setScheduleType(String schedule_type)
-    {
-      this.schedule_type = schedule_type;
     }
 
     public int getId() {
@@ -73,19 +70,13 @@ public /*abstract*/ class Event
         this.date = date;
     }
 
-  /*  public EventType getType() {
+    public EventType getType()
+    {
         return type;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
-    }*/
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
+    public void setType(EventType type)
+    {
         this.type = type;
     }
 
@@ -105,15 +96,14 @@ public /*abstract*/ class Event
         this.importance = importance;
     }
 
-    public String getSchedule_type() {
-        return schedule_type;
+    //Move later to class Schedule
+    public void setScheduleType(ScheduleType schedule_type)
+    {
+        this.schedule_type = schedule_type;
     }
 
-    //For choosing the type of schedule (Move to Schedule class)
-    private enum ScheduleType
-    {
-        LESSON,
-        EXAM,
-        LABORATORY_WORK;
+    //Move later to class Schedule
+    public ScheduleType getSchedule_type() {
+        return schedule_type;
     }
 }
