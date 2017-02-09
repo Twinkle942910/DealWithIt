@@ -48,30 +48,42 @@ public class TodayTaskAdapter extends ArrayAdapter
     public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         View row = convertView;
-        EventHolder productHolder;
+        EventHolder eventHolder;
 
         if(row == null)
         {
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = layoutInflater.inflate(R.layout.today_list_item, parent, false);
-            productHolder = new EventHolder();
+            eventHolder = new EventHolder();
 
                 switch (getItem(position).getType())
                 {
-                    //Change to enum
                     case SCHEDULE:
 
-                        productHolder.task_title = (TextView) row.findViewById(R.id.schedule_task_title);
+                        eventHolder.task_title = (TextView) row.findViewById(R.id.task_title);
+                        eventHolder.task_type = (TextView) row.findViewById(R.id.task_type);
+                        eventHolder.task_type_image = (ImageView) row.findViewById(R.id.lesson_type);
 
-                        productHolder.from_title = (TextView) row.findViewById(R.id.schedule_task_type);
-                        productHolder.from_image = (ImageView) row.findViewById(R.id.lesson_type);
+                        eventHolder.from_title = (TextView) row.findViewById(R.id.from_title);
+                        eventHolder.from_time = (TextView) row.findViewById(R.id.from_time);
+                        eventHolder.from_image = (ImageView) row.findViewById(R.id.from_time_icon);
 
-                        productHolder.from_time = (TextView) row.findViewById(R.id.from_time);
-                        productHolder.to_time = (TextView) row.findViewById(R.id.to_time);
-                        productHolder.to_image = (ImageView) row.findViewById(R.id.time_icon);
+                        eventHolder.to_title = (TextView) row.findViewById(R.id.to_title);
+                        eventHolder.to_time = (TextView) row.findViewById(R.id.to_time);
+                        eventHolder.to_image = (ImageView) row.findViewById(R.id.to_time_icon);
 
-                        productHolder.importance = (TextView) row.findViewById(R.id.importance_percent);
-                        productHolder.importance_image = (ImageView) row.findViewById(R.id.importance_icon);
+                        eventHolder.importance = (TextView) row.findViewById(R.id.importance_percent);
+                        eventHolder.importance_image = (ImageView) row.findViewById(R.id.importance_icon);
+
+                        eventHolder.interest = (TextView) row.findViewById(R.id.interest_percent);
+                        eventHolder.interest_image = (ImageView) row.findViewById(R.id.interest_icon);
+
+                        if(position == list_of_tasks.size() - 1)
+                        {
+                            //Announcing bottom divider
+                            eventHolder.bottom_divider  = row.findViewById(R.id.bottom_divider);
+                            eventHolder.bottom_divider.setVisibility(View.VISIBLE);
+                        }
 
                         break;
 
@@ -89,12 +101,12 @@ public class TodayTaskAdapter extends ArrayAdapter
                         break;
                 }
 
-            row.setTag(productHolder);
+            row.setTag(eventHolder);
         }
 
         else
         {
-            productHolder = (EventHolder) row.getTag();
+            eventHolder = (EventHolder) row.getTag();
         }
 
 
@@ -102,17 +114,23 @@ public class TodayTaskAdapter extends ArrayAdapter
 
         if (event != null)
         {
-            productHolder.task_title.setText(event.getTitle());
+            eventHolder.task_title.setText(event.getTitle());
+            eventHolder.task_type.setText(event.getSchedule_type().toString());
+            eventHolder.task_type_image.setImageResource(R.drawable.ic_lesson_type);
 
-            productHolder.from_title.setText(event.getSchedule_type().toString());
-            productHolder.from_image.setImageResource(R.drawable.ic_lesson_type);
+            eventHolder.from_title.setText(new String("From"));
+            eventHolder.from_time.setText(event.getTime_start());
+            eventHolder.from_image.setImageResource(R.drawable.ic_from_time);
 
-            productHolder.from_time.setText(event.getTime_start());
-            productHolder.to_time.setText(event.getTime_end());
-            productHolder.to_image.setImageResource(R.drawable.ic_time);
+            eventHolder.to_title.setText(new String("To"));
+            eventHolder.to_time.setText(event.getTime_end());
+            eventHolder.to_image.setImageResource(R.drawable.ic_to_time);
 
-            productHolder.importance.setText(Integer.toString(event.getImportance()) + "%");
-            productHolder.importance_image.setImageResource(R.drawable.ic_importance_icon);
+            eventHolder.importance.setText(Integer.toString(event.getImportance()) + "%");
+            eventHolder.importance_image.setImageResource(R.drawable.ic_importance_icon);
+
+            eventHolder.interest.setText(Integer.toString(event.getImportance() + 9) + "%");
+            eventHolder.interest_image.setImageResource(R.drawable.ic_interest_today_page);
         }
 
         return row;
@@ -121,18 +139,23 @@ public class TodayTaskAdapter extends ArrayAdapter
     private static class EventHolder
     {
         TextView task_title;
+        TextView task_type;
+        ImageView task_type_image;
 
         TextView from_title;
         TextView from_time;
-
         ImageView from_image;
 
         TextView to_title;
         TextView to_time;
-
         ImageView to_image;
 
         TextView importance;
         ImageView importance_image;
+
+        TextView interest;
+        ImageView interest_image;
+
+        View bottom_divider;
     }
 }

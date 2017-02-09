@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@color/colorListItemFont"
-    android:layout_height="48dp"
+    android:layout_height="60dp"
     android:gravity="center_vertical">
 
 <View
@@ -14,10 +14,12 @@
     android:background="@color/colorDivider" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp">
 
         <View
             android:id="@+id/type_color"
@@ -25,88 +27,205 @@
             android:layout_height="match_parent"
             android:background="@color/colorTypeSchedule" />
 
-        <TextView
-            android:id="@+id/schedule_task_title"
-            android:layout_width="121dp"
+        <LinearLayout
+            android:id="@+id/first_section"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTitleText"
-            android:textSize="12sp"
-            android:text="Object - oriented programming"
+            android:orientation="vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_marginLeft="16dp"
+            android:layout_weight="9">
 
         <TextView
-            android:id="@+id/schedule_task_type"
-            android:layout_width="35dp"
+            android:id="@+id/task_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorTitleText"
             android:textSize="12sp"
+            android:lines="1"
+            android:text="Algorythm Theory" />
+
+            <LinearLayout
+                android:id="@+id/type_section"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="start">
+
+        <TextView
+            android:id="@+id/task_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText87"
+            android:textSize="12sp"
             android:text="Lesson"
-            android:gravity="end"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:gravity="end" />
 
         <ImageView
             android:id="@+id/lesson_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             app:srcCompat="@drawable/ic_lesson_type" />
 
+                </LinearLayout>
+
+            </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/from_time_section"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/from_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTitleText"
+                android:textSize="12sp"
+                android:text="From" />
+
+            <ImageView
+                android:id="@+id/from_time_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_from_time"/>
+
+        </RelativeLayout>
 
             <TextView
                 android:id="@+id/from_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorTitleText"
+                android:textColor="@color/colorText87"
                 android:textSize="12sp"
-                android:text="10:20 AM"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginTop="3dp"
+                android:text="10:20 AM" />
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/to_time_section"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="4">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/to_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTitleText"
+                    android:textSize="12sp"
+                    android:text="To" />
+
+                <ImageView
+                    android:id="@+id/to_time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                   android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_to_time" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/to_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorTitleText"
+                android:textColor="@color/colorText87"
                 android:textSize="12sp"
-                android:text="11:55 AM"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"/>
+                android:layout_marginTop="4dp"
+                android:text="11:55 AM" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/time_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            app:srcCompat="@drawable/ic_time"/>
 
-        <TextView
-            android:id="@+id/importance_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorTitleText"
-            android:textSize="12sp"
-            android:text="79%"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+<LinearLayout
+    android:id="@+id/imp_int_section"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+   android:layout_marginStart="16dp"
+   android:layout_marginLeft="16dp"
+    android:orientation="vertical"
+    android:layout_weight="3">
 
-        <ImageView
-            android:id="@+id/importance_icon"
+        <LinearLayout
+            android:id="@+id/importance_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            app:srcCompat="@drawable/ic_importance_icon"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/importance_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTitleText"
+                android:textSize="12sp"
+                android:text="79%" />
+
+            <ImageView
+                android:id="@+id/importance_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_importance_icon"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/interest_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/interest_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTypeSchedule"
+                android:textSize="12sp"
+                android:text="63%" />
+
+            <ImageView
+                android:id="@+id/interest_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_interest_today_page"/>
+
+        </LinearLayout>
+
+</LinearLayout>
+
 
     </LinearLayout>
+
+
+    <View
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"
+        android:visibility="gone"/>
 
 </LinearLayout>
