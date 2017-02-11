@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.adapter.today_page_adapters;
+package com.example.twinkle94.dealwithit.adapter.today_page_adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TodayTaskAdapter extends ArrayAdapter
 {
-    private final String NAME = this.getClass().getName();
+    private final String NAME = TodayTaskAdapter.class.getName();
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_LIST = 1;
@@ -193,6 +193,8 @@ public class TodayTaskAdapter extends ArrayAdapter
                     }
 
                     break;
+
+                //TODO: add default, when task have no type.
             }
         }
     }

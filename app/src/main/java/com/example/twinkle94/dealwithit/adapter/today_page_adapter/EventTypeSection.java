@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.adapter.today_page_adapters;
+package com.example.twinkle94.dealwithit.adapter.today_page_adapter;
 
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
@@ -11,7 +11,8 @@ public class EventTypeSection implements Item
         this.title = title;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 

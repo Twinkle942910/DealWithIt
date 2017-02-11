@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.adapter.today_page_adapters.EventTypeSection;
-import com.example.twinkle94.dealwithit.adapter.today_page_adapters.TodayTaskAdapter;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
@@ -32,6 +32,9 @@ public class TodayFragment extends AbstractTabFragment
 
     private Event event6;
     private Event event7;
+
+    private Event event8;
+    private Event event9;
 
     public static TodayFragment newInstance(int page, Context context)
     {
@@ -70,6 +73,10 @@ public class TodayFragment extends AbstractTabFragment
         today_task_adapter.add(event6);
         today_task_adapter.add(event7);
 
+        today_task_adapter.add(new EventTypeSection("Birthday"));
+        today_task_adapter.add(event8);
+        today_task_adapter.add(event9);
+
         task_list.setAdapter(today_task_adapter);
 
         return view;
@@ -99,6 +106,13 @@ public class TodayFragment extends AbstractTabFragment
 
 
         event7 = new Event(7,"Build database", "04:30 PM", "05:25 PM", "07.01.2017", EventType.WORKTASK, "Waiting", 33);
+        // event5.setScheduleType(ScheduleType.EXAM);
+
+        event8 = new Event(8,"Taras's birthday", "09:30 AM", "01:35 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 71);
+        // event4.setScheduleType(ScheduleType.EXAM);
+
+
+        event9 = new Event(9,"John's birthday", "04:30 PM", "05:25 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 53);
         // event5.setScheduleType(ScheduleType.EXAM);
     }
 }
