@@ -11,6 +11,11 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
 import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.Location;
+import com.example.twinkle94.dealwithit.events.task_types.Birthday;
+import com.example.twinkle94.dealwithit.events.task_types.Schedule;
+import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
@@ -84,35 +89,17 @@ public class TodayFragment extends AbstractTabFragment
 
     private void eventCreation()
     {
-        event = new Event(1,"Algorythm Theory", "10:20 AM", "11:55 AM", "07.01.2017", EventType.SCHEDULE, "Waiting", 79);
-        event.setScheduleType(ScheduleType.LESSON);
+        event = new Schedule(1,"Algorythm Theory", ScheduleType.LESSON, "10:20 AM", "11:55 AM", "07.01.2017", EventType.SCHEDULE, "Waiting", 79);
+        event1 = new Schedule(2,"Object-oriented programming", ScheduleType.LABORATORY_WORK, "12:00 AM", "01:30 PM", "07.01.2017", EventType.SCHEDULE, "Waiting", 63);
+        event3 = new Schedule(2,"Aplied Math", ScheduleType.EXAM, "01:50 PM", "03:35 PM", "07.01.2017", EventType.SCHEDULE, "Waiting", 17);
 
-        event1 = new Event(2,"Object-oriented programming", "12:00 AM", "01:30 PM", "07.01.2017", EventType.SCHEDULE, "Waiting", 63);
-        event1.setScheduleType(ScheduleType.LABORATORY_WORK);
+        event4 = new ToDo(5,"Clean house", "09:30 AM", "03:35 PM", "07.01.2017", EventType.TODO, "Waiting", 91);
+        event5 = new ToDo(7,"Buy grocery and other things", "01:30 AM", "02:25 PM", "07.01.2017", EventType.TODO, "Waiting", 23);
 
-        event3 = new Event(2,"Aplied Math", "01:50 PM", "03:35 PM", "07.01.2017", EventType.SCHEDULE, "Waiting", 17);
-        event3.setScheduleType(ScheduleType.EXAM);
+        event6 = new WorkTask(5,"Refactoring", "09:30 AM", "01:35 PM", "07.01.2017", EventType.WORKTASK, "Waiting", 81);
+        event7 = new WorkTask(7,"Build database", "04:30 PM", "05:25 PM", "07.01.2017", EventType.WORKTASK, "Waiting", 33);
 
-
-        event4 = new Event(5,"Clean house", "09:30 AM", "03:35 PM", "07.01.2017", EventType.TODO, "Waiting", 91);
-       // event4.setScheduleType(ScheduleType.EXAM);
-
-
-        event5 = new Event(7,"Buy grocery and other things", "01:30 AM", "02:25 PM", "07.01.2017", EventType.TODO, "Waiting", 23);
-       // event5.setScheduleType(ScheduleType.EXAM);
-
-        event6 = new Event(5,"Refactoring", "09:30 AM", "01:35 PM", "07.01.2017", EventType.WORKTASK, "Waiting", 81);
-        // event4.setScheduleType(ScheduleType.EXAM);
-
-
-        event7 = new Event(7,"Build database", "04:30 PM", "05:25 PM", "07.01.2017", EventType.WORKTASK, "Waiting", 33);
-        // event5.setScheduleType(ScheduleType.EXAM);
-
-        event8 = new Event(8,"Taras's birthday", "09:30 AM", "01:35 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 71);
-        // event4.setScheduleType(ScheduleType.EXAM);
-
-
-        event9 = new Event(9,"John's birthday", "04:30 PM", "05:25 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 53);
-        // event5.setScheduleType(ScheduleType.EXAM);
+        event8 = new Birthday(8,"Taras's birthday", "09:30 AM", "01:35 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 71, new Location(1, 2, "Roksolany", "Lviv", "Ukraine"));
+        event9 = new Birthday(9,"John's birthday", "04:30 PM", "05:25 PM", "07.01.2017", EventType.BIRTHDAY, "Waiting", 53, new Location(1, 2, "Roksolany", "Lviv", "Ukraine"));
     }
 }

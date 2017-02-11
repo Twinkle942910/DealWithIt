@@ -1,11 +1,11 @@
 package com.example.twinkle94.dealwithit.events;
 
-import com.example.twinkle94.dealwithit.adapter.today_page_adapters.Item;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
-import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
-//TODO: change back later
-public /*abstract*/ class Event implements Item {
+//TODO: Something wrong with git. Check what.!
+public abstract class Event implements Item
+{
     private int id;
     private String title;
     private String time_start;
@@ -15,8 +15,11 @@ public /*abstract*/ class Event implements Item {
     private String state;
     private int importance;
 
-    //Move to Schedule
-    private ScheduleType schedule_type;
+    //TODO: The average value of all interests of task. Not sure if I have to leave it here?
+    private int interests;
+
+    //TODO: Duration of task. Not sure if I have to leave it here(because Birthday have no duration)?
+    private int duration;
 
     public Event(int id, String title, String time_start, String time_end, String date, EventType type, String state, int importance)
     {
@@ -97,14 +100,16 @@ public /*abstract*/ class Event implements Item {
         this.importance = importance;
     }
 
-    //Move later to class Schedule
-    public void setScheduleType(ScheduleType schedule_type)
+
+
+    //TODO: setter interests of task. Not sure if I have to leave it here(maybe just add to straight field)?
+    protected void setInterests(int interests)
     {
-        this.schedule_type = schedule_type;
+        this.interests = interests;
     }
 
-    //Move later to class Schedule
-    public ScheduleType getSchedule_type() {
-        return schedule_type;
+    public int getInterests()
+    {
+        return interests;
     }
 }

@@ -1,13 +1,31 @@
 package com.example.twinkle94.dealwithit.events.task_types;
 
 import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
+
+import java.util.List;
 
 public class Schedule extends Event
 {
-    public Schedule(int id, String title, String time_start, String time_end, String date,
+    private ScheduleType scheduleType;
+    private List<Interest> interests;
+
+    public Schedule(int id, String title, ScheduleType scheduleType, String time_start, String time_end, String date,
                     EventType type, String state, int importance)
     {
         super(id, title, time_start, time_end, date, type, state, importance);
+        this.scheduleType = scheduleType;
+    }
+
+    public void setScheduleType(ScheduleType scheduleType)
+    {
+        this.scheduleType = scheduleType;
+    }
+
+    public ScheduleType getScheduleType()
+    {
+        return scheduleType;
     }
 }

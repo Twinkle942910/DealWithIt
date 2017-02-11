@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
 import java.util.ArrayList;
@@ -125,13 +126,14 @@ public class TodayTaskAdapter extends ArrayAdapter
                 case SCHEDULE:
                     type_color = ContextCompat.getColor(getContext(), R.color.colorTypeSchedule);
                     task_title = ((Event)(event)).getTitle();
-                    String schedule_type = ((Event)(event)).getSchedule_type().toString();
+                    String schedule_type = ((Schedule)(event)).getScheduleType().toString();
+                    int schedule_type_image = getSchedule_type_image(event);
                     from_time = ((Event)(event)).getTime_start();
                     to_time = ((Event)(event)).getTime_end();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, schedule_type, from_time, to_time, importance, interest, View.VISIBLE, View.VISIBLE);
+                    eventViewValues(eventHolder, type_color, task_title, schedule_type_image, schedule_type, from_time, to_time, importance, interest, View.VISIBLE, View.VISIBLE);
                     break;
 
                 case TODO:
@@ -142,7 +144,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case WORKTASK:
@@ -153,7 +155,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case BIRTHDAY:
@@ -164,7 +166,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case NO_TYPE:
@@ -199,7 +201,29 @@ public class TodayTaskAdapter extends ArrayAdapter
         }
     }
 
-    private void eventViewValues(EventHolder eventHolder, int type_color, String task_title, String schedule_type,
+    private int getSchedule_type_image(Item event)
+    {
+        int schedule_type_image = R.drawable.ic_lesson_type;
+
+        switch(((Schedule)(event)).getScheduleType())
+        {
+            case LESSON:
+                schedule_type_image = R.drawable.ic_lesson_type;
+                break;
+
+            case EXAM:
+                schedule_type_image = R.drawable.ic_exam_schedule_type;
+                break;
+
+            case LABORATORY_WORK:
+                schedule_type_image = R.drawable.ic_lab_work_schedule_type;
+                break;
+        }
+        return schedule_type_image;
+    }
+
+    //TODO: overload method with less parameters for different types of tasks.
+    private void eventViewValues(EventHolder eventHolder, int type_color, String task_title, int scheduleTypeImage, String schedule_type,
                                  String from_time, String to_time, String importance, String interest,
                                  int task_type_visibility, int task_type_image_visibility)
     {
@@ -207,7 +231,7 @@ public class TodayTaskAdapter extends ArrayAdapter
 
         eventHolder.task_title.setText(task_title);
         eventHolder.task_type.setText(schedule_type);
-        eventHolder.task_type_image.setImageResource(R.drawable.ic_lesson_type);
+        eventHolder.task_type_image.setImageResource(scheduleTypeImage);
 
         eventHolder.task_type.setVisibility(task_type_visibility);
         eventHolder.task_type_image.setVisibility(task_type_image_visibility);
