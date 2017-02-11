@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_new_task"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity">
+
+   <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+   <FrameLayout
+       xmlns:android="http://schemas.android.com/apk/res/android"
+       android:id="@+id/fragment_task_type"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -25,4 +25,7 @@
     <string name="tab_today_name">Today</string>
     <string name="tab_schedule_name">Schedule</string>
     <string name="tab_planing_name">Management</string>
+
+    <!-- New Task page -->
+    <string name="activity_new_task_name">New Task</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.example.twinkle94.dealwithit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -12,8 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
+import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.util.Constants;
 
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
+    private FloatingActionButton new_task_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNavigationView();
         initTabs();
         initTabIcons();
+
+        initFAB();
 
 
         //calling background database
@@ -137,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     //init Toolbar
     private void initToolbar()
@@ -244,5 +254,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     //
 
-
+    private void initFAB()
+    {
+        new_task_button = (FloatingActionButton) findViewById(R.id.new_task);
+        new_task_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), NewTaskActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
 }

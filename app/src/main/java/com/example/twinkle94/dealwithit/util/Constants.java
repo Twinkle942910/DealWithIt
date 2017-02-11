@@ -13,4 +13,6 @@ public class Constants
     public static final int TAB_ONE_ICON = R.drawable.selector_today;
     public static final int TAB_TWO_ICON = R.drawable.selector_shedules;
     public static final int TAB_THREE_ICON = R.drawable.selector_planing;
+
+    //TODO: Refactor icons from other classes here, later.!
 }
