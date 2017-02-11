@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorMainBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
 
     <TextView
         android:text="Monday, January 5"
@@ -33,62 +31,12 @@
             app:srcCompat="@drawable/ic_today_page_date"
             android:id="@+id/date_icon" />
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:text="Schedule"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            style="@style/TextRobotoMedium"
-            android:layout_width="match_parent"
-            android:textSize="16sp"
-            android:layout_height="48dp"
-            android:textColor="@color/colorMainBackground"
-            android:id="@+id/schedule_title"
-            android:background="@color/colorTypeSchedule"/>
+</LinearLayout>
 
         <ListView
-            android:id="@+id/schedule_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:headerDividersEnabled="false"
-            android:footerDividersEnabled="false" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="8dp">
-
-        <TextView
-            android:text="ToDo"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            style="@style/TextRobotoMedium"
-            android:layout_width="match_parent"
-            android:textSize="16sp"
-            android:layout_height="48dp"
-            android:textColor="@color/colorMainBackground"
-            android:id="@+id/todo_title"
-            android:background="@color/colorTypeToDo"/>
-
-        <ListView
-            android:id="@+id/todo_list"
+            android:id="@+id/tasks_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null" />
-
-
-    </LinearLayout>
 
 </LinearLayout>

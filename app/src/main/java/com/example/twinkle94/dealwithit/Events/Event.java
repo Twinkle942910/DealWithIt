@@ -1,11 +1,11 @@
 package com.example.twinkle94.dealwithit.events;
 
+import com.example.twinkle94.dealwithit.adapter.today_page_adapters.Item;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
 //TODO: change back later
-public /*abstract*/ class Event
-{
+public /*abstract*/ class Event implements Item {
     private int id;
     private String title;
     private String time_start;
@@ -70,6 +70,7 @@ public /*abstract*/ class Event
         this.date = date;
     }
 
+    @Override
     public EventType getType()
     {
         return type;

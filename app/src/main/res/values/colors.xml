@@ -13,8 +13,11 @@
 
     <color name="colorTypeSchedule">#01bbde</color>
     <color name="colorTypeToDo">#ec6e72</color>
+    <color name="colorTypeWorkTasks">#e9a75d</color>
+    <color name="colorTypeBirthday">#6eba6c</color>
+
     <color name="colorListItemFont">#c9e9e8</color>
-    <color name="colorDivider">#90455A64</color>
 
     <color name="colorText87">#87455A64</color>
+    <color name="colorDivider">#B3000000</color>
 </resources>

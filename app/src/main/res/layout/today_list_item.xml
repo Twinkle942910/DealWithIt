@@ -11,7 +11,8 @@
 <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:background="@color/colorDivider" />
+    android:background="@color/colorDivider"
+    android:layout_gravity="top"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
             android:id="@+id/type_color"
             android:layout_width="16dp"
             android:layout_height="match_parent"
-            android:background="@color/colorTypeSchedule" />
+            android:background="@color/colorTypeSchedule"/>
 
         <LinearLayout
             android:id="@+id/first_section"
@@ -203,7 +204,7 @@
                 android:id="@+id/interest_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorTypeSchedule"
+                android:textColor="@color/colorText87"
                 android:textSize="12sp"
                 android:text="63%" />
 
@@ -226,6 +227,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorDivider"
-        android:visibility="gone"/>
+        android:layout_gravity="bottom" />
 
 </LinearLayout>
