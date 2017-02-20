@@ -11,4 +11,8 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="nav_header_width">280dp</dimen>
 
+    <!-- Text Sizes -->
+    <dimen name="edit_text_floating_label_size">14sp</dimen>
+    <dimen name="edit_text_label_size">16sp</dimen>
+
 </resources>

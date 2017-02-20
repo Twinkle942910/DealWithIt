@@ -28,4 +28,17 @@
 
     <!-- New Task page -->
     <string name="activity_new_task_name">New Task</string>
+    <string name="task_type_hint">Task type</string>
+    <string name="task_title_hint">Task title</string>
+    <string name="task_date_hint">Date</string>
+    <string name="task_start_time_hint">Start time</string>
+    <string name="task_end_time_hint">End time</string>
+    <string name="task_comment_hint">Comment</string>
+    <string name="add_comment_task_hint">Add comment</string>
+    <string name="task_sub_tasks_hint">Sub tasks</string>
+    <string name="task_importance_hint">Importance</string>
+    <string name="task_interests_hint">Interests</string>
+    <string name="add_sub_task_hint">Add task</string>
+    <string name="add_importance_type_hint">Not important</string>
+    <string name="add_interests_count_hint">One interest added</string>
 </resources>

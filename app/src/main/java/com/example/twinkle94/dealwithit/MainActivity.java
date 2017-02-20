@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initFAB();
 
 
-        //calling background database
+       /* //calling background database
         FetchEventsTask fetchEventsTask = new FetchEventsTask(getApplicationContext());
-        fetchEventsTask.execute();
+        fetchEventsTask.execute();*/
     }
 
     //get - select tab position (current page)

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/task_type"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="No type selected"
+        android:gravity="center_vertical"
+        android:textSize="34sp"
+        style="@style/TextRobotoRegular"
+        android:textColor="@color/colorTitleText"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        style="@style/StyledTilEditTextLayout"
+        app:hintTextAppearance="@style/StyledTilEditTextFloatingLabel">
+
+        <EditText
+            android:id="@+id/task_type_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/task_type_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="24sp"
+            android:maxLength="38"
+            style="@style/StyledTilEditText"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+<include layout="@layout/layout_task_title_input" />
+<include layout="@layout/layout_task_date_input" />
+<include layout="@layout/layout_task_start_time_input" />
+<include layout="@layout/layout_task_end_time_input" />
+<include layout="@layout/layout_task_comment_input" />
+
+<include
+    android:id="@+id/comment_container_layout"
+    layout="@layout/layout_task_comment_container"
+    android:visibility="gone"/>
+
+    <include layout="@layout/layout_task_sub_tasks_input" />
+
+    <include
+        android:id="@+id/sub_task_container_layout"
+        layout="@layout/layout_task_sub_tasks_container"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_task_importance_input" />
+
+    <include
+        android:id="@+id/importance_container_layout"
+        layout="@layout/layout_task_importance"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_task_interests_input" />
+
+    <include
+        android:id="@+id/interests_container_layout"
+        layout="@layout/layout_task_interests"
+        android:visibility="gone"/>
+
+</LinearLayout>

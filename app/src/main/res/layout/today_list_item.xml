@@ -20,7 +20,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingRight="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        android:weightSum="20">
 
         <View
             android:id="@+id/type_color"
