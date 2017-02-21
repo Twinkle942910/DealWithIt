@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,15 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
+import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
-import static com.example.twinkle94.dealwithit.R.id.comment_container;
 
 public class AddingTaskFragment extends Fragment
 {
@@ -40,13 +41,15 @@ public class AddingTaskFragment extends Fragment
     private CheckBox importance_available;
     private LinearLayout importance_container_layout;
 
+    private SeekBar importance_setting;
+    private TextView importance_percent;
+    private TextView importance_type;
+
+    private int importance_value;
+
     //Interests
     private CheckBox interests_available;
     private RelativeLayout interests_container_layout;
-
-    //TODO: do this more efficent
-    private int comment_counter;
-    private int sub_task_counter;
 
     @Override
     public void onAttach(Context context)
@@ -72,6 +75,10 @@ public class AddingTaskFragment extends Fragment
         importance_available = (CheckBox) viewHierarchy.findViewById(R.id.use_importance_checkBox);
         importance_container_layout = (LinearLayout)viewHierarchy.findViewById(R.id.importance_container_layout);
 
+        importance_setting = (SeekBar) viewHierarchy.findViewById(R.id.importance);
+        importance_percent = (TextView) viewHierarchy.findViewById(R.id.importance_percent_value);
+        importance_type = (TextView) viewHierarchy.findViewById(R.id.importance_type);
+
         interests_available = (CheckBox) viewHierarchy.findViewById(R.id.use_interests_checkBox);
         interests_container_layout = (RelativeLayout) viewHierarchy.findViewById(R.id.interests_container_layout);
 
@@ -80,10 +87,61 @@ public class AddingTaskFragment extends Fragment
         isImportanceAvailable();
         isInterestsAvailable();
 
-        comment_counter = 0;
-        sub_task_counter = 0;
+        setImportanceBar();
 
         return viewHierarchy;
+    }
+
+    public void addItem(View view)
+    {
+          switch (view.getId())
+          {
+              case button_add_comment:
+                  addItemView(comment_layout);
+                  break;
+
+              case button_add_sub_task:
+                  addItemView(sub_task_layout);
+                  break;
+
+              case button_add_interest:
+                //  addItemView(sub_task_layout);
+                  Toast.makeText(activity, "LOoooooool!", Toast.LENGTH_LONG).show();
+                  break;
+          }
+    }
+
+    private void addItemView(LinearLayout container_layout)
+    {
+        LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View subTaskView = layoutInflater.inflate(R.layout.sub_task_comment_item, container_layout, false);
+
+        TextView number = null;
+        ImageView remove_image = null;
+
+        if (container_layout != null)
+        {
+            container_layout.addView(subTaskView);
+
+            number  = (TextView) subTaskView.findViewById(R.id.sub_item_number);
+            remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
+
+            number.setText(container_layout.getChildCount());
+        }
+
+        final View.OnClickListener thisListener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ((LinearLayout)subTaskView.getParent()).removeView(subTaskView);
+            }
+        };
+
+        if (remove_image != null)
+        {
+            remove_image.setOnClickListener(thisListener);
+        }
     }
 
     private void isCommentsAvailable()
@@ -150,71 +208,34 @@ public class AddingTaskFragment extends Fragment
         });
     }
 
-    public void addComment(View view)
+    private void setImportanceBar()
     {
-          switch (view.getId())
-          {
-              case button_add_comment :
+        importance_value = 0;
 
-                  LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                 final View subTaskView = layoutInflater.inflate(R.layout.sub_task_comment_item, comment_layout, false);
+        importance_setting.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser)
+            {
+                importance_value = progressValue;
+                importance_percent.setText(importance_value + "%");
 
-                  comment_counter++;
+                if(importance_value >= 60) importance_type.setText("Important");
+                else importance_type.setText("Not important");
+            }
 
-                  if (comment_layout != null)
-                  {
-                      comment_layout.addView(subTaskView);
-                  }
 
-                  TextView   number = (TextView) subTaskView.findViewById(R.id.sub_item_number);
-                  ImageView  remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
 
-                  number.setText(Integer.toString(comment_counter));
+            }
 
-                  final View.OnClickListener thisListener = new View.OnClickListener()
-                  {
-                      @Override
-                      public void onClick(View v)
-                      {
-                          ((LinearLayout)subTaskView.getParent()).removeView(subTaskView);
-                          comment_counter--;
-                      }
-                  };
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
 
-                  remove_image.setOnClickListener(thisListener);
-
-                  break;
-
-              case button_add_sub_task:
-
-                  LayoutInflater layoutInflater1 = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                  final View subTaskView1 = layoutInflater1.inflate(R.layout.sub_task_comment_item, sub_task_layout, false);
-
-                  sub_task_counter++;
-
-                  if (sub_task_layout != null)
-                  {
-                      sub_task_layout.addView(subTaskView1);
-                  }
-
-                  TextView   number1 = (TextView) subTaskView1.findViewById(R.id.sub_item_number);
-                  ImageView  remove_image1 = (ImageView) subTaskView1.findViewById(R.id.remove_sub_task_icon);
-
-                  number1.setText(Integer.toString(sub_task_counter));
-
-                  final View.OnClickListener thisListener1 = new View.OnClickListener()
-                  {
-                      @Override
-                      public void onClick(View v)
-                      {
-                          ((LinearLayout)subTaskView1.getParent()).removeView(subTaskView1);
-                          sub_task_counter--;
-                      }
-                  };
-
-                  remove_image1.setOnClickListener(thisListener1);
-
-                  break;
-          }
+            }
+        });
     }
 }

@@ -1,18 +1,12 @@
 package com.example.twinkle94.dealwithit.adding_task_page;
 
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -88,9 +82,9 @@ public class NewTaskActivity extends AppCompatActivity
     }
 
     //TODO: edit name later!
-    public void onAddCommentButtonClicked(View view)
+    public void onAddTaskItem(View view)
     {
-        addingTaskFragment.addComment(view);
+        addingTaskFragment.addItem(view);
     }
 
 }
