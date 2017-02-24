@@ -13,7 +13,6 @@ public class ToDo extends Event
 {
     private List<Sub_task> subTasks;
     private List<Comment> comments;
-    private List<Interest> interests;
 
     public ToDo(int id, String title, String time_start, String time_end, String date,
                 EventType type, String state, int importance)
@@ -22,7 +21,6 @@ public class ToDo extends Event
 
         subTasks = new ArrayList<>();
         comments = new ArrayList<>();
-        interests = new ArrayList<>();
     }
 
     public void addSubTask(Sub_task sub_task)
@@ -35,20 +33,21 @@ public class ToDo extends Event
         comments.add(comment);
     }
 
-    public void addInterest(Interest interest)
+    public List<Sub_task> getListSubTasks()
     {
-        interests.add(interest);
+        return subTasks;
     }
 
-    private void countInterest()
+    public List<Comment> getListComments()
     {
-        int sum = 0;
+        return comments;
+    }
 
-        for (Interest interest: interests)
-        {
-            sum += interest.getValue();
+    public void setListComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
-            setInterests(sum / interests.size());
-        }
+    public void setListSubTasks(List<Sub_task> subTasks) {
+        this.subTasks = subTasks;
     }
 }

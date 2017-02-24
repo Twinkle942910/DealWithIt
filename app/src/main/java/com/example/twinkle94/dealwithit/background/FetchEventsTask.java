@@ -8,10 +8,20 @@ import android.util.Log;
 
 import com.example.twinkle94.dealwithit.database.EventInfoContract;
 import com.example.twinkle94.dealwithit.database.EventInfoDB;
+import com.example.twinkle94.dealwithit.events.Comment;
+import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.task_types.Schedule;
+import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
-public class FetchEventsTask extends AsyncTask <Void, Void, Void>
+import java.util.List;
+
+public class FetchEventsTask extends AsyncTask <Object, Void, String>
 {
-
+    private static final String TAG = FetchEventsTask.class.getSimpleName();
     private Context context;
 
     public FetchEventsTask(Context context)
@@ -20,52 +30,175 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
     }
 
     @Override
-    protected Void doInBackground(Void... voids)
+    protected String doInBackground(Object... params)
     {
+        String operation = (String)params[0];
+        EventType event_type = ((Event)params[1]).getType();
+        String result = null;
         EventInfoDB eventInfoDB = new EventInfoDB(context);
 
-        addDataToEvent(eventInfoDB);
-        addDataToComment(eventInfoDB);
+        switch (operation)
+        {
+            case "add_data":
+                result = addDataToDB(event_type, eventInfoDB, (Event)params[1]);
+                break;
+        }
+
+       // addScheduleTask(eventInfoDB);
+      /*  addDataToComment(eventInfoDB);
         addDataToSubTask(eventInfoDB);
         addDataToInterest(eventInfoDB);
         addDataToLocation(eventInfoDB);
         addDataToNotification(eventInfoDB);
-        addDataToScheduleType(eventInfoDB);
+        addDataToScheduleType(eventInfoDB);*/
 
-        return null;
+        return result;
     }
 
-    private void addDataToEvent(EventInfoDB eventInfoDB)
+    //TODO: change String types to Enum!
+    private String addDataToDB(EventType event_type, EventInfoDB eventInfoDB, Event event)
     {
-        int  Id = 1;
-        String  title = "Check things3";
-        String  date = "January 7";
-        String  time_start = "12:00 PM";
-        String  time_end = "03:00 PM";
-        String  type = "Work Task";
-        String  state = "Waiting";
-        int  importance = 83;
+        switch (event_type)
+        {
+            case SCHEDULE:
+                addScheduleTask(eventInfoDB, event);
+                break;
+
+            case TODO:
+                addToDoTask(eventInfoDB, event);
+                break;
+
+            case WORKTASK:
+
+                break;
+
+            case BIRTHDAY:
+
+                break;
+        }
+
+        return event_type + " was added to DB";
+    }
+
+    private void addScheduleTask(EventInfoDB eventInfoDB, Event event)
+    {
+        EventType type = EventType.SCHEDULE;
+        String  title = event.getTitle();
+        String  date = event.getDate();
+        String  time_start = event.getTime_start();
+        String  time_end = event.getTime_end();
+        String  state = event.getState();
+        int  importance = event.getImportance();
+        List<Interest> interests = event.getListInterests();
+        ScheduleType schedule_type = ((Schedule)event).getScheduleType();
 
         SQLiteDatabase db = eventInfoDB.getWritableDatabase();
 
+        //Adding Schedule
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(EventInfoContract.EventEntry._ID, Id);
         contentValues.put(EventInfoContract.EventEntry.TITLE, title);
         contentValues.put(EventInfoContract.EventEntry.DATE, date);
         contentValues.put(EventInfoContract.EventEntry.TIME_START, time_start);
         contentValues.put(EventInfoContract.EventEntry.TIME_END, time_end);
-        contentValues.put(EventInfoContract.EventEntry.TYPE, type);
+        contentValues.put(EventInfoContract.EventEntry.TYPE, type.toString());
         contentValues.put(EventInfoContract.EventEntry.STATE, state);
         contentValues.put(EventInfoContract.EventEntry.IMPORTANCE, importance);
 
         long newRowId = db.insert(EventInfoContract.EventEntry.TABLE_NAME, null, contentValues);
 
-        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.EventEntry.TABLE_NAME);
+        //Adding interests
+        for(Interest interest : interests)
+        {
+            ContentValues contentValuesInterests = new ContentValues();
+
+            contentValuesInterests.put(EventInfoContract.InterestEntry.ID_EVENT, newRowId);
+            contentValuesInterests.put(EventInfoContract.InterestEntry.TITLE, interest.getTitle());
+            contentValuesInterests.put(EventInfoContract.InterestEntry.VALUE, interest.getValue());
+
+            db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValuesInterests);
+        }
+
+        //Adding Schedule type
+         ContentValues contentValuesScheduleType = new ContentValues();
+
+        contentValuesScheduleType.put(EventInfoContract.ScheduleTypeEntry.ID_EVENT, newRowId);
+        contentValuesScheduleType.put(EventInfoContract.ScheduleTypeEntry.CONTENT, schedule_type.toString());
+
+        db.insert(EventInfoContract.ScheduleTypeEntry.TABLE_NAME, null, contentValuesScheduleType);
+
+        Log.i(TAG, "New Row " + newRowId + " Inserted..." + EventInfoContract.EventEntry.TABLE_NAME);
 
     }
 
-    private void addDataToComment(EventInfoDB eventInfoDB)
+    private void addToDoTask(EventInfoDB eventInfoDB, Event event)
+    {
+        EventType type = EventType.TODO;
+        String  title = event.getTitle();
+        String  date = event.getDate();
+        String  time_start = event.getTime_start();
+        String  time_end = event.getTime_end();
+        String  state = event.getState();
+        int  importance = event.getImportance();
+
+        List<Interest> interests = event.getListInterests();
+        List<Sub_task> sub_tasks = ((ToDo)event).getListSubTasks();
+        List<Comment> comments = ((ToDo)event).getListComments();
+
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        //Adding ToDo
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.EventEntry.TITLE, title);
+        contentValues.put(EventInfoContract.EventEntry.DATE, date);
+        contentValues.put(EventInfoContract.EventEntry.TIME_START, time_start);
+        contentValues.put(EventInfoContract.EventEntry.TIME_END, time_end);
+        contentValues.put(EventInfoContract.EventEntry.TYPE, type.toString());
+        contentValues.put(EventInfoContract.EventEntry.STATE, state);
+        contentValues.put(EventInfoContract.EventEntry.IMPORTANCE, importance);
+
+        long newRowId = db.insert(EventInfoContract.EventEntry.TABLE_NAME, null, contentValues);
+
+        //Adding interests
+        for(Interest interest : interests)
+        {
+            ContentValues contentValuesInterests = new ContentValues();
+
+            contentValuesInterests.put(EventInfoContract.InterestEntry.ID_EVENT, newRowId);
+            contentValuesInterests.put(EventInfoContract.InterestEntry.TITLE, interest.getTitle());
+            contentValuesInterests.put(EventInfoContract.InterestEntry.VALUE, interest.getValue());
+
+            db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValuesInterests);
+        }
+
+        //Adding subTasks
+        for(Sub_task sub_task : sub_tasks)
+        {
+            ContentValues contentValuesSubTasks = new ContentValues();
+
+            contentValuesSubTasks.put(EventInfoContract.SubTaskEntry.ID_EVENT, newRowId);
+            contentValuesSubTasks.put(EventInfoContract.SubTaskEntry.CONTENT, sub_task.getContent());
+            contentValuesSubTasks.put(EventInfoContract.SubTaskEntry.CHECKED, sub_task.isChecked());
+
+            db.insert(EventInfoContract.SubTaskEntry.TABLE_NAME, null, contentValuesSubTasks);
+        }
+
+        //Adding Comments
+        for(Comment comment : comments)
+        {
+            ContentValues contentValuesComments = new ContentValues();
+
+            contentValuesComments.put(EventInfoContract.CommentEntry.ID_EVENT, newRowId);
+            contentValuesComments.put(EventInfoContract.CommentEntry.CONTENT, comment.getContent());
+
+            db.insert(EventInfoContract.CommentEntry.TABLE_NAME, null, contentValuesComments);
+        }
+
+        Log.i(TAG, "New Row " + newRowId + " Inserted..." + EventInfoContract.EventEntry.TABLE_NAME);
+    }
+
+    /*private void addDataToComment(EventInfoDB eventInfoDB)
     {
         int  event_Id = 1;
         String  content = "Take  das is fussssss";
@@ -81,7 +214,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
 
         long newRowId = db.insert(EventInfoContract.CommentEntry.TABLE_NAME, null, contentValues);
 
-        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.CommentEntry.TABLE_NAME);
+        Log.i("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.CommentEntry.TABLE_NAME);
 
     }
 
@@ -101,7 +234,7 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
 
         long newRowId = db.insert(EventInfoContract.SubTaskEntry.TABLE_NAME, null, contentValues);
 
-        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.SubTaskEntry.TABLE_NAME);
+        Log.i("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.SubTaskEntry.TABLE_NAME);
 
     }
 
@@ -188,6 +321,11 @@ public class FetchEventsTask extends AsyncTask <Void, Void, Void>
 
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.NotificationEntry.TABLE_NAME);
 
-    }
+    }*/
 
+    @Override
+    protected void onPostExecute(String result)
+    {
+        Log.i(TAG, result);
+    }
 }

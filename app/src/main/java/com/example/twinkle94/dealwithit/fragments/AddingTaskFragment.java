@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -18,6 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.events.Comment;
+import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
@@ -51,6 +63,25 @@ public class AddingTaskFragment extends Fragment
     private CheckBox interests_available;
     private RelativeLayout interests_container_layout;
 
+    //Data form user.
+    private TextView type;
+    private TextView title;
+    //TODO: change to dateTime, maybe?
+    private TextView date;
+    private TextView start_time;
+    private TextView end_time;
+
+    private List<Comment> commentList;
+    private List<Sub_task> subTaskList;
+    private List<Interest> interestList;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Override
     public void onAttach(Context context)
     {
@@ -82,6 +113,8 @@ public class AddingTaskFragment extends Fragment
         interests_available = (CheckBox) viewHierarchy.findViewById(R.id.use_interests_checkBox);
         interests_container_layout = (RelativeLayout) viewHierarchy.findViewById(R.id.interests_container_layout);
 
+        initializeInputViews(viewHierarchy);
+
         isCommentsAvailable();
         isSubTasksAvailable();
         isImportanceAvailable();
@@ -92,23 +125,112 @@ public class AddingTaskFragment extends Fragment
         return viewHierarchy;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_adding_task_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.save)
+        {
+            addTask();
+            activity.finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void addItem(View view)
     {
           switch (view.getId())
           {
               case button_add_comment:
                   addItemView(comment_layout);
+                //  addComment();
                   break;
 
               case button_add_sub_task:
                   addItemView(sub_task_layout);
+                 // addSubTask();
                   break;
 
               case button_add_interest:
-                //  addItemView(sub_task_layout);
-                  Toast.makeText(activity, "LOoooooool!", Toast.LENGTH_LONG).show();
+                 // addInterest();
+                  Toast.makeText(activity, "Looooooool!", Toast.LENGTH_LONG).show();
                   break;
           }
+    }
+
+    private void addComment()
+    {
+        int childCount = comment_layout.getChildCount();
+
+        for(int i=0; i<childCount; i++)
+        {
+            View thisChild = comment_layout.getChildAt(i);
+
+            TextView comment_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
+
+            String content = comment_content.getText().toString();
+                                       //TODO: id and eventId is not needed, possibly.
+            commentList.add(new Comment(1, 1, content));
+        }
+    }
+
+    private void addSubTask()
+    {
+        int childCount = sub_task_layout.getChildCount();
+
+        for(int i=0; i<childCount; i++)
+        {
+            View thisChild = sub_task_layout.getChildAt(i);
+
+            TextView subTask_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
+
+            String content = subTask_content.getText().toString();
+            //TODO: id and eventId is not needed, possibly.
+            subTaskList.add(new Sub_task(1, 1, content, false));
+        }
+    }
+
+    //TODO: mock method.
+    private void addInterest()
+    {
+        interestList.add(new Interest(1, 1, "Study", 73));
+        interestList.add(new Interest(2, 1, "Book", 83));
+        interestList.add(new Interest(3, 1, "School", 12));
+    }
+
+    private void addTask()
+    {
+        addComment();
+        addSubTask();
+        addInterest();
+
+        ToDo todo = new ToDo(1,
+                title.getText().toString(),
+                start_time.getText().toString(),
+                end_time.getText().toString(),
+                date.getText().toString(),
+                EventType.TODO,
+                "Waiting",
+                importance_value);
+
+        todo.setListComments(commentList);
+        todo.setListSubTasks(subTaskList);
+        todo.setListInterests(interestList);
+
+        FetchEventsTask addingToDB = new FetchEventsTask(activity);
+        addingToDB.execute("add_data", todo);
     }
 
     private void addItemView(LinearLayout container_layout)
@@ -126,7 +248,7 @@ public class AddingTaskFragment extends Fragment
             number  = (TextView) subTaskView.findViewById(R.id.sub_item_number);
             remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
 
-            number.setText(container_layout.getChildCount());
+            //number.setText(container_layout.getChildCount());
         }
 
         final View.OnClickListener thisListener = new View.OnClickListener()
@@ -142,6 +264,19 @@ public class AddingTaskFragment extends Fragment
         {
             remove_image.setOnClickListener(thisListener);
         }
+    }
+
+    private void initializeInputViews(View viewHierarchy)
+    {
+        type = (TextView) viewHierarchy.findViewById(R.id.task_type_input);
+        title = (TextView) viewHierarchy.findViewById(R.id.task_title_input);
+        date = (TextView) viewHierarchy.findViewById(R.id.task_date_input);
+        start_time = (TextView) viewHierarchy.findViewById(R.id.task_start_time_input);
+        end_time = (TextView) viewHierarchy.findViewById(R.id.task_end_time_input);
+
+        commentList = new ArrayList<>();
+        subTaskList = new ArrayList<>();
+        interestList = new ArrayList<>();
     }
 
     private void isCommentsAvailable()

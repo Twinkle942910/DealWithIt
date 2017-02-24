@@ -21,7 +21,7 @@ import java.util.List;
 
 public class TodayTaskAdapter extends ArrayAdapter
 {
-    private final String NAME = TodayTaskAdapter.class.getName();
+    private final String NAME = TodayTaskAdapter.class.getSimpleName();
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_LIST = 1;

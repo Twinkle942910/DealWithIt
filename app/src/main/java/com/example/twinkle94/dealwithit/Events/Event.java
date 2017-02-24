@@ -3,6 +3,8 @@ package com.example.twinkle94.dealwithit.events;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
+import java.util.List;
+
 //TODO: Something wrong with git. Check what.!
 public abstract class Event implements Item
 {
@@ -10,10 +12,12 @@ public abstract class Event implements Item
     private String title;
     private String time_start;
     private String time_end;
+    //TODO: Should I use DateTime class?
     private String date;
     private EventType type;
     private String state;
     private int importance;
+    private List<Interest> list_interests;
 
     //TODO: The average value of all interests of task. Not sure if I have to leave it here?
     private int interests;
@@ -108,8 +112,34 @@ public abstract class Event implements Item
         this.interests = interests;
     }
 
-    public int getInterests()
+    public void addInterest(Interest interest)
+    {
+        list_interests.add(interest);
+    }
+
+    private void countInterest()
+    {
+        int sum = 0;
+
+        for (Interest interest: list_interests)
+        {
+            sum += interest.getValue();
+
+            setInterests(sum / list_interests.size());
+        }
+    }
+
+    public int getInterestsAvarage()
     {
         return interests;
+    }
+
+    public List<Interest> getListInterests()
+    {
+        return list_interests;
+    }
+
+    public void setListInterests(List<Interest> list_interests) {
+        this.list_interests = list_interests;
     }
 }

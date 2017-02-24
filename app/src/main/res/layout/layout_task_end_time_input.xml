@@ -16,11 +16,11 @@
             app:hintTextAppearance="@style/StyledTilEditTextFloatingLabel">
 
             <EditText
-                android:id="@+id/task_title_input"
+                android:id="@+id/task_end_time_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/task_end_time_hint"
-                android:inputType="text"
+                android:inputType="time"
                 android:maxLines="1"
                 android:textSize="24sp"
                 android:maxLength="38"

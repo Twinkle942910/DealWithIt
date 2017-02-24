@@ -16,7 +16,6 @@ public class Birthday extends Event
 
     private List<Sub_task> subTasks;
     private List<Comment> comments;
-    private List<Interest> interests;
 
     public Birthday(int id, String title, String time_start, String time_end, String date,
                     EventType type, String state, int importance, Location location)
@@ -27,7 +26,6 @@ public class Birthday extends Event
 
         subTasks = new ArrayList<>();
         comments = new ArrayList<>();
-        interests = new ArrayList<>();
     }
 
     public void addSubTask(Sub_task sub_task)
@@ -38,22 +36,5 @@ public class Birthday extends Event
     public void addComment(Comment comment)
     {
         comments.add(comment);
-    }
-
-    public void addInterest(Interest interest)
-    {
-        interests.add(interest);
-    }
-
-    private void countInterest()
-    {
-        int sum = 0;
-
-        for (Interest interest: interests)
-        {
-            sum += interest.getValue();
-
-            setInterests(sum / interests.size());
-        }
     }
 }

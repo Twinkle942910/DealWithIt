@@ -41,4 +41,5 @@
     <string name="add_sub_task_hint">Add task</string>
     <string name="add_importance_type_hint">Not important</string>
     <string name="add_interests_count_hint">One interest added</string>
+    <string name="menu_save">save</string>
 </resources>
