@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="12dp"
     android:orientation="horizontal"
+    android:onClick="setDatePicker"
     android:gravity="center_vertical">
 
         <android.support.design.widget.TextInputLayout

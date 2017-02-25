@@ -35,8 +35,11 @@ import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
@@ -242,13 +245,45 @@ public class AddingTaskFragment extends Fragment
 
         dialogBuilder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
         {
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
 
             }
         });
 
         AlertDialog b = dialogBuilder.create();
         b.show();
+    }
+
+    public void setTime(int hour, int minute, boolean am_pm, int type)
+    {
+        Calendar c = Calendar.getInstance();
+        String myFormatTime;
+
+        if (!am_pm)
+        {
+            myFormatTime = "hh:mm a";
+        }
+        else  myFormatTime = "kk:mm";
+
+        SimpleDateFormat stf = new SimpleDateFormat(myFormatTime, Locale.US);
+
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+
+        if(type != -1)
+        {
+            if(type == R.id.time_start_layout)
+            {
+                start_time.setText(stf.format(c.getTime()));
+            }
+            else end_time.setText(stf.format(c.getTime()));
+        }
+    }
+
+    public void setDate(int year, int month, int day)
+    {
+        date.setText(day + "/" + (month + 1) + "/" + year);
     }
 
     private void addComment()
