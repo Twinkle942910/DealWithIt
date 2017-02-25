@@ -13,10 +13,11 @@
         android:id="@+id/task_type"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:text="No type selected"
+        android:text="@string/no_type_selected"
         android:gravity="center_vertical"
         android:textSize="34sp"
         style="@style/TextRobotoRegular"
+        android:onClick="onPickType"
         android:textColor="@color/colorTitleText"/>
 
     <android.support.design.widget.TextInputLayout

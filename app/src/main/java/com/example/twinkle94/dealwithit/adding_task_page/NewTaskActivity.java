@@ -81,10 +81,14 @@ public class NewTaskActivity extends AppCompatActivity
         }
     }
 
-    //TODO: edit name later!
     public void onAddTaskItem(View view)
     {
         addingTaskFragment.addItem(view);
+    }
+
+    public void onPickType(View view)
+    {
+        addingTaskFragment.pickTypeDialog();
     }
 
 }

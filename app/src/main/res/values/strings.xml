@@ -42,4 +42,15 @@
     <string name="add_importance_type_hint">Not important</string>
     <string name="add_interests_count_hint">One interest added</string>
     <string name="menu_save">save</string>
+
+    <!-- Type pick dialog -->
+    <string name="dialog_ok"><b>OK</b></string>
+    <string name="dialog_cancel"><b>cancel</b></string>
+
+    <string name="todo_type_button">ToDo</string>
+    <string name="work_task_type_button">Work Task</string>
+    <string name="birthday_type_button">Birthday</string>
+    <string name="schedule_type_button">Schedule</string>
+
+    <string name="no_type_selected">No type selected</string>
 </resources>

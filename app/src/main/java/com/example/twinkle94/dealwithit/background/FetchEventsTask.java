@@ -43,15 +43,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 result = addDataToDB(event_type, eventInfoDB, (Event)params[1]);
                 break;
         }
-
-       // addScheduleTask(eventInfoDB);
-      /*  addDataToComment(eventInfoDB);
-        addDataToSubTask(eventInfoDB);
-        addDataToInterest(eventInfoDB);
-        addDataToLocation(eventInfoDB);
-        addDataToNotification(eventInfoDB);
-        addDataToScheduleType(eventInfoDB);*/
-
         return result;
     }
 

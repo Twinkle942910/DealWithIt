@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGreyText54"/>
+
+    <RadioGroup
+        android:id="@+id/type_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="24dp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/birthday_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/colorText87"
+            android:text="@string/birthday_type_button"
+            android:textSize="@dimen/type_dialog_text_size"
+            android:theme="@style/MyRadioButton" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/work_tasks_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/colorText87"
+            android:text="@string/work_task_type_button"
+            android:textSize="@dimen/type_dialog_text_size"
+            android:theme="@style/MyRadioButton" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/todo_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/colorText87"
+            android:text="@string/todo_type_button"
+            android:textSize="@dimen/type_dialog_text_size"
+            android:theme="@style/MyRadioButton" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/schedule_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText87"
+            android:checked="true"
+            android:text="@string/schedule_type_button"
+            android:textSize="@dimen/type_dialog_text_size"
+            android:theme="@style/MyRadioButton" />
+
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGreyText54"/>
+
+</LinearLayout>

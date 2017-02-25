@@ -109,7 +109,7 @@
         <item name="android:maxHeight">5dip</item>
     </style>
 
-    <!--  &lt;!&ndash; Date Picker theme. &ndash;&gt;
+    <!-- DatePicker theme. -->
     <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
@@ -119,12 +119,21 @@
         <item name="android:windowBackground">@drawable/date_dialog_background</item>
     </style>
 
-    &lt;!&ndash; Dialog theme. &ndash;&gt;
+    <!-- Dialog theme. -->
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:textColorPrimary">@color/colorGrey</item>
-        <item name="android:background">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorTitleText</item>
+        <item name="android:background">@color/colorBackground</item>
     </style>
+
+    <style name="MyRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorText87</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="android:paddingRight">@dimen/radio_button_text_padding</item>
+    </style>
+
+    <!--  &lt;!&ndash; Date Picker theme. &ndash;&gt;
+
 
     &lt;!&ndash; Switch theme. &ndash;&gt;
     <style name="MySwitch" parent="Theme.AppCompat.Light">

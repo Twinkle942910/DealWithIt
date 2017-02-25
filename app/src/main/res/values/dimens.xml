@@ -15,4 +15,8 @@
     <dimen name="edit_text_floating_label_size">14sp</dimen>
     <dimen name="edit_text_label_size">16sp</dimen>
 
+    <!-- Dialog Type buttons -->
+    <dimen name="radio_button_text_padding">16dp</dimen>
+    <dimen name="type_dialog_text_size">14sp</dimen>
+
 </resources>

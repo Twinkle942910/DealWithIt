@@ -28,13 +28,21 @@ public class Birthday extends Event
         comments = new ArrayList<>();
     }
 
-    public void addSubTask(Sub_task sub_task)
+    public List<Sub_task> getListSubTasks()
     {
-        subTasks.add(sub_task);
+        return subTasks;
     }
 
-    public void addComment(Comment comment)
+    public List<Comment> getListComments()
     {
-        comments.add(comment);
+        return comments;
+    }
+
+    public void setListComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setListSubTasks(List<Sub_task> subTasks) {
+        this.subTasks = subTasks;
     }
 }

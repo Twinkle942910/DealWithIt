@@ -2,9 +2,14 @@ package com.example.twinkle94.dealwithit.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -63,13 +70,16 @@ public class AddingTaskFragment extends Fragment
     private CheckBox interests_available;
     private RelativeLayout interests_container_layout;
 
+    //Info
+    private TextView task_type_output;
+
     //Data form user.
-    private TextView type;
-    private TextView title;
+    private EditText type;
+    private EditText title;
     //TODO: change to dateTime, maybe?
-    private TextView date;
-    private TextView start_time;
-    private TextView end_time;
+    private EditText date;
+    private EditText start_time;
+    private EditText end_time;
 
     private List<Comment> commentList;
     private List<Sub_task> subTaskList;
@@ -113,6 +123,7 @@ public class AddingTaskFragment extends Fragment
         interests_available = (CheckBox) viewHierarchy.findViewById(R.id.use_interests_checkBox);
         interests_container_layout = (RelativeLayout) viewHierarchy.findViewById(R.id.interests_container_layout);
 
+        initializeOutputTypeView(viewHierarchy);
         initializeInputViews(viewHierarchy);
 
         isCommentsAvailable();
@@ -168,6 +179,76 @@ public class AddingTaskFragment extends Fragment
                   Toast.makeText(activity, "Looooooool!", Toast.LENGTH_LONG).show();
                   break;
           }
+    }
+
+    public void pickTypeDialog()
+    {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity, R.style.AppCompatAlertDialogStyle);
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View dialogView = inflater.inflate(R.layout.dialog_type_choice, null);
+        dialogBuilder.setView(dialogView);
+
+        dialogBuilder.setTitle("Chose type of task");
+
+        RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                switch (checkedId)
+                {
+                    case R.id.birthday_type:
+                        type.setText(EventType.BIRTHDAY.toString());
+                        task_type_output.setText(EventType.BIRTHDAY.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeBirthday));
+                        break;
+
+                    case R.id.work_tasks_type:
+                        type.setText(EventType.WORKTASK.toString());
+                        task_type_output.setText(EventType.WORKTASK.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeWorkTasks));
+                        break;
+
+                    case R.id.todo_type:
+                        type.setText(EventType.TODO.toString());
+                        task_type_output.setText(EventType.TODO.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeToDo));
+                        break;
+
+                    case R.id.schedule_type:
+                        type.setText(EventType.SCHEDULE.toString());
+                        task_type_output.setText(EventType.SCHEDULE.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeSchedule));
+                        break;
+
+                    default:
+                        type.setText(getString(R.string.no_type_selected));
+                        task_type_output.setText(getString(R.string.no_type_selected));
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTitleText));
+                        break;
+                }
+            }
+        });
+
+        dialogBuilder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
+
+            }
+        });
+
+        dialogBuilder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 
     private void addComment()
@@ -266,17 +347,71 @@ public class AddingTaskFragment extends Fragment
         }
     }
 
+    private void initializeOutputTypeView(View viewHierarchy)
+    {
+        task_type_output = (TextView) viewHierarchy.findViewById(R.id.task_type);
+    }
+
     private void initializeInputViews(View viewHierarchy)
     {
-        type = (TextView) viewHierarchy.findViewById(R.id.task_type_input);
-        title = (TextView) viewHierarchy.findViewById(R.id.task_title_input);
-        date = (TextView) viewHierarchy.findViewById(R.id.task_date_input);
-        start_time = (TextView) viewHierarchy.findViewById(R.id.task_start_time_input);
-        end_time = (TextView) viewHierarchy.findViewById(R.id.task_end_time_input);
+        type = (EditText) viewHierarchy.findViewById(R.id.task_type_input);
+        title = (EditText) viewHierarchy.findViewById(R.id.task_title_input);
+        date = (EditText) viewHierarchy.findViewById(R.id.task_date_input);
+        start_time = (EditText) viewHierarchy.findViewById(R.id.task_start_time_input);
+        end_time = (EditText) viewHierarchy.findViewById(R.id.task_end_time_input);
 
         commentList = new ArrayList<>();
         subTaskList = new ArrayList<>();
         interestList = new ArrayList<>();
+
+        type.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                String input_type = (type.getText().toString()).toLowerCase();
+
+                switch(input_type)
+                {
+                    case "todo":
+                        task_type_output.setText(EventType.TODO.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeToDo));
+                        break;
+
+                    case "birthday":
+                        task_type_output.setText(EventType.BIRTHDAY.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeBirthday));
+                        break;
+
+                    case "schedule":
+                        task_type_output.setText(EventType.SCHEDULE.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeSchedule));
+                        break;
+
+                    case "work task":
+                        task_type_output.setText(EventType.WORKTASK.toString());
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeWorkTasks));
+                        break;
+
+                    default:
+                        task_type_output.setText(getString(R.string.no_type_selected));
+                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTitleText));
+                        break;
+                }
+            }
+        });
     }
 
     private void isCommentsAvailable()

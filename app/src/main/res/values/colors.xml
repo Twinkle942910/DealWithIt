@@ -26,5 +26,7 @@
     <color name="colorGreyText10">#1A455A64</color>
 
 
+    <!-- Dialog colors -->
+    <color name="colorBackground">#ffffff</color>
 
 </resources>

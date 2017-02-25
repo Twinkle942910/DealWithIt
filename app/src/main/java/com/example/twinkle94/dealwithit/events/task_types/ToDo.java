@@ -23,16 +23,6 @@ public class ToDo extends Event
         comments = new ArrayList<>();
     }
 
-    public void addSubTask(Sub_task sub_task)
-    {
-        subTasks.add(sub_task);
-    }
-
-    public void addComment(Comment comment)
-    {
-        comments.add(comment);
-    }
-
     public List<Sub_task> getListSubTasks()
     {
         return subTasks;
