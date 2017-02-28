@@ -67,10 +67,9 @@
     </style>
 
 
-
   <!-- Text Input theme. -->
     <style name="StyledTilEditTextFloatingLabel" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorGreyText54</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/edit_text_floating_label_size</item>
     </style>
 
@@ -82,7 +81,7 @@
         <item name="android:imeOptions">actionNext</item>
         <item name="android:singleLine">true</item>
         <item name="colorControlNormal">@color/colorGreyText54</item>
-        <item name="colorControlActivated">@color/colorTitleText</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorTitleText</item>
         <item name="android:textSize">@dimen/edit_text_label_size</item>
     </style>
@@ -91,6 +90,16 @@
         <item name="android:textColor">@color/colorNotificationText</item>
         <item name="android:theme">@style/StyledTilEditTextTheme</item>
         <item name="android:paddingTop">4dp</item>
+    </style>
+
+    <style name="ErrorTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ErrorHintAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:textSize">@dimen/edit_text_floating_label_size</item>
     </style>
 
     <!-- CheckBox theme. -->

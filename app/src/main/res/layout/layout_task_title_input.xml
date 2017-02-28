@@ -9,13 +9,15 @@
     android:gravity="center_vertical">
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/title_input_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="9"
             style="@style/StyledTilEditTextLayout"
+            app:errorTextAppearance="@style/ErrorTextAppearance"
             app:hintTextAppearance="@style/StyledTilEditTextFloatingLabel">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/task_title_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

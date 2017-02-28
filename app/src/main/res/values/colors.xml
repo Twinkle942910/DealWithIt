@@ -29,4 +29,7 @@
     <!-- Dialog colors -->
     <color name="colorBackground">#ffffff</color>
 
+    <!-- Error color -->
+    <color name="colorError">#e72828</color>
+
 </resources>

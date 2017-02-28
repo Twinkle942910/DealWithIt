@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -34,12 +36,15 @@ import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
@@ -47,6 +52,13 @@ import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
 
 public class AddingTaskFragment extends Fragment
 {
+    private String TIME12HOURS_PATTERN;
+    private String TIME24HOURS_PATTERN;
+
+    private boolean TIME_FORMAT = false; //false - 12 hours, true - 24 hours.
+
+    private String DATE_PATTERN;
+
     private Activity activity;
 
     //Comments
@@ -77,16 +89,19 @@ public class AddingTaskFragment extends Fragment
     private TextView task_type_output;
 
     //Data form user.
-    private EditText type;
-    private EditText title;
+    private TextInputEditText type;
+    private TextInputEditText title;
     //TODO: change to dateTime, maybe?
-    private EditText date;
-    private EditText start_time;
-    private EditText end_time;
+    private TextInputEditText date;
+    private TextInputEditText start_time;
+    private TextInputEditText end_time;
 
     private List<Comment> commentList;
     private List<Sub_task> subTaskList;
     private List<Interest> interestList;
+
+    //Transfer data
+    private String task_type;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -100,6 +115,13 @@ public class AddingTaskFragment extends Fragment
     {
         super.onAttach(context);
         this.activity = (Activity) context;
+
+        TIME12HOURS_PATTERN = getString(R.string.format_time_12h);
+        TIME24HOURS_PATTERN = getString(R.string.format_time_24h);
+
+        TIME_FORMAT = DateFormat.is24HourFormat(getActivity());
+
+        DATE_PATTERN = getString(R.string.format_date);
     }
 
     @Nullable
@@ -128,6 +150,7 @@ public class AddingTaskFragment extends Fragment
 
         initializeOutputTypeView(viewHierarchy);
         initializeInputViews(viewHierarchy);
+        initializeValidators(viewHierarchy);
 
         isCommentsAvailable();
         isSubTasksAvailable();
@@ -193,7 +216,7 @@ public class AddingTaskFragment extends Fragment
 
         dialogBuilder.setTitle("Chose type of task");
 
-        RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
+        final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -203,33 +226,23 @@ public class AddingTaskFragment extends Fragment
                 switch (checkedId)
                 {
                     case R.id.birthday_type:
-                        type.setText(EventType.BIRTHDAY.toString());
-                        task_type_output.setText(EventType.BIRTHDAY.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeBirthday));
+                        task_type = EventType.BIRTHDAY.toString();
                         break;
 
                     case R.id.work_tasks_type:
-                        type.setText(EventType.WORKTASK.toString());
-                        task_type_output.setText(EventType.WORKTASK.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeWorkTasks));
+                        task_type = EventType.WORKTASK.toString();
                         break;
 
                     case R.id.todo_type:
-                        type.setText(EventType.TODO.toString());
-                        task_type_output.setText(EventType.TODO.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeToDo));
+                        task_type = EventType.TODO.toString();
                         break;
 
                     case R.id.schedule_type:
-                        type.setText(EventType.SCHEDULE.toString());
-                        task_type_output.setText(EventType.SCHEDULE.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeSchedule));
+                        task_type = EventType.SCHEDULE.toString();
                         break;
 
                     default:
-                        type.setText(getString(R.string.no_type_selected));
-                        task_type_output.setText(getString(R.string.no_type_selected));
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTitleText));
+                        task_type = EventType.NO_TYPE.toString();
                         break;
                 }
             }
@@ -239,7 +252,16 @@ public class AddingTaskFragment extends Fragment
         {
             public void onClick(DialogInterface dialog, int whichButton)
             {
-
+                if(radioGroup.getCheckedRadioButtonId() >= 0)
+                {
+                    type.setText(task_type);
+                    task_type_output.setText(task_type);
+                    task_type_output.setTextColor(ContextCompat.getColor(activity, EventType.getColor(task_type)));
+                }
+                else
+                {
+                    ((RadioButton)(radioGroup.findViewById(R.id.schedule_type))).setError("You didn't chose anything!");
+                }
             }
         });
 
@@ -247,7 +269,7 @@ public class AddingTaskFragment extends Fragment
         {
             public void onClick(DialogInterface dialog, int whichButton)
             {
-
+                dialog.dismiss();
             }
         });
 
@@ -264,10 +286,14 @@ public class AddingTaskFragment extends Fragment
         {
             myFormatTime = "hh:mm a";
         }
-        else  myFormatTime = "kk:mm";
+        else
+        {
+            myFormatTime = "kk:mm";
+        }
 
         SimpleDateFormat stf = new SimpleDateFormat(myFormatTime, Locale.US);
 
+        //TODO: when it's 00:12 or something, picker returns 24 hours.
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
 
@@ -389,64 +415,226 @@ public class AddingTaskFragment extends Fragment
 
     private void initializeInputViews(View viewHierarchy)
     {
-        type = (EditText) viewHierarchy.findViewById(R.id.task_type_input);
-        title = (EditText) viewHierarchy.findViewById(R.id.task_title_input);
-        date = (EditText) viewHierarchy.findViewById(R.id.task_date_input);
-        start_time = (EditText) viewHierarchy.findViewById(R.id.task_start_time_input);
-        end_time = (EditText) viewHierarchy.findViewById(R.id.task_end_time_input);
+        type = (TextInputEditText) viewHierarchy.findViewById(R.id.task_type_input);
+        title = (TextInputEditText) viewHierarchy.findViewById(R.id.task_title_input);
+        date = (TextInputEditText) viewHierarchy.findViewById(R.id.task_date_input);
+        start_time = (TextInputEditText) viewHierarchy.findViewById(R.id.task_start_time_input);
+        end_time = (TextInputEditText) viewHierarchy.findViewById(R.id.task_end_time_input);
 
         commentList = new ArrayList<>();
         subTaskList = new ArrayList<>();
         interestList = new ArrayList<>();
+    }
 
-        type.addTextChangedListener(new TextWatcher()
+    private void initializeValidators(View viewHierarchy)
+    {
+        final TextInputLayout title_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.title_input_layout);
+        final TextInputLayout task_type_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.task_type_input_layout);
+        final TextInputLayout start_time_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.start_time_input_layout);
+        final TextInputLayout end_time_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.end_time_input_layout);
+        final TextInputLayout date_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.date_input_layout);
+
+        title.addTextChangedListener(new TextValidator(title)
         {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            public void validate(TextView textView, String text)
             {
-
+                checkIfTextEmpty(title, title_layout);
             }
+        });
 
+        title.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            public void onFocusChange(View view, boolean b)
             {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                String input_type = (type.getText().toString()).toLowerCase();
-
-                switch(input_type)
+                if (!b)
                 {
-                    case "todo":
-                        task_type_output.setText(EventType.TODO.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeToDo));
-                        break;
-
-                    case "birthday":
-                        task_type_output.setText(EventType.BIRTHDAY.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeBirthday));
-                        break;
-
-                    case "schedule":
-                        task_type_output.setText(EventType.SCHEDULE.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeSchedule));
-                        break;
-
-                    case "work task":
-                        task_type_output.setText(EventType.WORKTASK.toString());
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTypeWorkTasks));
-                        break;
-
-                    default:
-                        task_type_output.setText(getString(R.string.no_type_selected));
-                        task_type_output.setTextColor(ContextCompat.getColor(activity, R.color.colorTitleText));
-                        break;
+                    checkIfTextEmpty(title, title_layout);
                 }
             }
         });
+
+        type.addTextChangedListener(new TextValidator(type)
+        {
+            @Override
+            public void validate(TextView textView, String text)
+            {
+                String input_type = (text.toLowerCase());
+
+                //TODO: Change to for() and enum values!
+                String[] types = {EventType.TODO.toString(),
+                        EventType.BIRTHDAY.toString(),
+                        EventType.WORKTASK.toString(),
+                        EventType.SCHEDULE.toString(),
+                        EventType.NO_TYPE.toString()};
+
+                String output_type = "";
+                int output_type_color = 0;
+
+                for (int i = 0; i < types.length; i++)
+                {
+                    String type_low_case = types[i].toLowerCase();
+
+                    if (input_type.equals(type_low_case))
+                    {
+                        task_type_layout.setErrorEnabled(false);
+                        task_type_layout.setError(null);
+                        output_type = types[i];
+                        output_type_color = EventType.getColor(output_type);
+                        break;
+                    }
+                    if (i == types.length - 1)
+                    {
+                        output_type = types[4];
+                        output_type_color = EventType.getColor(output_type);
+                        task_type_layout.setError(getString(R.string.type_error));
+                    }
+                }
+
+                task_type_output.setText(output_type);
+                task_type_output.setTextColor(ContextCompat.getColor(activity, output_type_color));
+            }
+        });
+
+        type.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                if (!b)
+                {
+                    checkIfTextEmpty(type, task_type_layout);
+                }
+            }
+        });
+
+        start_time.addTextChangedListener(new TextValidator(start_time)
+        {
+            @Override
+            public void validate(TextView textView, String text)
+            {
+                checkInput(text, start_time_layout);
+            }
+        });
+
+        start_time.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                if (!b)
+                {
+                    checkIfTextEmpty(start_time, start_time_layout);
+                }
+            }
+        });
+
+        end_time.addTextChangedListener(new TextValidator(end_time)
+        {
+            @Override
+            public void validate(TextView textView, String text)
+            {
+                checkInput(text, end_time_layout);
+            }
+        });
+
+        end_time.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                if (!b)
+                {
+                    checkIfTextEmpty(end_time, end_time_layout);
+                }
+            }
+        });
+
+        date.addTextChangedListener(new TextValidator(date)
+        {
+            @Override
+            public void validate(TextView textView, String text)
+            {
+                Pattern pattern = Pattern.compile(DATE_PATTERN);
+                Matcher matcher = pattern.matcher(text);
+
+                String errorMessage = getString(R.string.date_input_error);
+
+                if (matcher.matches())
+                {
+                    //TODO: you should get your date to DB here.
+
+                    date_layout.setError(null);
+                    date_layout.setErrorEnabled(false);
+                } else {
+                    date_layout.setError(errorMessage);
+                }
+
+            }
+        });
+
+        date.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                if (!b)
+                {
+                    checkIfTextEmpty(date, date_layout);
+                }
+            }
+        });
+
+    }
+
+    private void checkIfTextEmpty(TextInputEditText textInput, TextInputLayout textInputLayout)
+    {
+        if (TextUtils.isEmpty(textInput.getText()))
+        {
+            textInputLayout.setError(getString(R.string.empty_error));
+        }
+        else
+        {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setError(null);
+        }
+    }
+
+    private void checkInput(String text, TextInputLayout time_input_layout)
+    {
+        Pattern pattern;
+        Matcher matcher = null;
+
+        String errorMessage;
+
+        if(!TIME_FORMAT)
+        {
+            pattern = Pattern.compile(TIME12HOURS_PATTERN);
+            errorMessage = getString(R.string.time_input_error_12);
+        }
+        else
+        {
+            pattern = Pattern.compile(TIME24HOURS_PATTERN);
+            errorMessage = getString(R.string.time_input_error_24);
+        }
+
+        if(pattern != null) matcher = pattern.matcher(text);
+
+        if (matcher != null)
+        {
+            if(matcher.matches())
+            {
+                //TODO: you should get your time to DB here.
+
+                time_input_layout.setError(null);
+                time_input_layout.setErrorEnabled(false);
+            }
+            else
+            {
+                time_input_layout.setError(errorMessage);
+            }
+        }
     }
 
     private void isCommentsAvailable()
