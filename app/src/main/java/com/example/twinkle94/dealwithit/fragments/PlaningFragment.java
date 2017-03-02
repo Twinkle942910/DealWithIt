@@ -11,7 +11,7 @@ import com.example.twinkle94.dealwithit.R;
 public class PlaningFragment extends AbstractTabFragment
 {
     public static final String PLANING_PAGE = "PLANING_PAGE";
-    public static final int LAYOUT = R.layout.fragment_planing;
+    private static final int LAYOUT = R.layout.fragment_planing;
 
     
     public static PlaningFragment newInstance(int page, Context context)

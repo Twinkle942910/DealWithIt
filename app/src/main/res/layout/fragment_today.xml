@@ -16,6 +16,7 @@
         android:text="Monday, January 5"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:layout_width="wrap_content"
         android:textSize="20sp"
         android:layout_height="48dp"
@@ -26,7 +27,6 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_today_page_date"
             android:id="@+id/date_icon" />

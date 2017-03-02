@@ -18,7 +18,6 @@ import android.view.View;
 
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.util.Constants;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.setDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
@@ -233,13 +232,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initTabIcons()
     {
-        TabLayout.Tab tabShedules = tabLayout.getTabAt(Constants.TAB_ONE);
+        TabLayout.Tab tabSchedules = tabLayout.getTabAt(Constants.TAB_ONE);
         TabLayout.Tab tabLinks = tabLayout.getTabAt(Constants.TAB_TWO);
         TabLayout.Tab tabPlaning = tabLayout.getTabAt(Constants.TAB_THREE);
 
-        if (tabShedules != null)
+        if (tabSchedules != null)
         {
-            tabShedules.setIcon(Constants.TAB_ONE_ICON);
+            tabSchedules.setIcon(Constants.TAB_ONE_ICON);
         }
 
         if (tabLinks != null)

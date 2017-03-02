@@ -26,7 +26,7 @@ public class TodayTaskAdapter extends ArrayAdapter
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_LIST = 1;
 
-    private List<Item> list_of_tasks = new ArrayList<Item>();
+    private List<Item> list_of_tasks = new ArrayList<>();
 
     public TodayTaskAdapter(Context context, int resource)
     {

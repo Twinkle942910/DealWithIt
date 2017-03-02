@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,7 @@ import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
@@ -43,8 +45,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
@@ -52,12 +52,8 @@ import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
 
 public class AddingTaskFragment extends Fragment
 {
-    private String TIME12HOURS_PATTERN;
-    private String TIME24HOURS_PATTERN;
-
-    private boolean TIME_FORMAT = false; //false - 12 hours, true - 24 hours.
-
-    private String DATE_PATTERN;
+    private static final String NAME = AddingTaskFragment.class.getSimpleName();
+    private static final int LAYOUT = R.layout.fragment_new_task_type;
 
     private Activity activity;
 
@@ -115,20 +111,15 @@ public class AddingTaskFragment extends Fragment
     {
         super.onAttach(context);
         this.activity = (Activity) context;
-
-        TIME12HOURS_PATTERN = getString(R.string.format_time_12h);
-        TIME24HOURS_PATTERN = getString(R.string.format_time_24h);
-
-        TIME_FORMAT = DateFormat.is24HourFormat(getActivity());
-
-        DATE_PATTERN = getString(R.string.format_date);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View viewHierarchy = inflater.inflate(R.layout.fragment_new_task_type, container, false);
+        Log.i(NAME, "onCreateView1");
+
+        View viewHierarchy = inflater.inflate(LAYOUT, container, false);
 
         comments_available = (CheckBox) viewHierarchy.findViewById(R.id.use_comment_checkBox);
         comment_container_layout = (LinearLayout)viewHierarchy.findViewById(R.id.comment_container_layout);
@@ -152,14 +143,17 @@ public class AddingTaskFragment extends Fragment
         initializeInputViews(viewHierarchy);
         initializeValidators(viewHierarchy);
 
-        isCommentsAvailable();
-        isSubTasksAvailable();
-        isImportanceAvailable();
-        isInterestsAvailable();
+        isComponentAvailable(comments_available, comment_container_layout);
+        isComponentAvailable(sub_tasks_available, sub_task_container_layout);
+        isComponentAvailable(importance_available, importance_container_layout);
+        isComponentAvailable(interests_available, interests_container_layout);
 
         setImportanceBar();
 
+        Log.i(NAME, "onCreateView2");
+
         return viewHierarchy;
+
     }
 
     @Override
@@ -434,6 +428,8 @@ public class AddingTaskFragment extends Fragment
         final TextInputLayout end_time_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.end_time_input_layout);
         final TextInputLayout date_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.date_input_layout);
 
+        final DateTimeValidator dateTimeValidator = new DateTimeValidator(activity, DateFormat.is24HourFormat(activity));
+
         title.addTextChangedListener(new TextValidator(title)
         {
             @Override
@@ -460,40 +456,7 @@ public class AddingTaskFragment extends Fragment
             @Override
             public void validate(TextView textView, String text)
             {
-                String input_type = (text.toLowerCase());
-
-                //TODO: Change to for() and enum values!
-                String[] types = {EventType.TODO.toString(),
-                        EventType.BIRTHDAY.toString(),
-                        EventType.WORKTASK.toString(),
-                        EventType.SCHEDULE.toString(),
-                        EventType.NO_TYPE.toString()};
-
-                String output_type = "";
-                int output_type_color = 0;
-
-                for (int i = 0; i < types.length; i++)
-                {
-                    String type_low_case = types[i].toLowerCase();
-
-                    if (input_type.equals(type_low_case))
-                    {
-                        task_type_layout.setErrorEnabled(false);
-                        task_type_layout.setError(null);
-                        output_type = types[i];
-                        output_type_color = EventType.getColor(output_type);
-                        break;
-                    }
-                    if (i == types.length - 1)
-                    {
-                        output_type = types[4];
-                        output_type_color = EventType.getColor(output_type);
-                        task_type_layout.setError(getString(R.string.type_error));
-                    }
-                }
-
-                task_type_output.setText(output_type);
-                task_type_output.setTextColor(ContextCompat.getColor(activity, output_type_color));
+                checkTypeInput(text, task_type_layout);
             }
         });
 
@@ -504,7 +467,8 @@ public class AddingTaskFragment extends Fragment
             {
                 if (!b)
                 {
-                    checkIfTextEmpty(type, task_type_layout);
+                    if(checkIfTextEmpty(type)) task_type_layout.setError(getString(R.string.empty_error));
+                    else checkIfTextEmpty(type, task_type_layout);
                 }
             }
         });
@@ -514,7 +478,7 @@ public class AddingTaskFragment extends Fragment
             @Override
             public void validate(TextView textView, String text)
             {
-                checkInput(text, start_time_layout);
+                checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
             }
         });
 
@@ -525,7 +489,8 @@ public class AddingTaskFragment extends Fragment
             {
                 if (!b)
                 {
-                    checkIfTextEmpty(start_time, start_time_layout);
+                    if(checkIfTextEmpty(start_time)) start_time_layout.setError(getString(R.string.empty_error));
+                    else checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(start_time.getText().toString()), dateTimeValidator.timeErrorMessage());
                 }
             }
         });
@@ -535,7 +500,7 @@ public class AddingTaskFragment extends Fragment
             @Override
             public void validate(TextView textView, String text)
             {
-                checkInput(text, end_time_layout);
+                checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
             }
         });
 
@@ -546,7 +511,8 @@ public class AddingTaskFragment extends Fragment
             {
                 if (!b)
                 {
-                    checkIfTextEmpty(end_time, end_time_layout);
+                    if(checkIfTextEmpty(end_time)) end_time_layout.setError(getString(R.string.empty_error));
+                    else  checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(end_time.getText().toString()), dateTimeValidator.timeErrorMessage());
                 }
             }
         });
@@ -556,21 +522,7 @@ public class AddingTaskFragment extends Fragment
             @Override
             public void validate(TextView textView, String text)
             {
-                Pattern pattern = Pattern.compile(DATE_PATTERN);
-                Matcher matcher = pattern.matcher(text);
-
-                String errorMessage = getString(R.string.date_input_error);
-
-                if (matcher.matches())
-                {
-                    //TODO: you should get your date to DB here.
-
-                    date_layout.setError(null);
-                    date_layout.setErrorEnabled(false);
-                } else {
-                    date_layout.setError(errorMessage);
-                }
-
+                checkTimeDateInput(date_layout, dateTimeValidator.validateDate(text), dateTimeValidator.dateErrorMessage());
             }
         });
 
@@ -581,7 +533,8 @@ public class AddingTaskFragment extends Fragment
             {
                 if (!b)
                 {
-                    checkIfTextEmpty(date, date_layout);
+                    if(checkIfTextEmpty(date)) date_layout.setError(getString(R.string.empty_error));
+                    else checkTimeDateInput(date_layout, dateTimeValidator.validateDate(date.getText().toString()), dateTimeValidator.dateErrorMessage());
                 }
             }
         });
@@ -601,106 +554,73 @@ public class AddingTaskFragment extends Fragment
         }
     }
 
-    private void checkInput(String text, TextInputLayout time_input_layout)
+    private boolean checkIfTextEmpty(TextInputEditText textInput)
     {
-        Pattern pattern;
-        Matcher matcher = null;
+        return TextUtils.isEmpty(textInput.getText());
+    }
 
-        String errorMessage;
+    //TODO: Make it simpler(refactor).
+    private void checkTypeInput(String text, TextInputLayout task_type_layout)
+    {
+        String output_type = "";
+        int output_type_color = 0;
 
-        if(!TIME_FORMAT)
+        for (EventType type : EventType.values())
         {
-            pattern = Pattern.compile(TIME12HOURS_PATTERN);
-            errorMessage = getString(R.string.time_input_error_12);
-        }
-        else
-        {
-            pattern = Pattern.compile(TIME24HOURS_PATTERN);
-            errorMessage = getString(R.string.time_input_error_24);
-        }
-
-        if(pattern != null) matcher = pattern.matcher(text);
-
-        if (matcher != null)
-        {
-            if(matcher.matches())
+            if (text.toLowerCase().equals(type.toString().toLowerCase()))
             {
-                //TODO: you should get your time to DB here.
+                task_type_layout.setErrorEnabled(false);
+                task_type_layout.setError(null);
 
-                time_input_layout.setError(null);
-                time_input_layout.setErrorEnabled(false);
+                output_type = type.toString();
+                output_type_color = EventType.getColor(output_type);
+                break;
             }
             else
             {
-                time_input_layout.setError(errorMessage);
+                task_type_layout.setError(getString(R.string.type_error));
+
+                output_type = EventType.NO_TYPE.toString();
+                output_type_color = EventType.getColor(output_type);
             }
+        }
+
+        task_type_output.setText(output_type);
+        task_type_output.setTextColor(ContextCompat.getColor(activity, output_type_color));
+    }
+
+    private void checkTimeDateInput(TextInputLayout time_input_layout, boolean validation, final String errorMessage)
+    {
+        if(validation)
+        {
+                //TODO: you should get your time/date to DB from here.
+
+                time_input_layout.setError(null);
+                time_input_layout.setErrorEnabled(false);
+        }
+        else
+        {
+                time_input_layout.setError(errorMessage);
         }
     }
 
-    private void isCommentsAvailable()
+    private void isComponentAvailable(CheckBox checkBox, final ViewGroup view)
     {
-        comments_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
             {
                 if(b)
                 {
-                    comment_container_layout.setVisibility(View.VISIBLE);
+                    view.setVisibility(View.VISIBLE);
                 }
-                else comment_container_layout.setVisibility(View.GONE);
+                else view.setVisibility(View.GONE);
             }
         });
     }
 
-    private void isSubTasksAvailable()
-    {
-        sub_tasks_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                if(b)
-                {
-                    sub_task_container_layout.setVisibility(View.VISIBLE);
-                }
-                else sub_task_container_layout.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void isImportanceAvailable()
-    {
-        importance_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                if(b)
-                {
-                    importance_container_layout.setVisibility(View.VISIBLE);
-                }
-                else importance_container_layout.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void isInterestsAvailable()
-    {
-        interests_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                if(b)
-                {
-                    interests_container_layout.setVisibility(View.VISIBLE);
-                }
-                else interests_container_layout.setVisibility(View.GONE);
-            }
-        });
-    }
-
+    //TODO: Make interface or abstract class, to hide this 3 methods.
     private void setImportanceBar()
     {
         importance_value = 0;

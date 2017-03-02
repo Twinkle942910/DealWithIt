@@ -22,7 +22,7 @@ import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 public class TodayFragment extends AbstractTabFragment
 {
     public static final String TODAY_PAGE = "TODAY_PAGE";
-    public static final int LAYOUT = R.layout.fragment_today;
+    private static final int LAYOUT = R.layout.fragment_today;
 
     private ListView task_list;
 

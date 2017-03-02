@@ -36,6 +36,6 @@
             android:layout_weight="1"
             android:paddingTop="12dp"
             app:srcCompat="@drawable/ic_input_title"
-            android:id="@+id/imageView" />
+            android:id="@+id/task_title_image" />
 
 </LinearLayout>

@@ -20,6 +20,7 @@
            android:layout_height="wrap_content"
            android:layout_weight="8"
            android:paddingLeft="16dp"
+           android:paddingRight="16dp"
            style="@style/TextRobotoRegular"
            android:textSize="20sp"
            android:text="@string/task_comment_hint"
@@ -30,6 +31,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_input_comment"
-            android:id="@+id/imageView" />
+            android:id="@+id/comment_image" />
 
 </LinearLayout>

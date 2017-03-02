@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/task_end_time_hint"
                 android:inputType="text"
+                android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:textSize="24sp"
                 android:maxLength="38"
@@ -38,6 +39,6 @@
             android:layout_weight="1"
             android:paddingTop="12dp"
             app:srcCompat="@drawable/ic_input_end_time"
-            android:id="@+id/imageView" />
+            android:id="@+id/task_end_time_image" />
 
 </LinearLayout>

@@ -39,6 +39,6 @@
             android:layout_weight="1"
             android:paddingTop="12dp"
             app:srcCompat="@drawable/ic_input_start_time"
-            android:id="@+id/imageView" />
+            android:id="@+id/task_start_time_image" />
 
 </LinearLayout>

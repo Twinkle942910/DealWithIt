@@ -129,7 +129,7 @@ public abstract class Event implements Item
         }
     }
 
-    public int getInterestsAvarage()
+    public int getInterestsAverage()
     {
         return interests;
     }

@@ -10,6 +10,7 @@
         android:text="Schedule"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         style="@style/TextRobotoMedium"
         android:layout_width="match_parent"
         android:textSize="16sp"

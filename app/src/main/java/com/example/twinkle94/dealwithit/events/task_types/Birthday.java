@@ -2,7 +2,6 @@ package com.example.twinkle94.dealwithit.events.task_types;
 
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.Location;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;

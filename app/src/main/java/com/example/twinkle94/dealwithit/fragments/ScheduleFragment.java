@@ -11,7 +11,7 @@ import com.example.twinkle94.dealwithit.R;
 public class ScheduleFragment extends AbstractTabFragment
 {
     public static final String SCHEDULE_PAGE = "SCHEDULE_PAGE";
-    public static final int LAYOUT = R.layout.fragment_schedule;
+    private static final int LAYOUT = R.layout.fragment_schedule;
 
     
     public static ScheduleFragment newInstance(int page, Context context)
