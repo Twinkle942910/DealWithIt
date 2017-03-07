@@ -22,12 +22,14 @@
 
     <EditText
         android:id="@+id/sub_item_content"
+        android:layout_gravity="center_vertical"
+        style="@style/WithoutLineStyleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="10"
-        android:text="Input comment here"
-        style="@style/StyledTilEditText"
-        android:inputType="text" />
+        android:background="@android:color/transparent"
+        android:inputType="text"
+        android:text="Input comment here" />
 
     <ImageView
         android:layout_width="0dp"

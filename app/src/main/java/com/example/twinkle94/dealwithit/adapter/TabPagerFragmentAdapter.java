@@ -17,13 +17,10 @@ import java.util.List;
 public class TabPagerFragmentAdapter extends FragmentPagerAdapter
 {
     private List<AbstractTabFragment> tabs;
-    private Context context;
 
     public TabPagerFragmentAdapter(FragmentManager fm, Context context)
     {
         super(fm);
-        this.context = context;
-
         initTansMap(context);
     }
 

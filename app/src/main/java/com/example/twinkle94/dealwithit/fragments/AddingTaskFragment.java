@@ -1,8 +1,8 @@
 package com.example.twinkle94.dealwithit.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -10,6 +10,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Interest;
@@ -50,47 +52,24 @@ import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
 
-public class AddingTaskFragment extends Fragment
+public class AddingTaskFragment extends Fragment implements CompoundButton.OnCheckedChangeListener
 {
     private static final String NAME = AddingTaskFragment.class.getSimpleName();
     private static final int LAYOUT = R.layout.fragment_new_task_type;
 
-    private Activity activity;
+    private NewTaskActivity activity;
 
-    //Comments
-    private CheckBox comments_available;
-    private LinearLayout comment_container_layout;
-    private LinearLayout comment_layout;
+    private LinearLayout comment_container_ly;
+    private LinearLayout sub_task_container_ly;
 
-    //SubTasks
-    private CheckBox sub_tasks_available;
-    private LinearLayout sub_task_container_layout;
-    private LinearLayout sub_task_layout;
-
-    //Importance
-    private CheckBox importance_available;
-    private LinearLayout importance_container_layout;
-
-    private SeekBar importance_setting;
-    private TextView importance_percent;
-    private TextView importance_type;
-
-    private int importance_value;
-
-    //Interests
-    private CheckBox interests_available;
-    private RelativeLayout interests_container_layout;
-
-    //Info
-    private TextView task_type_output;
+    private TextView task_type_output_tv;
 
     //Data form user.
-    private TextInputEditText type;
-    private TextInputEditText title;
-    //TODO: change to dateTime, maybe?
-    private TextInputEditText date;
-    private TextInputEditText start_time;
-    private TextInputEditText end_time;
+    private TextInputEditText type_iet;
+    private TextInputEditText title_iet;
+    private TextInputEditText date_iet;
+    private TextInputEditText start_time_iet;
+    private TextInputEditText end_time_iet;
 
     private List<Comment> commentList;
     private List<Sub_task> subTaskList;
@@ -98,62 +77,93 @@ public class AddingTaskFragment extends Fragment
 
     //Transfer data
     private String task_type;
+    private int importance_value;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Log.i(NAME, "onCreate");
     }
 
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        this.activity = (Activity) context;
+        this.activity = (NewTaskActivity) context;
+        Log.i(NAME, "onAttach");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        Log.i(NAME, "onCreateView1");
+        Log.i(NAME, "onCreateView");
 
-        View viewHierarchy = inflater.inflate(LAYOUT, container, false);
+        final View viewHierarchy = inflater.inflate(LAYOUT, container, false);
 
-        comments_available = (CheckBox) viewHierarchy.findViewById(R.id.use_comment_checkBox);
-        comment_container_layout = (LinearLayout)viewHierarchy.findViewById(R.id.comment_container_layout);
-        comment_layout = (LinearLayout)viewHierarchy.findViewById(R.id.comment_container);
+        comment_container_ly = (LinearLayout)viewHierarchy.findViewById(R.id.comment_container);
+        sub_task_container_ly = (LinearLayout)viewHierarchy.findViewById(R.id.sub_tasks_container);
 
-        sub_tasks_available = (CheckBox) viewHierarchy.findViewById(R.id.use_sub_tasks_checkBox);
-        sub_task_container_layout = (LinearLayout)viewHierarchy.findViewById(R.id.sub_task_container_layout);
-        sub_task_layout = (LinearLayout)viewHierarchy.findViewById(R.id.sub_tasks_container);
+        final SwitchCompat additional_task_info_sw = (SwitchCompat) viewHierarchy.findViewById(R.id.additional_task_available);
+        additional_task_info_sw.setOnCheckedChangeListener(this);
 
-        importance_available = (CheckBox) viewHierarchy.findViewById(R.id.use_importance_checkBox);
-        importance_container_layout = (LinearLayout)viewHierarchy.findViewById(R.id.importance_container_layout);
-
-        importance_setting = (SeekBar) viewHierarchy.findViewById(R.id.importance);
-        importance_percent = (TextView) viewHierarchy.findViewById(R.id.importance_percent_value);
-        importance_type = (TextView) viewHierarchy.findViewById(R.id.importance_type);
-
-        interests_available = (CheckBox) viewHierarchy.findViewById(R.id.use_interests_checkBox);
-        interests_container_layout = (RelativeLayout) viewHierarchy.findViewById(R.id.interests_container_layout);
-
-        initializeOutputTypeView(viewHierarchy);
         initializeInputViews(viewHierarchy);
+        initializeOutputTypeView(viewHierarchy);
         initializeValidators(viewHierarchy);
 
-        isComponentAvailable(comments_available, comment_container_layout);
-        isComponentAvailable(sub_tasks_available, sub_task_container_layout);
-        isComponentAvailable(importance_available, importance_container_layout);
-        isComponentAvailable(interests_available, interests_container_layout);
-
-        setImportanceBar();
-
-        Log.i(NAME, "onCreateView2");
-
         return viewHierarchy;
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        Log.i(NAME, "onActivityCreated");
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Log.i(NAME, "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(NAME, "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(NAME, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(NAME, "onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(NAME, "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(NAME, "onDetach");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(NAME, "onDestroyView");
     }
 
     @Override
@@ -185,20 +195,175 @@ public class AddingTaskFragment extends Fragment
           switch (view.getId())
           {
               case button_add_comment:
-                  addItemView(comment_layout);
-                //  addComment();
+                  addItemView(comment_container_ly);
+                //  addComments();
                   break;
 
               case button_add_sub_task:
-                  addItemView(sub_task_layout);
-                 // addSubTask();
+                  addItemView(sub_task_container_ly);
+                 // addSubTasks();
                   break;
 
               case button_add_interest:
-                 // addInterest();
+                 // addInterests();
                   Toast.makeText(activity, "Looooooool!", Toast.LENGTH_LONG).show();
                   break;
           }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+    {
+        final View fragmentView = getView();
+        final int[] container_layouts = {R.id.comment_layout, R.id.sub_task_layout, R.id.importance_layout, R.id.interests_layout};
+
+        if(fragmentView != null)
+        {
+            switch (compoundButton.getId())
+            {
+                case R.id.use_comment_checkBox:
+                    setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[0])));
+                    break;
+
+                case R.id.use_sub_tasks_checkBox:
+                    setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[1])));
+                    break;
+
+                case R.id.use_importance_checkBox:
+                    setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[2])));
+                    break;
+
+                case R.id.use_interests_checkBox:
+                    setLayoutVisibility(b, ((RelativeLayout)fragmentView.findViewById(container_layouts[3])));
+                    break;
+
+                case R.id.additional_task_available:
+                    final int[] check_buttons = {R.id.comment_check, R.id.sub_tasks_check, R.id.importance_check, R.id.interests_check};
+
+                    setButtonOff(b, check_buttons, fragmentView);
+                    setButtonVisibility(b, check_buttons, fragmentView);
+                    checkContainerLayoutVisibility(b, container_layouts, fragmentView);
+                    setCheckListeners(b, fragmentView);
+                    setImportanceBar(b);
+                    initAdditionalInfoLists();
+                    break;
+            }
+        }
+    }
+
+    private void setButtonVisibility(boolean isChecked, int[] resource_array, View fragmentView)
+    {
+        for(int check_button : resource_array)
+        {
+            if (isChecked) fragmentView.findViewById(check_button).setVisibility(View.VISIBLE);
+            else fragmentView.findViewById(check_button).setVisibility(View.GONE);
+        }
+    }
+
+    private void setLayoutVisibility(boolean checked, ViewGroup layout)
+    {
+        if(checked) layout.setVisibility(View.VISIBLE);
+        else layout.setVisibility(View.GONE);
+    }
+
+    private void checkContainerLayoutVisibility(boolean checked, int[] layouts, View fragmentView)
+    {
+        int container_layout_element = 1;
+        int layout_position = 0;
+
+        for (int container_layout : layouts)
+        {
+            if (!checked)
+            {
+                fragmentView.findViewById(container_layout).setVisibility(View.VISIBLE);
+            }
+
+            if(!(layout_position == layouts.length - 1 || layout_position == layouts.length - 2))
+            {
+                final ViewGroup layout = (ViewGroup) ((ViewGroup) fragmentView.findViewById(container_layout)).getChildAt(container_layout_element);
+                if (layout.getChildCount() != 0) layout.removeAllViews();
+            }
+
+            fragmentView.findViewById(container_layout).findViewById(container_layout).setVisibility(View.GONE);
+
+            layout_position++;
+        }
+    }
+
+    private void setButtonOff(boolean checked, int[] buttons, View fragmentView)
+    {
+        int check_button_element = 0;
+        if (!checked)
+        {
+            for (int check_button : buttons)
+            {
+                CheckBox check = (CheckBox) ((LinearLayout) fragmentView.findViewById(check_button)).getChildAt(check_button_element);
+                if(check.isChecked()) check.setChecked(false);
+            }
+        }
+    }
+
+    private void setCheckListeners(boolean b, View fragmentView)
+    {
+        final CheckBox check_comment = ((CheckBox) fragmentView.findViewById(R.id.use_comment_checkBox));
+        final CheckBox check_sub_task = ((CheckBox) fragmentView.findViewById(R.id.use_sub_tasks_checkBox));
+        final CheckBox check_importance = ((CheckBox) fragmentView.findViewById(R.id.use_importance_checkBox));
+        final CheckBox check_interest = ((CheckBox) fragmentView.findViewById(R.id.use_interests_checkBox));
+
+        if (b)
+        {
+            check_comment.setOnCheckedChangeListener(this);
+            check_sub_task.setOnCheckedChangeListener(this);
+            check_importance.setOnCheckedChangeListener(this);
+            check_interest.setOnCheckedChangeListener(this);
+        } else {
+            check_comment.removeOnLayoutChangeListener(null);
+            check_sub_task.setOnCheckedChangeListener(null);
+            check_importance.setOnCheckedChangeListener(null);
+            check_interest.setOnCheckedChangeListener(null);
+        }
+    }
+
+    private void setImportanceBar(boolean checked)
+    {
+        importance_value = 0;
+
+        final View fragmentView = getView();
+
+        if(fragmentView != null)
+        {
+            final SeekBar importance_setting = (SeekBar) fragmentView.findViewById(R.id.importance);
+            final TextView importance_percent_tv = (TextView) fragmentView.findViewById(R.id.importance_percent_value);
+            final TextView importance_type_tv = (TextView) fragmentView.findViewById(R.id.importance_type);
+
+            if(checked)
+            {
+                importance_setting.setOnSeekBarChangeListener(new ProgressChecker()
+                {
+                    @Override
+                    public void progress(int i)
+                    {
+                        importance_value = i;
+                        importance_percent_tv.setText(importance_value + "%");
+
+                        if (importance_value >= 60)
+                            importance_type_tv.setText(R.string.important_text);
+                        else importance_type_tv.setText(R.string.not_important_text);
+                    }
+                });
+            }
+            else {
+                importance_setting.setProgress(0);
+                importance_setting.setOnSeekBarChangeListener(null);
+            }
+        }
+    }
+
+    private void initAdditionalInfoLists()
+    {
+        commentList = new ArrayList<>();
+        subTaskList = new ArrayList<>();
+        interestList = new ArrayList<>();
     }
 
     public void pickTypeDialog()
@@ -208,7 +373,7 @@ public class AddingTaskFragment extends Fragment
         final View dialogView = inflater.inflate(R.layout.dialog_type_choice, null);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setTitle("Chose type of task");
+        dialogBuilder.setTitle("Chose type_iet of task");
 
         final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
 
@@ -248,9 +413,9 @@ public class AddingTaskFragment extends Fragment
             {
                 if(radioGroup.getCheckedRadioButtonId() >= 0)
                 {
-                    type.setText(task_type);
-                    task_type_output.setText(task_type);
-                    task_type_output.setTextColor(ContextCompat.getColor(activity, EventType.getColor(task_type)));
+                    type_iet.setText(task_type);
+                    task_type_output_tv.setText(task_type);
+                    task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(task_type)));
                 }
                 else
                 {
@@ -295,24 +460,24 @@ public class AddingTaskFragment extends Fragment
         {
             if(type == R.id.time_start_layout)
             {
-                start_time.setText(stf.format(c.getTime()));
+                start_time_iet.setText(stf.format(c.getTime()));
             }
-            else end_time.setText(stf.format(c.getTime()));
+            else end_time_iet.setText(stf.format(c.getTime()));
         }
     }
 
     public void setDate(int year, int month, int day)
     {
-        date.setText(day + "/" + (month + 1) + "/" + year);
+        date_iet.setText(day + "/" + (month + 1) + "/" + year);
     }
 
-    private void addComment()
+    private void addComments()
     {
-        int childCount = comment_layout.getChildCount();
+        int childCount = comment_container_ly.getChildCount();
 
         for(int i=0; i<childCount; i++)
         {
-            View thisChild = comment_layout.getChildAt(i);
+            View thisChild = comment_container_ly.getChildAt(i);
 
             TextView comment_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
 
@@ -322,13 +487,13 @@ public class AddingTaskFragment extends Fragment
         }
     }
 
-    private void addSubTask()
+    private void addSubTasks()
     {
-        int childCount = sub_task_layout.getChildCount();
+        int childCount = sub_task_container_ly.getChildCount();
 
         for(int i=0; i<childCount; i++)
         {
-            View thisChild = sub_task_layout.getChildAt(i);
+            View thisChild = sub_task_container_ly.getChildAt(i);
 
             TextView subTask_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
 
@@ -339,7 +504,7 @@ public class AddingTaskFragment extends Fragment
     }
 
     //TODO: mock method.
-    private void addInterest()
+    private void addInterests()
     {
         interestList.add(new Interest(1, 1, "Study", 73));
         interestList.add(new Interest(2, 1, "Book", 83));
@@ -348,15 +513,15 @@ public class AddingTaskFragment extends Fragment
 
     private void addTask()
     {
-        addComment();
-        addSubTask();
-        addInterest();
+        addComments();
+        addSubTasks();
+        addInterests();
 
         ToDo todo = new ToDo(1,
-                title.getText().toString(),
-                start_time.getText().toString(),
-                end_time.getText().toString(),
-                date.getText().toString(),
+                title_iet.getText().toString(),
+                start_time_iet.getText().toString(),
+                end_time_iet.getText().toString(),
+                date_iet.getText().toString(),
                 EventType.TODO,
                 "Waiting",
                 importance_value);
@@ -384,7 +549,7 @@ public class AddingTaskFragment extends Fragment
             number  = (TextView) subTaskView.findViewById(R.id.sub_item_number);
             remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
 
-            //number.setText(container_layout.getChildCount());
+            number.setText(String.format(Locale.US, "%d.", container_layout.getChildCount()));
         }
 
         final View.OnClickListener thisListener = new View.OnClickListener()
@@ -402,22 +567,18 @@ public class AddingTaskFragment extends Fragment
         }
     }
 
-    private void initializeOutputTypeView(View viewHierarchy)
-    {
-        task_type_output = (TextView) viewHierarchy.findViewById(R.id.task_type);
-    }
-
     private void initializeInputViews(View viewHierarchy)
     {
-        type = (TextInputEditText) viewHierarchy.findViewById(R.id.task_type_input);
-        title = (TextInputEditText) viewHierarchy.findViewById(R.id.task_title_input);
-        date = (TextInputEditText) viewHierarchy.findViewById(R.id.task_date_input);
-        start_time = (TextInputEditText) viewHierarchy.findViewById(R.id.task_start_time_input);
-        end_time = (TextInputEditText) viewHierarchy.findViewById(R.id.task_end_time_input);
+        type_iet = (TextInputEditText) viewHierarchy.findViewById(R.id.task_type_input);
+        title_iet = (TextInputEditText) viewHierarchy.findViewById(R.id.task_title_input);
+        date_iet = (TextInputEditText) viewHierarchy.findViewById(R.id.task_date_input);
+        start_time_iet = (TextInputEditText) viewHierarchy.findViewById(R.id.task_start_time_input);
+        end_time_iet = (TextInputEditText) viewHierarchy.findViewById(R.id.task_end_time_input);
+    }
 
-        commentList = new ArrayList<>();
-        subTaskList = new ArrayList<>();
-        interestList = new ArrayList<>();
+    private void initializeOutputTypeView(View viewHierarchy)
+    {
+        task_type_output_tv = (TextView) viewHierarchy.findViewById(R.id.task_type);
     }
 
     private void initializeValidators(View viewHierarchy)
@@ -430,28 +591,28 @@ public class AddingTaskFragment extends Fragment
 
         final DateTimeValidator dateTimeValidator = new DateTimeValidator(activity, DateFormat.is24HourFormat(activity));
 
-        title.addTextChangedListener(new TextValidator(title)
+        title_iet.addTextChangedListener(new TextValidator(title_iet)
         {
             @Override
             public void validate(TextView textView, String text)
             {
-                checkIfTextEmpty(title, title_layout);
+                checkIfTextEmpty(title_iet, title_layout);
             }
         });
 
-        title.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        title_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean b)
             {
                 if (!b)
                 {
-                    checkIfTextEmpty(title, title_layout);
+                    checkIfTextEmpty(title_iet, title_layout);
                 }
             }
         });
 
-        type.addTextChangedListener(new TextValidator(type)
+        type_iet.addTextChangedListener(new TextValidator(type_iet)
         {
             @Override
             public void validate(TextView textView, String text)
@@ -460,20 +621,20 @@ public class AddingTaskFragment extends Fragment
             }
         });
 
-        type.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        type_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean b)
             {
                 if (!b)
                 {
-                    if(checkIfTextEmpty(type)) task_type_layout.setError(getString(R.string.empty_error));
-                    else checkIfTextEmpty(type, task_type_layout);
+                    if(checkIfTextEmpty(type_iet)) task_type_layout.setError(getString(R.string.empty_error));
+                    else checkIfTextEmpty(type_iet, task_type_layout);
                 }
             }
         });
 
-        start_time.addTextChangedListener(new TextValidator(start_time)
+        start_time_iet.addTextChangedListener(new TextValidator(start_time_iet)
         {
             @Override
             public void validate(TextView textView, String text)
@@ -482,20 +643,20 @@ public class AddingTaskFragment extends Fragment
             }
         });
 
-        start_time.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        start_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean b)
             {
                 if (!b)
                 {
-                    if(checkIfTextEmpty(start_time)) start_time_layout.setError(getString(R.string.empty_error));
-                    else checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(start_time.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    if(checkIfTextEmpty(start_time_iet)) start_time_layout.setError(getString(R.string.empty_error));
+                    else checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(start_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
                 }
             }
         });
 
-        end_time.addTextChangedListener(new TextValidator(end_time)
+        end_time_iet.addTextChangedListener(new TextValidator(end_time_iet)
         {
             @Override
             public void validate(TextView textView, String text)
@@ -504,20 +665,20 @@ public class AddingTaskFragment extends Fragment
             }
         });
 
-        end_time.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        end_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean b)
             {
                 if (!b)
                 {
-                    if(checkIfTextEmpty(end_time)) end_time_layout.setError(getString(R.string.empty_error));
-                    else  checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(end_time.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    if(checkIfTextEmpty(end_time_iet)) end_time_layout.setError(getString(R.string.empty_error));
+                    else  checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(end_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
                 }
             }
         });
 
-        date.addTextChangedListener(new TextValidator(date)
+        date_iet.addTextChangedListener(new TextValidator(date_iet)
         {
             @Override
             public void validate(TextView textView, String text)
@@ -526,15 +687,15 @@ public class AddingTaskFragment extends Fragment
             }
         });
 
-        date.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        date_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View view, boolean b)
             {
                 if (!b)
                 {
-                    if(checkIfTextEmpty(date)) date_layout.setError(getString(R.string.empty_error));
-                    else checkTimeDateInput(date_layout, dateTimeValidator.validateDate(date.getText().toString()), dateTimeValidator.dateErrorMessage());
+                    if(checkIfTextEmpty(date_iet)) date_layout.setError(getString(R.string.empty_error));
+                    else checkTimeDateInput(date_layout, dateTimeValidator.validateDate(date_iet.getText().toString()), dateTimeValidator.dateErrorMessage());
                 }
             }
         });
@@ -585,15 +746,15 @@ public class AddingTaskFragment extends Fragment
             }
         }
 
-        task_type_output.setText(output_type);
-        task_type_output.setTextColor(ContextCompat.getColor(activity, output_type_color));
+        task_type_output_tv.setText(output_type);
+        task_type_output_tv.setTextColor(ContextCompat.getColor(activity, output_type_color));
     }
 
     private void checkTimeDateInput(TextInputLayout time_input_layout, boolean validation, final String errorMessage)
     {
         if(validation)
         {
-                //TODO: you should get your time/date to DB from here.
+                //TODO: you should get your time/date_iet to DB from here.
 
                 time_input_layout.setError(null);
                 time_input_layout.setErrorEnabled(false);
@@ -604,51 +765,26 @@ public class AddingTaskFragment extends Fragment
         }
     }
 
-    private void isComponentAvailable(CheckBox checkBox, final ViewGroup view)
+    abstract class ProgressChecker implements SeekBar.OnSeekBarChangeListener
     {
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        abstract void progress(int i);
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b)
         {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                if(b)
-                {
-                    view.setVisibility(View.VISIBLE);
-                }
-                else view.setVisibility(View.GONE);
-            }
-        });
-    }
+            progress(i);
+        }
 
-    //TODO: Make interface or abstract class, to hide this 3 methods.
-    private void setImportanceBar()
-    {
-        importance_value = 0;
-
-        importance_setting.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar)
         {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser)
-            {
-                importance_value = progressValue;
-                importance_percent.setText(importance_value + "%");
 
-                if(importance_value >= 60) importance_type.setText("Important");
-                else importance_type.setText("Not important");
-            }
+        }
 
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar)
+        {
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
-
-            }
-        });
+        }
     }
 }

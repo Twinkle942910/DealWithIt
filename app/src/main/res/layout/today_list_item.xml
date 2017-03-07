@@ -8,12 +8,6 @@
     android:layout_height="60dp"
     android:gravity="center_vertical">
 
-<View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/colorDivider"
-    android:layout_gravity="top"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

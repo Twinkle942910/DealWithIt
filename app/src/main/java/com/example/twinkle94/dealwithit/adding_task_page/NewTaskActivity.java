@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -25,8 +26,12 @@ import java.util.Calendar;
 
 public class NewTaskActivity extends AppCompatActivity
 {
+    private static final String NAME = NewTaskActivity.class.getSimpleName();
+
     private Toolbar toolbar;
     private AddingTaskFragment addingTaskFragment;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,7 +43,63 @@ public class NewTaskActivity extends AppCompatActivity
         setHomeButton();
 
         //TODO: change it later(method name and fragment adding)
-        initFragment();
+        if (savedInstanceState == null)
+        {
+            // only create fragment if activity is started for the first time
+           initFragment();
+
+        }
+        else
+        {
+            // do nothing - fragment is recreated automatically
+        }
+
+
+        Log.i(NAME, "onCreate");
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        //TODO: remove fragment here, or onStop().
+
+        Log.i(NAME, "onPause");
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Log.i(NAME, "onStart");
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.i(NAME, "onStop");
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Log.i(NAME, "onDestroy");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.i(NAME, "onResume");
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        Log.i(NAME, "onRestart");
     }
 
     private void initFragment()
@@ -52,6 +113,7 @@ public class NewTaskActivity extends AppCompatActivity
         // Create the Fragment and add
         addingTaskFragment = new AddingTaskFragment();
         ft.add(R.id.fragment_task_type, addingTaskFragment, "addTaskFragment");
+       // ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
 
         // Commit the changes
         ft.commit();
@@ -60,13 +122,15 @@ public class NewTaskActivity extends AppCompatActivity
     //init Toolbar
     private void initToolbar()
     {
+        float density = Resources.getSystem().getDisplayMetrics().density;
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //TODO: Move this, because it wastes a lot of time when activity loads.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            toolbar.setElevation((4 * Resources.getSystem().getDisplayMetrics().density));
+            toolbar.setElevation((4 * density));
         }
     }
 

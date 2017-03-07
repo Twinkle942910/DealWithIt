@@ -54,7 +54,7 @@ public class TodayTaskAdapter extends ArrayAdapter
     @Override
     public int getItemViewType(int position)
     {
-        return (getItem(position).getType() == EventType.NO_TYPE) ?
+        return getItem(position).getType() == EventType.NO_TYPE ?
                 RowType.HEADER_ITEM.ordinal()
                 :
                 RowType.LIST_ITEM.ordinal();
@@ -70,45 +70,44 @@ public class TodayTaskAdapter extends ArrayAdapter
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
-        View row = convertView;
-        EventHolder eventHolder;
+        EventViewHolder eventViewHolder;
 
         // Get the data item type for this position
         int type = getItemViewType(position);
 
-        if(row == null)
+        if(convertView == null)
         {
-            eventHolder = new EventHolder();
+            eventViewHolder = new EventViewHolder();
 
             // Inflate XML layout based on the type
-            row = getInflatedLayoutForType(type, parent);
+            convertView = getInflatedLayoutForType(type, parent);
 
             switch (type)
             {
                 case TYPE_HEADER:
-                    initHeader(row, eventHolder);
+                    initHeader(convertView, eventViewHolder);
                     break;
 
                 case TYPE_LIST:
-                    initViews(row, eventHolder);
+                    initViews(convertView, eventViewHolder);
                     break;
             }
 
-            row.setTag(eventHolder);
+            convertView.setTag(eventViewHolder);
         }
 
         else
         {
-            eventHolder = (EventHolder) row.getTag();
+            eventViewHolder = (EventViewHolder) convertView.getTag();
         }
 
         //set all views with values from list
-        setViewValues(position, eventHolder);
+        setViewValues(position, eventViewHolder);
 
-        return row;
+        return convertView;
     }
 
-    private void setViewValues(int position, EventHolder eventHolder)
+    private void setViewValues(int position, EventViewHolder eventViewHolder)
     {
         Item event = getItem(position);
 
@@ -133,7 +132,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, schedule_type_image, schedule_type, from_time, to_time, importance, interest, View.VISIBLE, View.VISIBLE);
+                    eventViewValues(eventViewHolder, type_color, task_title, schedule_type_image, schedule_type, from_time, to_time, importance, interest, View.VISIBLE, View.VISIBLE);
                     break;
 
                 case TODO:
@@ -144,7 +143,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case WORKTASK:
@@ -155,7 +154,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case BIRTHDAY:
@@ -166,30 +165,30 @@ public class TodayTaskAdapter extends ArrayAdapter
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
-                    eventViewValues(eventHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
+                    eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
 
                 case NO_TYPE:
                     String type = ((EventTypeSection) getItem(position)).getTitle();
 
-                    eventHolder.headerText.setText(type);
+                    eventViewHolder.headerText.setText(type);
 
                     switch(type)
                     {
                         case "Schedule":
-                            eventHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeSchedule));
+                            eventViewHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeSchedule));
                             break;
 
                         case "ToDo":
-                            eventHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeToDo));
+                            eventViewHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeToDo));
                             break;
 
                         case "Work Task":
-                            eventHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeWorkTasks));
+                            eventViewHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeWorkTasks));
                             break;
 
                         case "Birthday":
-                            eventHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeBirthday));
+                            eventViewHolder.headerText.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorTypeBirthday));
                             break;
 
                     }
@@ -223,32 +222,32 @@ public class TodayTaskAdapter extends ArrayAdapter
     }
 
     //TODO: overload method with less parameters for different types of tasks.
-    private void eventViewValues(EventHolder eventHolder, int type_color, String task_title, int scheduleTypeImage, String schedule_type,
+    private void eventViewValues(EventViewHolder eventViewHolder, int type_color, String task_title, int scheduleTypeImage, String schedule_type,
                                  String from_time, String to_time, String importance, String interest,
                                  int task_type_visibility, int task_type_image_visibility)
     {
-        eventHolder.type_color.setBackgroundColor(type_color);
+        eventViewHolder.type_color.setBackgroundColor(type_color);
 
-        eventHolder.task_title.setText(task_title);
-        eventHolder.task_type.setText(schedule_type);
-        eventHolder.task_type_image.setImageResource(scheduleTypeImage);
+        eventViewHolder.task_title.setText(task_title);
+        eventViewHolder.task_type.setText(schedule_type);
+        eventViewHolder.task_type_image.setImageResource(scheduleTypeImage);
 
-        eventHolder.task_type.setVisibility(task_type_visibility);
-        eventHolder.task_type_image.setVisibility(task_type_image_visibility);
+        eventViewHolder.task_type.setVisibility(task_type_visibility);
+        eventViewHolder.task_type_image.setVisibility(task_type_image_visibility);
 
-        eventHolder.from_title.setText("From");
-        eventHolder.from_time.setText(from_time);
-        eventHolder.from_image.setImageResource(R.drawable.ic_from_time);
+        eventViewHolder.from_title.setText("From");
+        eventViewHolder.from_time.setText(from_time);
+        eventViewHolder.from_image.setImageResource(R.drawable.ic_from_time);
 
-        eventHolder.to_title.setText("To");
-        eventHolder.to_time.setText(to_time);
-        eventHolder.to_image.setImageResource(R.drawable.ic_to_time);
+        eventViewHolder.to_title.setText("To");
+        eventViewHolder.to_time.setText(to_time);
+        eventViewHolder.to_image.setImageResource(R.drawable.ic_to_time);
 
-        eventHolder.importance.setText(importance);
-        eventHolder.importance_image.setImageResource(R.drawable.ic_importance_icon);
+        eventViewHolder.importance.setText(importance);
+        eventViewHolder.importance_image.setImageResource(R.drawable.ic_importance_icon);
 
-        eventHolder.interest.setText(interest);
-        eventHolder.interest_image.setImageResource(R.drawable.ic_interest_today_page);
+        eventViewHolder.interest.setText(interest);
+        eventViewHolder.interest_image.setImageResource(R.drawable.ic_interest_today_page);
     }
 
     private View getInflatedLayoutForType(int type, ViewGroup parent)
@@ -270,35 +269,35 @@ public class TodayTaskAdapter extends ArrayAdapter
         return inflated_view;
     }
 
-    private void initHeader(View row, EventHolder eventHolder)
+    private void initHeader(View row, EventViewHolder eventViewHolder)
     {
-        eventHolder.headerText = (TextView) row.findViewById(R.id.tasks_title);
+        eventViewHolder.headerText = (TextView) row.findViewById(R.id.tasks_title);
     }
 
-    private void initViews(View row, EventHolder eventHolder)
+    private void initViews(View row, EventViewHolder eventViewHolder)
     {
-        eventHolder.type_color = row.findViewById(R.id.type_color);
+        eventViewHolder.type_color = row.findViewById(R.id.type_color);
 
-        eventHolder.task_title = (TextView) row.findViewById(R.id.task_title);
-        eventHolder.task_type = (TextView) row.findViewById(R.id.task_type);
-        eventHolder.task_type_image = (ImageView) row.findViewById(R.id.lesson_type);
+        eventViewHolder.task_title = (TextView) row.findViewById(R.id.task_title);
+        eventViewHolder.task_type = (TextView) row.findViewById(R.id.task_type);
+        eventViewHolder.task_type_image = (ImageView) row.findViewById(R.id.lesson_type);
 
-        eventHolder.from_title = (TextView) row.findViewById(R.id.from_title);
-        eventHolder.from_time = (TextView) row.findViewById(R.id.from_time);
-        eventHolder.from_image = (ImageView) row.findViewById(R.id.from_time_icon);
+        eventViewHolder.from_title = (TextView) row.findViewById(R.id.from_title);
+        eventViewHolder.from_time = (TextView) row.findViewById(R.id.from_time);
+        eventViewHolder.from_image = (ImageView) row.findViewById(R.id.from_time_icon);
 
-        eventHolder.to_title = (TextView) row.findViewById(R.id.to_title);
-        eventHolder.to_time = (TextView) row.findViewById(R.id.to_time);
-        eventHolder.to_image = (ImageView) row.findViewById(R.id.to_time_icon);
+        eventViewHolder.to_title = (TextView) row.findViewById(R.id.to_title);
+        eventViewHolder.to_time = (TextView) row.findViewById(R.id.to_time);
+        eventViewHolder.to_image = (ImageView) row.findViewById(R.id.to_time_icon);
 
-        eventHolder.importance = (TextView) row.findViewById(R.id.importance_percent);
-        eventHolder.importance_image = (ImageView) row.findViewById(R.id.importance_icon);
+        eventViewHolder.importance = (TextView) row.findViewById(R.id.importance_percent);
+        eventViewHolder.importance_image = (ImageView) row.findViewById(R.id.importance_icon);
 
-        eventHolder.interest = (TextView) row.findViewById(R.id.interest_percent);
-        eventHolder.interest_image = (ImageView) row.findViewById(R.id.interest_icon);
+        eventViewHolder.interest = (TextView) row.findViewById(R.id.interest_percent);
+        eventViewHolder.interest_image = (ImageView) row.findViewById(R.id.interest_icon);
     }
 
-    private static class EventHolder
+    private static class EventViewHolder
     {
         View type_color;
 

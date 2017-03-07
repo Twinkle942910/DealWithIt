@@ -46,31 +46,46 @@
 <include layout="@layout/layout_task_date_input" />
 <include layout="@layout/layout_task_start_time_input" />
 <include layout="@layout/layout_task_end_time_input" />
-<include layout="@layout/layout_task_comment_input" />
+
+<include layout="@layout/switch_additional_task_info" />
 
 <include
-    android:id="@+id/comment_container_layout"
-    layout="@layout/layout_task_comment_container"
+    android:id="@+id/comment_check"
+    layout="@layout/layout_task_comment_input"
     android:visibility="gone"/>
 
-    <include layout="@layout/layout_task_sub_tasks_input" />
+<include
+    android:id="@+id/comment_layout"
+    layout="@layout/layout_task_comment"
+    android:visibility="gone"/>
 
     <include
-        android:id="@+id/sub_task_container_layout"
-        layout="@layout/layout_task_sub_tasks_container"
+        android:id="@+id/sub_tasks_check"
+        layout="@layout/layout_task_sub_tasks_input"
         android:visibility="gone"/>
 
-    <include layout="@layout/layout_task_importance_input" />
+    <include
+        android:id="@+id/sub_task_layout"
+        layout="@layout/layout_task_sub_tasks"
+        android:visibility="gone"/>
 
     <include
-        android:id="@+id/importance_container_layout"
+        android:id="@+id/importance_check"
+        layout="@layout/layout_task_importance_input"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/importance_layout"
         layout="@layout/layout_task_importance"
         android:visibility="gone"/>
 
-    <include layout="@layout/layout_task_interests_input" />
+    <include
+        android:id="@+id/interests_check"
+        layout="@layout/layout_task_interests_input"
+        android:visibility="gone"/>
 
     <include
-        android:id="@+id/interests_container_layout"
+        android:id="@+id/interests_layout"
         layout="@layout/layout_task_interests"
         android:visibility="gone"/>
 

@@ -43,6 +43,10 @@
     <string name="add_interests_count_hint">One interest added</string>
     <string name="menu_save">save</string>
 
+    <string name="additional_task_info_switch_text">Additional task info</string>
+    <string name="important_text">Important</string>
+    <string name="not_important_text">Not important</string>
+
     <!-- Type pick dialog -->
     <string name="dialog_ok"><b>OK</b></string>
     <string name="dialog_cancel"><b>cancel</b></string>

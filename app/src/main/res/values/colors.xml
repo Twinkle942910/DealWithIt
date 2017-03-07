@@ -16,10 +16,10 @@
     <color name="colorTypeWorkTasks">#e9a75d</color>
     <color name="colorTypeBirthday">#6eba6c</color>
 
-    <color name="colorListItemFont">#c9e9e8</color>
+    <color name="colorListItemFont">#27009688</color>
 
     <color name="colorText87">#87455A64</color>
-    <color name="colorDivider">#B3000000</color>
+    <color name="colorDivider">#a3000000</color>
 
     <!-- Adding page colors -->
     <color name="colorGreyText54">#8C455A64</color>

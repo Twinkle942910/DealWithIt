@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.SwitchCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/additional_task_available"
+    android:layout_marginTop="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/MySwitch"
+    android:text="@string/additional_task_info_switch_text"
+    android:textColor="@color/colorGreyText54"
+    android:textSize="20sp">
+
+</android.support.v7.widget.SwitchCompat>
