@@ -47,6 +47,8 @@
     <string name="important_text">Important</string>
     <string name="not_important_text">Not important</string>
 
+    <string name="error_hint">You must input something first!</string>
+
     <!-- Type pick dialog -->
     <string name="dialog_ok"><b>OK</b></string>
     <string name="dialog_cancel"><b>cancel</b></string>

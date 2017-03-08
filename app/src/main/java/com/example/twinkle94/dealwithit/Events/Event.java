@@ -8,6 +8,7 @@ import java.util.List;
 //TODO: Something wrong with git. Check what.!
 public abstract class Event implements Item
 {
+    //TODO: check if we need this field
     private int id;
     private String title;
     private String time_start;

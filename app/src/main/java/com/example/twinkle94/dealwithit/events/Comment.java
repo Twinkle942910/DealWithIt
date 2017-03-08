@@ -3,8 +3,9 @@ package com.example.twinkle94.dealwithit.events;
 
 public class Comment
 {
+    //TODO: check if we need this field
     private int id;
-
+    //TODO: check if we need this field
     private  int id_event;
     private String content;
 

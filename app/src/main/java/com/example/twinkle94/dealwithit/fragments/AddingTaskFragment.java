@@ -2,7 +2,6 @@ package com.example.twinkle94.dealwithit.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -14,12 +13,14 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -195,17 +196,20 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
           switch (view.getId())
           {
               case button_add_comment:
-                  addItemView(comment_container_ly);
-                //  addComments();
+                  if (comment_container_ly != null)
+                  {
+                      addItemView(comment_container_ly);
+                  }
                   break;
 
               case button_add_sub_task:
-                  addItemView(sub_task_container_ly);
-                 // addSubTasks();
+                  if (sub_task_container_ly != null)
+                  {
+                      addItemView(sub_task_container_ly);
+                  }
                   break;
 
               case button_add_interest:
-                 // addInterests();
                   Toast.makeText(activity, "Looooooool!", Toast.LENGTH_LONG).show();
                   break;
           }
@@ -243,9 +247,9 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
                     setButtonOff(b, check_buttons, fragmentView);
                     setButtonVisibility(b, check_buttons, fragmentView);
                     checkContainerLayoutVisibility(b, container_layouts, fragmentView);
+                    initAdditionalInfoLists(b);
                     setCheckListeners(b, fragmentView);
                     setImportanceBar(b);
-                    initAdditionalInfoLists();
                     break;
             }
         }
@@ -288,6 +292,14 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
             layout_position++;
         }
+
+       if(!checked) clearSubItemsLists();
+    }
+
+    private void clearSubItemsLists()
+    {
+        if(!commentList.isEmpty())commentList.clear();
+        if(!subTaskList.isEmpty())subTaskList.clear();
     }
 
     private void setButtonOff(boolean checked, int[] buttons, View fragmentView)
@@ -359,11 +371,20 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         }
     }
 
-    private void initAdditionalInfoLists()
+    private void initAdditionalInfoLists(boolean checked)
     {
-        commentList = new ArrayList<>();
-        subTaskList = new ArrayList<>();
-        interestList = new ArrayList<>();
+        if(checked)
+        {
+            commentList = new ArrayList<>();
+            subTaskList = new ArrayList<>();
+            interestList = new ArrayList<>();
+        }
+        else
+            {
+            commentList = null;
+            subTaskList = null;
+            interestList = null;
+        }
     }
 
     public void pickTypeDialog()
@@ -471,38 +492,6 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         date_iet.setText(day + "/" + (month + 1) + "/" + year);
     }
 
-    private void addComments()
-    {
-        int childCount = comment_container_ly.getChildCount();
-
-        for(int i=0; i<childCount; i++)
-        {
-            View thisChild = comment_container_ly.getChildAt(i);
-
-            TextView comment_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
-
-            String content = comment_content.getText().toString();
-                                       //TODO: id and eventId is not needed, possibly.
-            commentList.add(new Comment(1, 1, content));
-        }
-    }
-
-    private void addSubTasks()
-    {
-        int childCount = sub_task_container_ly.getChildCount();
-
-        for(int i=0; i<childCount; i++)
-        {
-            View thisChild = sub_task_container_ly.getChildAt(i);
-
-            TextView subTask_content = (TextView) thisChild.findViewById(R.id.sub_item_content);
-
-            String content = subTask_content.getText().toString();
-            //TODO: id and eventId is not needed, possibly.
-            subTaskList.add(new Sub_task(1, 1, content, false));
-        }
-    }
-
     //TODO: mock method.
     private void addInterests()
     {
@@ -513,8 +502,6 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
     private void addTask()
     {
-        addComments();
-        addSubTasks();
         addInterests();
 
         ToDo todo = new ToDo(1,
@@ -534,37 +521,126 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         addingToDB.execute("add_data", todo);
     }
 
-    private void addItemView(LinearLayout container_layout)
+    private void addItemView(final LinearLayout container_layout)
     {
         LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View subTaskView = layoutInflater.inflate(R.layout.sub_task_comment_item, container_layout, false);
 
-        TextView number = null;
-        ImageView remove_image = null;
+        final TextView number = (TextView) subTaskView.findViewById(R.id.sub_item_number);
+        final ImageView remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
+        final TextInputEditText content = (TextInputEditText) subTaskView.findViewById(R.id.sub_item_content);
 
-        if (container_layout != null)
-        {
-            container_layout.addView(subTaskView);
+        container_layout.addView(subTaskView);
 
-            number  = (TextView) subTaskView.findViewById(R.id.sub_item_number);
-            remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
+        number.setText(String.format(Locale.US, "%d.", container_layout.getChildCount()));
+        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
 
-            number.setText(String.format(Locale.US, "%d.", container_layout.getChildCount()));
-        }
-
-        final View.OnClickListener thisListener = new View.OnClickListener()
+        final View.OnClickListener thisRemoveListener = new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                ((LinearLayout)subTaskView.getParent()).removeView(subTaskView);
+                int item_index = container_layout.indexOfChild(subTaskView);
+
+                ((LinearLayout) subTaskView.getParent()).removeView(subTaskView);
+                subItemNumberReorder(container_layout);
+
+                removeItemFromLists(item_index, subTaskView, container_layout);
+
+                v.setOnClickListener(null);
             }
         };
 
-        if (remove_image != null)
+        final TextValidator thisValidator = new TextValidator(content)
         {
-            remove_image.setOnClickListener(thisListener);
+            @Override
+            public void validate(TextView textView, String text)
+            {
+                checkCommentEmpty(content, subTaskView);
+            }
+        };
+
+        final TextInputEditText.OnEditorActionListener thisDoneAction = new TextInputEditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE)
+                {
+                    if (!TextUtils.isEmpty(textView.getText()))
+                    {
+                        addItemToLists(textView, container_layout);
+
+                        content.removeTextChangedListener(thisValidator);
+                        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGreyText10));
+                        textView.setEnabled(false);
+
+                        content.setOnEditorActionListener(null);
+                    }
+                    else textView.setHint(R.string.error_hint);
+                }
+                return false;
+            }
+        };
+
+        content.addTextChangedListener(thisValidator);
+        content.setOnEditorActionListener(thisDoneAction);
+        remove_image.setOnClickListener(thisRemoveListener);
+    }
+
+    private void removeItemFromLists(int item_index, View subTaskView, LinearLayout container_layout)
+    {
+        //TODO: Think of something better.
+        if (!TextUtils.isEmpty(((TextView) subTaskView.findViewById(R.id.sub_item_content)).getText()))
+        {
+            switch (container_layout.getId())
+            {
+                case R.id.comment_container:
+                        //String contentt = commentList.get(item_index).getContent();
+                        commentList.remove(item_index);
+                        //Log.i("AddingTaskFragment", "comment " + contentt + " removed");
+                    break;
+
+                case R.id.sub_tasks_container:
+                       // String contentt1 = subTaskList.get(item_index).getContent();
+                        subTaskList.remove(item_index);
+                        //Log.i("AddingTaskFragment", "sub_task " + contentt1 + " removed");
+                    break;
+            }
         }
+    }
+
+    private void addItemToLists(TextView textView, LinearLayout container_layout)
+    {
+        switch (container_layout.getId())
+        {
+            case R.id.comment_container:
+                commentList.add(new Comment(1, 1, textView.getText().toString()));
+                //Log.i("AddingTaskFragment", "comment " + textView.getText().toString() + " added");
+                break;
+
+            case R.id.sub_tasks_container:
+                subTaskList.add(new Sub_task(1, 1, textView.getText().toString(), false));
+               // Log.i("AddingTaskFragment", "sub_task " + textView.getText().toString() + " added");
+                break;
+        }
+    }
+
+    private void subItemNumberReorder(ViewGroup container_layout)
+    {
+        int childCount = container_layout.getChildCount();
+
+        for(int i = 0; i < childCount; i++)
+        {
+            final View thisChild = container_layout.getChildAt(i);
+            final TextView child_number = (TextView) thisChild.findViewById(R.id.sub_item_number);
+
+            child_number.setText(String.format(Locale.US, "%d.", i + 1));
+        }
+    }
+
+    private void checkCommentEmpty(TextInputEditText content, View subTaskView)
+    {
+        if (!TextUtils.isEmpty(content.getText())) subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorItem30));
+        else subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
     }
 
     private void initializeInputViews(View viewHierarchy)
