@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.fragments;
+package com.example.twinkle94.dealwithit.fragments.tab_fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.background.TodayTaskListLoader;
 
 public class TodayFragment extends AbstractTabFragment
 {
@@ -59,7 +58,7 @@ public class TodayFragment extends AbstractTabFragment
         Log.i(TODAY_PAGE, "onActivityCreated");
 
         //TODO: move from here!
-        new TodayTaskListLoader(context).execute();
+       // new TodayTaskListLoader(context).execute();
     }
 
     @Override

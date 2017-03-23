@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.fragments;
+package com.example.twinkle94.dealwithit.fragments.tab_fragments;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

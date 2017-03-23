@@ -25,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -58,6 +57,9 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
     private static final String NAME = AddingTaskFragment.class.getSimpleName();
     private static final int LAYOUT = R.layout.fragment_new_task_type;
 
+    public static final String TASK_TYPE = "task_type";
+    private static final String TYPE_NOT_SET = EventType.NO_TYPE.toString();
+
     private NewTaskActivity activity;
 
     private LinearLayout comment_container_ly;
@@ -77,8 +79,15 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
     private List<Interest> interestList;
 
     //Transfer data
-    private String task_type;
+    private EventType task_type = EventType.NO_TYPE;
     private int importance_value;
+
+    private TextValidator outputTypeValidator;
+    private TextValidator inputTypeValidator;
+    private TextValidator titleValidator;
+    private TextValidator dateValidator;
+    private TextValidator startTimeValidator;
+    private TextValidator endTimeValidator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -112,7 +121,6 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
         initializeInputViews(viewHierarchy);
         initializeOutputTypeView(viewHierarchy);
-        initializeValidators(viewHierarchy);
 
         return viewHierarchy;
     }
@@ -132,20 +140,38 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
+        initializeValidators();
+        setTaskType();
         Log.i(NAME, "onResume");
     }
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
         Log.i(NAME, "onPause");
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
+
+        type_iet.removeTextChangedListener(inputTypeValidator);
+        title_iet.removeTextChangedListener(titleValidator);
+        date_iet.removeTextChangedListener(dateValidator);
+        start_time_iet.removeTextChangedListener(startTimeValidator);
+        end_time_iet.removeTextChangedListener(endTimeValidator);
+
+        type_iet.setOnFocusChangeListener(null);
+        title_iet.setOnFocusChangeListener(null);
+        date_iet.setOnFocusChangeListener(null);
+        start_time_iet.setOnFocusChangeListener(null);
+        end_time_iet.setOnFocusChangeListener(null);
+
         Log.i(NAME, "onStop");
     }
 
@@ -156,13 +182,15 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         Log.i(NAME, "onDetach");
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         super.onDestroyView();
         Log.i(NAME, "onDestroyView");
     }
@@ -389,58 +417,28 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
     public void pickTypeDialog()
     {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity, R.style.AppCompatAlertDialogStyle);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity, R.style.AppCompatAlertDialogStyle);
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View dialogView = inflater.inflate(R.layout.dialog_type_choice, null);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setTitle("Chose type_iet of task");
+        dialogBuilder.setTitle(R.string.pick_type_dialog_title);
 
         final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId)
-            {
-                switch (checkedId)
-                {
-                    case R.id.birthday_type:
-                        task_type = EventType.BIRTHDAY.toString();
-                        break;
-
-                    case R.id.work_tasks_type:
-                        task_type = EventType.WORKTASK.toString();
-                        break;
-
-                    case R.id.todo_type:
-                        task_type = EventType.TODO.toString();
-                        break;
-
-                    case R.id.schedule_type:
-                        task_type = EventType.SCHEDULE.toString();
-                        break;
-
-                    default:
-                        task_type = EventType.NO_TYPE.toString();
-                        break;
-                }
-            }
-        });
 
         dialogBuilder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int whichButton)
             {
-                if(radioGroup.getCheckedRadioButtonId() >= 0)
+                if(radioGroup.getCheckedRadioButtonId() >= 0 && radioGroup.getCheckedRadioButtonId() != R.id.schedule_type_button)
                 {
-                    type_iet.setText(task_type);
-                    task_type_output_tv.setText(task_type);
-                    task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(task_type)));
+                    setInputType(task_type.toString());
+                    setOutputType(task_type.toString());
                 }
                 else
                 {
-                    ((RadioButton)(radioGroup.findViewById(R.id.schedule_type))).setError("You didn't chose anything!");
+                    //TODO: check this out!
+                   Toast.makeText(activity, "You must chose something!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -453,7 +451,36 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
             }
         });
 
-        AlertDialog b = dialogBuilder.create();
+        final AlertDialog b = dialogBuilder.create();
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                switch (checkedId)
+                {
+                    case R.id.birthday_type_button:
+                        task_type = EventType.BIRTHDAY;
+                        break;
+
+                    case R.id.work_tasks_type_button:
+                        task_type = EventType.WORKTASK;
+                        break;
+
+                    case R.id.todo_type_button:
+                        task_type = EventType.TODO;
+                        break;
+
+                    case R.id.schedule_type_button:
+                        task_type = EventType.SCHEDULE;
+                        callAddingScheduleFragment(task_type);
+                        b.dismiss();
+                        break;
+                }
+            }
+        });
+
         b.show();
     }
 
@@ -533,7 +560,8 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         container_layout.addView(subTaskView);
 
         number.setText(String.format(Locale.US, "%d.", container_layout.getChildCount()));
-        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
+        //TODO: check emptyness on SAVE button.
+      //  subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
 
         final View.OnClickListener thisRemoveListener = new View.OnClickListener()
         {
@@ -556,7 +584,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
             @Override
             public void validate(TextView textView, String text)
             {
-                checkCommentEmpty(content, subTaskView);
+                checkIfTaskContentEmpty(content, subTaskView);
             }
         };
 
@@ -575,7 +603,10 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
                         content.setOnEditorActionListener(null);
                     }
-                    else textView.setHint(R.string.error_hint);
+                    else {
+                        textView.setHint(R.string.error_hint);
+                        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
+                    }
                 }
                 return false;
             }
@@ -626,21 +657,44 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
     private void subItemNumberReorder(ViewGroup container_layout)
     {
-        int childCount = container_layout.getChildCount();
-
-        for(int i = 0; i < childCount; i++)
+        for(int i = 0; i < container_layout.getChildCount(); i++)
         {
             final View thisChild = container_layout.getChildAt(i);
-            final TextView child_number = (TextView) thisChild.findViewById(R.id.sub_item_number);
-
-            child_number.setText(String.format(Locale.US, "%d.", i + 1));
+            ((TextView) thisChild.findViewById(R.id.sub_item_number)).setText(String.format(Locale.US, "%d.", i + 1));
         }
     }
 
-    private void checkCommentEmpty(TextInputEditText content, View subTaskView)
+    private void checkIfTaskContentEmpty(TextInputEditText content, View subTaskView)
     {
         if (!TextUtils.isEmpty(content.getText())) subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorItem30));
         else subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
+    }
+
+    private void setOutputType(String type)
+    {
+
+        task_type_output_tv.setText(type);
+        task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(type)));
+
+        Log.e(NAME, "type is outputed");
+    }
+
+    private void setInputType(String type)
+    {
+        type_iet.setText(type);
+    }
+
+
+    private void setTaskType()
+    {
+        Bundle bundle = getArguments();
+        String type = bundle != null ? bundle.getString(TASK_TYPE, TYPE_NOT_SET) : TYPE_NOT_SET;
+
+        if (!type.equals(TYPE_NOT_SET))
+        {
+            setInputType(type);
+            setOutputType(type);
+        }
     }
 
     private void initializeInputViews(View viewHierarchy)
@@ -657,125 +711,137 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         task_type_output_tv = (TextView) viewHierarchy.findViewById(R.id.task_type);
     }
 
-    private void initializeValidators(View viewHierarchy)
+    private void initializeValidators()
     {
-        final TextInputLayout title_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.title_input_layout);
-        final TextInputLayout task_type_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.task_type_input_layout);
-        final TextInputLayout start_time_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.start_time_input_layout);
-        final TextInputLayout end_time_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.end_time_input_layout);
-        final TextInputLayout date_layout = (TextInputLayout) viewHierarchy.findViewById(R.id.date_input_layout);
+        final View fragmentView = getView();
 
-        final DateTimeValidator dateTimeValidator = new DateTimeValidator(activity, DateFormat.is24HourFormat(activity));
-
-        title_iet.addTextChangedListener(new TextValidator(title_iet)
+        if(fragmentView != null)
         {
-            @Override
-            public void validate(TextView textView, String text)
-            {
-                checkIfTextEmpty(title_iet, title_layout);
-            }
-        });
+            final TextInputLayout title_layout = (TextInputLayout) fragmentView.findViewById(R.id.title_input_layout);
+            final TextInputLayout task_type_layout = (TextInputLayout) fragmentView.findViewById(R.id.task_type_input_layout);
+            final TextInputLayout start_time_layout = (TextInputLayout) fragmentView.findViewById(R.id.start_time_input_layout);
+            final TextInputLayout end_time_layout = (TextInputLayout) fragmentView.findViewById(R.id.end_time_input_layout);
+            final TextInputLayout date_layout = (TextInputLayout) fragmentView.findViewById(R.id.date_input_layout);
 
-        title_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean b)
+            final DateTimeValidator dateTimeValidator = new DateTimeValidator(activity, DateFormat.is24HourFormat(activity));
+
+            outputTypeValidator = new TextValidator(task_type_output_tv)
             {
-                if (!b)
+                @Override
+                public void validate(TextView textView, String text)
+                {
+                    checkTypeOutput(text);
+                }
+            };
+
+            inputTypeValidator = new TextValidator(type_iet)
+            {
+                @Override
+                public void validate(TextView textView, String text)
+                {
+                    checkTypeInput(text, task_type_layout);
+                }
+            };
+
+            titleValidator = new TextValidator(title_iet)
+            {
+                @Override
+                public void validate(TextView textView, String text)
                 {
                     checkIfTextEmpty(title_iet, title_layout);
                 }
-            }
-        });
+            };
 
-        type_iet.addTextChangedListener(new TextValidator(type_iet)
-        {
-            @Override
-            public void validate(TextView textView, String text)
+            dateValidator = new TextValidator(date_iet)
             {
-                checkTypeInput(text, task_type_layout);
-            }
-        });
-
-        type_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean b)
-            {
-                if (!b)
+                @Override
+                public void validate(TextView textView, String text)
                 {
-                    if(checkIfTextEmpty(type_iet)) task_type_layout.setError(getString(R.string.empty_error));
-                    else checkIfTextEmpty(type_iet, task_type_layout);
+                    checkTimeDateInput(date_layout, dateTimeValidator.validateDate(text), dateTimeValidator.dateErrorMessage());
                 }
-            }
-        });
+            };
 
-        start_time_iet.addTextChangedListener(new TextValidator(start_time_iet)
-        {
-            @Override
-            public void validate(TextView textView, String text)
+            startTimeValidator = new TextValidator(start_time_iet)
             {
-                checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
-            }
-        });
-
-        start_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean b)
-            {
-                if (!b)
+                @Override
+                public void validate(TextView textView, String text)
                 {
-                    if(checkIfTextEmpty(start_time_iet)) start_time_layout.setError(getString(R.string.empty_error));
-                    else checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(start_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
                 }
-            }
-        });
+            };
 
-        end_time_iet.addTextChangedListener(new TextValidator(end_time_iet)
-        {
-            @Override
-            public void validate(TextView textView, String text)
+            endTimeValidator = new TextValidator(end_time_iet)
             {
-                checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
-            }
-        });
-
-        end_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean b)
-            {
-                if (!b)
+                @Override
+                public void validate(TextView textView, String text)
                 {
-                    if(checkIfTextEmpty(end_time_iet)) end_time_layout.setError(getString(R.string.empty_error));
-                    else  checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(end_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(text), dateTimeValidator.timeErrorMessage());
                 }
-            }
-        });
+            };
 
-        date_iet.addTextChangedListener(new TextValidator(date_iet)
-        {
-            @Override
-            public void validate(TextView textView, String text)
-            {
-                checkTimeDateInput(date_layout, dateTimeValidator.validateDate(text), dateTimeValidator.dateErrorMessage());
-            }
-        });
+            task_type_output_tv.addTextChangedListener(outputTypeValidator);
+            type_iet.addTextChangedListener(inputTypeValidator);
+            title_iet.addTextChangedListener(titleValidator);
+            date_iet.addTextChangedListener(dateValidator);
+            start_time_iet.addTextChangedListener(startTimeValidator);
+            end_time_iet.addTextChangedListener(endTimeValidator);
 
-        date_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean b)
-            {
-                if (!b)
-                {
-                    if(checkIfTextEmpty(date_iet)) date_layout.setError(getString(R.string.empty_error));
-                    else checkTimeDateInput(date_layout, dateTimeValidator.validateDate(date_iet.getText().toString()), dateTimeValidator.dateErrorMessage());
+            type_iet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        if (checkIfTextEmpty(type_iet))
+                            task_type_layout.setError(getString(R.string.empty_error));
+                        else checkTypeInput(type_iet.getText().toString(), task_type_layout);
+                    }
                 }
-            }
-        });
+            });
 
+            title_iet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        checkIfTextEmpty(title_iet, title_layout);
+                    }
+                }
+            });
+
+            date_iet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        if (checkIfTextEmpty(date_iet))
+                            date_layout.setError(getString(R.string.empty_error));
+                        else
+                            checkTimeDateInput(date_layout, dateTimeValidator.validateDate(date_iet.getText().toString()), dateTimeValidator.dateErrorMessage());
+                    }
+                }
+            });
+
+            start_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        if (checkIfTextEmpty(start_time_iet))
+                            start_time_layout.setError(getString(R.string.empty_error));
+                        else
+                            checkTimeDateInput(start_time_layout, dateTimeValidator.validateTime(start_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    }
+                }
+            });
+
+            end_time_iet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        if (checkIfTextEmpty(end_time_iet))
+                            end_time_layout.setError(getString(R.string.empty_error));
+                        else
+                            checkTimeDateInput(end_time_layout, dateTimeValidator.validateTime(end_time_iet.getText().toString()), dateTimeValidator.timeErrorMessage());
+                    }
+                }
+            });
+        }
     }
 
     private void checkIfTextEmpty(TextInputEditText textInput, TextInputLayout textInputLayout)
@@ -799,8 +865,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
     //TODO: Make it simpler(refactor).
     private void checkTypeInput(String text, TextInputLayout task_type_layout)
     {
-        String output_type = "";
-        int output_type_color = 0;
+        boolean fullWord = false;
 
         for (EventType type : EventType.values())
         {
@@ -808,29 +873,57 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
             {
                 task_type_layout.setErrorEnabled(false);
                 task_type_layout.setError(null);
+                task_type = type;
 
-                output_type = type.toString();
-                output_type_color = EventType.getColor(output_type);
+                fullWord = true;
                 break;
             }
             else
             {
                 task_type_layout.setError(getString(R.string.type_error));
-
-                output_type = EventType.NO_TYPE.toString();
-                output_type_color = EventType.getColor(output_type);
+                task_type = EventType.NO_TYPE;
             }
         }
+        if(fullWord) {
+            Log.e(NAME, task_type.toString());
+            setOutputType(task_type.toString());
+        }
+    }
 
-        task_type_output_tv.setText(output_type);
-        task_type_output_tv.setTextColor(ContextCompat.getColor(activity, output_type_color));
+    private void checkTypeOutput(String outputType)
+    {
+        EventType type = EventType.SCHEDULE;
+
+        boolean isSchedule = outputType.toLowerCase().equals(type.toString().toLowerCase());
+
+        if(isSchedule)
+        {
+            callAddingScheduleFragment(type);
+            task_type_output_tv.removeTextChangedListener(outputTypeValidator);
+        }
+
+        Log.e(NAME, isSchedule + " checkTypeOutput");
+    }
+
+    private void callAddingScheduleFragment(EventType type)
+    {
+        try
+        {
+            OnScheduleTypePickListener typePickListener = (OnScheduleTypePickListener) activity;
+            typePickListener.onScheduleTypePick(type);
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnScheduleTypePickListener");
+        }
     }
 
     private void checkTimeDateInput(TextInputLayout time_input_layout, boolean validation, final String errorMessage)
     {
         if(validation)
         {
-                //TODO: you should get your time/date_iet to DB from here.
+                //TODO: you should get your time/date to DB from here.
 
                 time_input_layout.setError(null);
                 time_input_layout.setErrorEnabled(false);

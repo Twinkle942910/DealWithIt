@@ -5,10 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.twinkle94.dealwithit.fragments.AbstractTabFragment;
-import com.example.twinkle94.dealwithit.fragments.PlaningFragment;
-import com.example.twinkle94.dealwithit.fragments.ScheduleFragment;
-import com.example.twinkle94.dealwithit.fragments.TodayFragment;
+import com.example.twinkle94.dealwithit.fragments.tab_fragments.AbstractTabFragment;
+import com.example.twinkle94.dealwithit.fragments.tab_fragments.PlaningFragment;
+import com.example.twinkle94.dealwithit.fragments.tab_fragments.ScheduleFragment;
+import com.example.twinkle94.dealwithit.fragments.tab_fragments.TodayFragment;
 import com.example.twinkle94.dealwithit.util.Constants;
 
 import java.util.ArrayList;

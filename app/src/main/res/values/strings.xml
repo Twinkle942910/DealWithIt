@@ -26,7 +26,7 @@
     <string name="tab_schedule_name">Schedule</string>
     <string name="tab_planing_name">Management</string>
 
-    <!-- New Task page -->
+    <!-- New Task page(fragment) -->
     <string name="activity_new_task_name">New Task</string>
     <string name="task_type_hint">Task type</string>
     <string name="task_title_hint">Task title</string>
@@ -49,16 +49,29 @@
 
     <string name="error_hint">You must input something first!</string>
 
+    <!-- New Schedule page(fragment) -->
+    <string name="task_day_hint">Day</string>
+    <string name="add_task_hint">Add task</string>
+
     <!-- Type pick dialog -->
+    <string name="pick_type_dialog_title">Chose type of task</string>
+
     <string name="dialog_ok"><b>OK</b></string>
     <string name="dialog_cancel"><b>cancel</b></string>
 
     <string name="todo_type_button">ToDo</string>
     <string name="work_task_type_button">Work Task</string>
     <string name="birthday_type_button">Birthday</string>
-    <string name="schedule_type_button">Schedule</string>
+    <string name="schedule_type_rbutton">Schedule</string>
 
     <string name="no_type_selected">No type selected</string>
+
+    <!-- Schedule Type pick dialog -->
+    <string name="pick_schedule_type_dialog_title">Chose type of schedule task</string>
+
+    <string name="lesson_type_button">Lesson</string>
+    <string name="exam_type_button">Exam</string>
+    <string name="lab_work_type_button">Laboratory Work</string>
 
     <!-- Type validation -->
     <string name="type_error">There is no type like that!</string>
@@ -74,5 +87,7 @@
     <!-- Date validation -->
     <string name="format_date" >(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)</string>
     <string name="date_input_error">Wrong input! Your date should be in DD/MM/YYYY format</string>
+    <string name="schedule_task_pick_time">Pick time</string>
+
 
 </resources>

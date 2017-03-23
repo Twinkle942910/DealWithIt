@@ -279,16 +279,16 @@ public class TodayTaskAdapter extends ArrayAdapter
         eventViewHolder.type_color = row.findViewById(R.id.type_color);
 
         eventViewHolder.task_title = (TextView) row.findViewById(R.id.task_title);
-        eventViewHolder.task_type = (TextView) row.findViewById(R.id.task_type);
+        eventViewHolder.task_type = (TextView) row.findViewById(R.id.schedule_type);
         eventViewHolder.task_type_image = (ImageView) row.findViewById(R.id.lesson_type);
 
         eventViewHolder.from_title = (TextView) row.findViewById(R.id.from_title);
-        eventViewHolder.from_time = (TextView) row.findViewById(R.id.from_time);
-        eventViewHolder.from_image = (ImageView) row.findViewById(R.id.from_time_icon);
+        eventViewHolder.from_time = (TextView) row.findViewById(R.id.schedule_start_time);
+        eventViewHolder.from_image = (ImageView) row.findViewById(R.id.schedule_start_time_icon);
 
         eventViewHolder.to_title = (TextView) row.findViewById(R.id.to_title);
-        eventViewHolder.to_time = (TextView) row.findViewById(R.id.to_time);
-        eventViewHolder.to_image = (ImageView) row.findViewById(R.id.to_time_icon);
+        eventViewHolder.to_time = (TextView) row.findViewById(R.id.schedule_end_time);
+        eventViewHolder.to_image = (ImageView) row.findViewById(R.id.schedule_end_time_icon);
 
         eventViewHolder.importance = (TextView) row.findViewById(R.id.importance_percent);
         eventViewHolder.importance_image = (ImageView) row.findViewById(R.id.importance_icon);

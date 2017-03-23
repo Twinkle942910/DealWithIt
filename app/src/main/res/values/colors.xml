@@ -24,6 +24,7 @@
     <!-- Adding page colors -->
     <color name="colorGreyText54">#8C455A64</color>
     <color name="colorGreyText10">#1A455A64</color>
+    <color name="colorGreyText5">#0d455a64</color>
     <color name="colorItem30">#5a2b96c9</color>
 
 

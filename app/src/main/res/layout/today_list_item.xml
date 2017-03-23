@@ -51,7 +51,7 @@
                 android:layout_gravity="start">
 
         <TextView
-            android:id="@+id/task_type"
+            android:id="@+id/schedule_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorText87"
@@ -94,7 +94,7 @@
                 android:text="From" />
 
             <ImageView
-                android:id="@+id/from_time_icon"
+                android:id="@+id/schedule_start_time_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -104,7 +104,7 @@
         </RelativeLayout>
 
             <TextView
-                android:id="@+id/from_time"
+                android:id="@+id/schedule_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorText87"
@@ -137,7 +137,7 @@
                     android:text="To" />
 
                 <ImageView
-                    android:id="@+id/to_time_icon"
+                    android:id="@+id/schedule_end_time_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                    android:layout_alignParentEnd="true"
@@ -147,7 +147,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/to_time"
+                android:id="@+id/schedule_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorText87"

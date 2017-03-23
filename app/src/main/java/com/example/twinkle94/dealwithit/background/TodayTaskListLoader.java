@@ -60,7 +60,7 @@ public class TodayTaskListLoader extends AsyncTask<Void, Item, Void>
 
             if(i > 0 && i < 3)
             {
-                Event event = new Schedule(i,"Algorythm Theory " + i, ScheduleType.LESSON, "10:20 AM", "11:55 AM", "07.01.2017", EventType.SCHEDULE, "Waiting", 79/2 + i*2);
+                Event event = new Schedule(i,"Algorythm Theory " + i, ScheduleType.LESSON, "10:20 AM", "11:55 AM", "07.01.2017", "Waiting", 79/2 + i*2);
                 publishProgress(event);
             }
 

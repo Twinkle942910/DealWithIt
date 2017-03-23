@@ -8,7 +8,7 @@ public abstract class TextValidator implements TextWatcher
 {
     private final TextView textView;
 
-    public TextValidator(TextView textView)
+    protected TextValidator(TextView textView)
     {
         this.textView = textView;
     }

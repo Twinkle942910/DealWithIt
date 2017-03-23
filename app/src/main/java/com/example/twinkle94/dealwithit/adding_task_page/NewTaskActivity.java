@@ -20,18 +20,22 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.fragments.AddingTaskFragment;
+import com.example.twinkle94.dealwithit.fragments.OnScheduleTypePickListener;
 
 import java.util.Calendar;
 
-public class NewTaskActivity extends AppCompatActivity
+public class NewTaskActivity extends AppCompatActivity implements OnScheduleTypePickListener
 {
     private static final String NAME = NewTaskActivity.class.getSimpleName();
+    static final String TASK_FRAGMENT_TAG = "addTaskFragment";
+    static final String SCHEDULE_FRAGMENT_TAG = "addScheduleFragment";
 
     private Toolbar toolbar;
     private AddingTaskFragment addingTaskFragment;
-
-
+    private AddingScheduleFragment addingScheduleFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,7 +50,7 @@ public class NewTaskActivity extends AppCompatActivity
         if (savedInstanceState == null)
         {
             // only create fragment if activity is started for the first time
-           initFragment();
+           initTaskTypeFragment();
 
         }
         else
@@ -102,7 +106,46 @@ public class NewTaskActivity extends AppCompatActivity
         Log.i(NAME, "onRestart");
     }
 
-    private void initFragment()
+    @Override
+    public void onScheduleTypePick(EventType type)
+    {
+        FragmentManager fm = getSupportFragmentManager();
+
+        FragmentTransaction ft = fm.beginTransaction();
+
+        //TODO: check this, it can recreate instance of fragment a lot of times.
+        if(fm.findFragmentByTag(SCHEDULE_FRAGMENT_TAG) == null)
+        {
+            addingScheduleFragment = new AddingScheduleFragment();
+        }
+
+        Bundle schedule_bundle = new Bundle();
+        schedule_bundle.putString(AddingScheduleFragment.TASK_TYPE, type.toString());
+        addingScheduleFragment.setArguments(schedule_bundle);
+
+        ft.replace(R.id.fragment_task_type_container, addingScheduleFragment, SCHEDULE_FRAGMENT_TAG);
+        ft.commit();
+    }
+
+    @Override
+    public void onTaskTypePick(EventType type)
+    {
+        AddingTaskFragment atf = (AddingTaskFragment) getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
+
+        if(atf == null)
+        {
+            Bundle task_bundle = new Bundle();
+            task_bundle.putString(AddingTaskFragment.TASK_TYPE, type.toString());
+            addingTaskFragment.setArguments(task_bundle);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_task_type_container, addingTaskFragment, TASK_FRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    private void initTaskTypeFragment()
     {
         // Get fragment manager
         FragmentManager fm = getSupportFragmentManager();
@@ -112,7 +155,7 @@ public class NewTaskActivity extends AppCompatActivity
 
         // Create the Fragment and add
         addingTaskFragment = new AddingTaskFragment();
-        ft.add(R.id.fragment_task_type, addingTaskFragment, "addTaskFragment");
+        ft.add(R.id.fragment_task_type_container, addingTaskFragment, TASK_FRAGMENT_TAG);
        // ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
 
         // Commit the changes
@@ -153,12 +196,15 @@ public class NewTaskActivity extends AppCompatActivity
     //TODO: Figure out more about communication between fragment and activity(and 2 fragments and activity(of activity))
     public void onAddTaskItem(View view)
     {
-        addingTaskFragment.addItem(view);
+
+        if(view.getId() == R.id.button_add_task) addingScheduleFragment.addScheduleTask();
+        else  addingTaskFragment.addItem(view);
     }
 
     public void onPickType(View view)
     {
-        addingTaskFragment.pickTypeDialog();
+        if(view.getId() == R.id.task_type) addingTaskFragment.pickTypeDialog();
+        else addingScheduleFragment.pickTypeDialog();
     }
 
     public void setTimePicker(View view)
@@ -175,7 +221,8 @@ public class NewTaskActivity extends AppCompatActivity
 
     private void setTaskTime(int hour, int minute, boolean am_pm, int type)
     {
-        addingTaskFragment.setTime(hour, minute, am_pm, type);
+        if(type == R.id.time_start_layout || type == R.id.time_end_layout) addingTaskFragment.setTime(hour, minute, am_pm, type);
+        else addingScheduleFragment.setTime(hour, minute, am_pm, type);
     }
 
     private void setTaskDate(int year, int month, int day)

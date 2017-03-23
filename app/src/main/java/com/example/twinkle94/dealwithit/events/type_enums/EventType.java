@@ -40,6 +40,6 @@ public enum EventType
                 return colors[event_type.ordinal()];
            }
        }
-        return colors[5];
+        return colors[4];
     }
 }
