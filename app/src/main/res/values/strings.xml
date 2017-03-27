@@ -47,7 +47,7 @@
     <string name="important_text">Important</string>
     <string name="not_important_text">Not important</string>
 
-    <string name="error_hint">You must input something first!</string>
+    <string name="error_hint">You must input something!</string>
 
     <!-- New Schedule page(fragment) -->
     <string name="task_day_hint">Day</string>

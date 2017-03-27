@@ -9,6 +9,9 @@
     android:theme="@style/MySwitch"
     android:text="@string/additional_task_info_switch_text"
     android:textColor="@color/colorGreyText54"
-    android:textSize="20sp">
+    android:textSize="20sp"
+    style="@style/TextRobotoLight"
+    android:layout_marginLeft="5dp"
+    android:layout_marginStart="5dp">
 
 </android.support.v7.widget.SwitchCompat>

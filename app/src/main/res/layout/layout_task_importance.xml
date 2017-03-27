@@ -19,7 +19,7 @@
            android:textColor="@color/colorTitleText"/>
 
     <SeekBar
-        android:id="@+id/importance"
+        android:id="@+id/importance_value"
         android:layout_width="0dp"
         android:layout_weight="7"
         android:paddingLeft="16dp"

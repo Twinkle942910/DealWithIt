@@ -13,17 +13,14 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -33,6 +30,8 @@ import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
+import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
+import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Interest;
@@ -211,7 +210,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
         if (id == R.id.save)
         {
-            addTask();
+            addTaskToDB();
             activity.finish();
             return true;
         }
@@ -372,7 +371,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
         if(fragmentView != null)
         {
-            final SeekBar importance_setting = (SeekBar) fragmentView.findViewById(R.id.importance);
+            final SeekBar importance_setting = (SeekBar) fragmentView.findViewById(R.id.importance_value);
             final TextView importance_percent_tv = (TextView) fragmentView.findViewById(R.id.importance_percent_value);
             final TextView importance_type_tv = (TextView) fragmentView.findViewById(R.id.importance_type);
 
@@ -527,7 +526,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         interestList.add(new Interest(3, 1, "School", 12));
     }
 
-    private void addTask()
+    private void addTaskToDB()
     {
         addInterests();
 
@@ -550,124 +549,8 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
 
     private void addItemView(final LinearLayout container_layout)
     {
-        LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View subTaskView = layoutInflater.inflate(R.layout.sub_task_comment_item, container_layout, false);
-
-        final TextView number = (TextView) subTaskView.findViewById(R.id.sub_item_number);
-        final ImageView remove_image = (ImageView) subTaskView.findViewById(R.id.remove_sub_task_icon);
-        final TextInputEditText content = (TextInputEditText) subTaskView.findViewById(R.id.sub_item_content);
-
-        container_layout.addView(subTaskView);
-
-        number.setText(String.format(Locale.US, "%d.", container_layout.getChildCount()));
-        //TODO: check emptyness on SAVE button.
-      //  subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
-
-        final View.OnClickListener thisRemoveListener = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                int item_index = container_layout.indexOfChild(subTaskView);
-
-                ((LinearLayout) subTaskView.getParent()).removeView(subTaskView);
-                subItemNumberReorder(container_layout);
-
-                removeItemFromLists(item_index, subTaskView, container_layout);
-
-                v.setOnClickListener(null);
-            }
-        };
-
-        final TextValidator thisValidator = new TextValidator(content)
-        {
-            @Override
-            public void validate(TextView textView, String text)
-            {
-                checkIfTaskContentEmpty(content, subTaskView);
-            }
-        };
-
-        final TextInputEditText.OnEditorActionListener thisDoneAction = new TextInputEditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE)
-                {
-                    if (!TextUtils.isEmpty(textView.getText()))
-                    {
-                        addItemToLists(textView, container_layout);
-
-                        content.removeTextChangedListener(thisValidator);
-                        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGreyText10));
-                        textView.setEnabled(false);
-
-                        content.setOnEditorActionListener(null);
-                    }
-                    else {
-                        textView.setHint(R.string.error_hint);
-                        subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
-                    }
-                }
-                return false;
-            }
-        };
-
-        content.addTextChangedListener(thisValidator);
-        content.setOnEditorActionListener(thisDoneAction);
-        remove_image.setOnClickListener(thisRemoveListener);
-    }
-
-    private void removeItemFromLists(int item_index, View subTaskView, LinearLayout container_layout)
-    {
-        //TODO: Think of something better.
-        if (!TextUtils.isEmpty(((TextView) subTaskView.findViewById(R.id.sub_item_content)).getText()))
-        {
-            switch (container_layout.getId())
-            {
-                case R.id.comment_container:
-                        //String contentt = commentList.get(item_index).getContent();
-                        commentList.remove(item_index);
-                        //Log.i("AddingTaskFragment", "comment " + contentt + " removed");
-                    break;
-
-                case R.id.sub_tasks_container:
-                       // String contentt1 = subTaskList.get(item_index).getContent();
-                        subTaskList.remove(item_index);
-                        //Log.i("AddingTaskFragment", "sub_task " + contentt1 + " removed");
-                    break;
-            }
-        }
-    }
-
-    private void addItemToLists(TextView textView, LinearLayout container_layout)
-    {
-        switch (container_layout.getId())
-        {
-            case R.id.comment_container:
-                commentList.add(new Comment(1, 1, textView.getText().toString()));
-                //Log.i("AddingTaskFragment", "comment " + textView.getText().toString() + " added");
-                break;
-
-            case R.id.sub_tasks_container:
-                subTaskList.add(new Sub_task(1, 1, textView.getText().toString(), false));
-               // Log.i("AddingTaskFragment", "sub_task " + textView.getText().toString() + " added");
-                break;
-        }
-    }
-
-    private void subItemNumberReorder(ViewGroup container_layout)
-    {
-        for(int i = 0; i < container_layout.getChildCount(); i++)
-        {
-            final View thisChild = container_layout.getChildAt(i);
-            ((TextView) thisChild.findViewById(R.id.sub_item_number)).setText(String.format(Locale.US, "%d.", i + 1));
-        }
-    }
-
-    private void checkIfTaskContentEmpty(TextInputEditText content, View subTaskView)
-    {
-        if (!TextUtils.isEmpty(content.getText())) subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorItem30));
-        else subTaskView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorError30));
+        SubTask subTask = new Task(activity, container_layout, R.layout.sub_task_comment_item, commentList, subTaskList);
+        subTask.addView();
     }
 
     private void setOutputType(String type)
@@ -676,7 +559,7 @@ public class AddingTaskFragment extends Fragment implements CompoundButton.OnChe
         task_type_output_tv.setText(type);
         task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(type)));
 
-        Log.e(NAME, "type is outputed");
+        Log.e(NAME, "type is outputted");
     }
 
     private void setInputType(String type)

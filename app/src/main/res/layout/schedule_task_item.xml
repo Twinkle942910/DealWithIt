@@ -123,7 +123,7 @@
             android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No type"
+            android:hint="@string/no_type_selected"
             android:textColor="@color/colorText87"
             android:textSize="16sp" />
 
@@ -161,7 +161,7 @@
         android:layout_marginTop="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick time"
+        android:hint="@string/schedule_task_pick_time"
         android:textColor="@color/colorText87"
         android:textSize="16sp" />
 
@@ -197,7 +197,7 @@
                 style="@style/TextRobotoLight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pick time"
+                android:hint="@string/schedule_task_pick_time"
                 android:textColor="@color/colorText87"
                 android:textSize="16sp" />
 
