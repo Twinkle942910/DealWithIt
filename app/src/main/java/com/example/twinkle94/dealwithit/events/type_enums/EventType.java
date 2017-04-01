@@ -42,4 +42,27 @@ public enum EventType
        }
         return colors[4];
     }
+
+  /*  public static EventType getName(String stringType)
+    {
+        return EventType.valueOf(stringType);
+    }*/
+
+    public static EventType getName(String stringType)
+    {
+        for(EventType type : values())
+        {
+            if( type.title.equals(stringType))
+            {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public static boolean compare(EventType type1, EventType type2)
+    {
+        return type1.equals(type2);
+    }
+
 }
