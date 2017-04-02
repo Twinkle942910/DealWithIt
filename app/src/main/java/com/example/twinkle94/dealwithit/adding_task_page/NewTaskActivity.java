@@ -104,6 +104,7 @@ public class NewTaskActivity extends AppCompatActivity implements OnTypePickList
     {
         Bundle type_bundle = new Bundle();
         type_bundle.putString(AddingTaskFragment.TASK_TYPE, type.toString());
+        type_bundle.putInt(AddingTaskFragment.TASK_TYPE_IMAGE, EventType.getImage(type.toString()));
         addingFragment.setArguments(type_bundle);
     }
 

@@ -16,12 +16,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.util.Constants;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +35,9 @@ public abstract class AbstractAddingFragment extends Fragment
     public static final String TASK_TYPE = "task_type";
     public static final String TYPE_NOT_SET = EventType.NO_TYPE.toString();
 
+    public static final String TASK_TYPE_IMAGE = "task_type_image";
+    public static final int TYPE_IMAGE_NOT_SET = Constants.NO_TYPE_IMAGE;
+
     protected NewTaskActivity activity;
     protected OnTypePickListener typePickListener;
 
@@ -41,9 +46,11 @@ public abstract class AbstractAddingFragment extends Fragment
 
     //Views
     protected TextView task_type_output_tv;
+    protected ImageView task_type_output_image_iv;
 
     //Transfer data
     protected EventType task_type = EventType.NO_TYPE;
+    protected int task_type_image = Constants.NO_TYPE_IMAGE;
 
     private TextValidator outputTypeValidator;
     private TextValidator inputTypeValidator;
@@ -70,6 +77,7 @@ public abstract class AbstractAddingFragment extends Fragment
         final View fragmentView = inflater.inflate(getFragmentLayout(), container, false);
         initializeTypeViews(fragmentView);
         initializeViews(fragmentView);
+        setTaskType();
         return fragmentView;
     }
 
@@ -77,13 +85,13 @@ public abstract class AbstractAddingFragment extends Fragment
     {
         type_iet = (TextInputEditText) fragmentView.findViewById(R.id.task_type_input);
         task_type_output_tv = (TextView) fragmentView.findViewById(R.id.task_type);
+        task_type_output_image_iv = (ImageView) fragmentView.findViewById(R.id.task_type_image);
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        setTaskType();
 
         initializeValidators();
         addValidators();
@@ -159,15 +167,22 @@ public abstract class AbstractAddingFragment extends Fragment
         task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(type)));
     }
 
+    protected void setOutputTypeImage(int type_image)
+    {
+        task_type_output_image_iv.setImageResource(type_image);
+    }
+
     protected void setTaskType()
     {
         Bundle bundle = getArguments();
         String type = bundle != null ? bundle.getString(TASK_TYPE, TYPE_NOT_SET) : TYPE_NOT_SET;
+        int type_image = bundle != null ? bundle.getInt(TASK_TYPE_IMAGE, TYPE_IMAGE_NOT_SET) : TYPE_IMAGE_NOT_SET;
 
         if (!type.equals(TYPE_NOT_SET))
         {
             setInputType(type);
             setOutputType(type);
+            setOutputTypeImage(type_image);
         }
     }
 
@@ -193,16 +208,20 @@ public abstract class AbstractAddingFragment extends Fragment
                 {
                     setInputError(true, typeInputLayout, getString(R.string.type_error));
                     task_type = type;
+                    task_type_image = EventType.getImage(task_type.toString());
 
                     fullWord = true;
                     break;
                 } else {
                     setInputError(false, typeInputLayout, getString(R.string.type_error));
                     task_type = EventType.NO_TYPE;
+                    task_type_image = Constants.NO_TYPE_IMAGE;
                 }
             }
-            if (fullWord) {
+            if (fullWord)
+            {
                 setOutputType(task_type.toString());
+                setOutputTypeImage(task_type_image);
             }
         }
     }

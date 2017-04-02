@@ -76,6 +76,14 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        if(task_type != EventType.NO_TYPE)
+            type_iet.setText(task_type_output_tv.getText().toString());
+    }
+
+    @Override
     protected void onMenuItemClick(int menu_item_id)
     {
         if (menu_item_id == R.id.save)
@@ -291,18 +299,22 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         {
             case R.id.birthday_type_button:
                 task_type = EventType.BIRTHDAY;
+                task_type_image = EventType.getImage(EventType.BIRTHDAY.toString());
                 break;
 
             case R.id.work_tasks_type_button:
                 task_type = EventType.WORKTASK;
+                task_type_image = EventType.getImage(EventType.WORKTASK.toString());
                 break;
 
             case R.id.todo_type_button:
                 task_type = EventType.TODO;
+                task_type_image = EventType.getImage(EventType.TODO.toString());
                 break;
 
             case R.id.schedule_type_button:
                 task_type = EventType.SCHEDULE;
+                task_type_image = EventType.getImage(EventType.SCHEDULE.toString());
                 taskTypeReplace(task_type);
                 b.dismiss();
                 break;

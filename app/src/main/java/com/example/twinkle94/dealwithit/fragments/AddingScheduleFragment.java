@@ -121,24 +121,28 @@ public class AddingScheduleFragment extends AbstractAddingFragment
         {
             case R.id.birthday_type_button:
                 task_type = EventType.BIRTHDAY;
+                task_type_image = EventType.getImage(EventType.BIRTHDAY.toString());
                 taskTypeReplace(task_type);
                 b.dismiss();
                 break;
 
             case R.id.work_tasks_type_button:
                 task_type = EventType.WORKTASK;
+                task_type_image = EventType.getImage(EventType.WORKTASK.toString());
                 taskTypeReplace(task_type);
                 b.dismiss();
                 break;
 
             case R.id.todo_type_button:
                 task_type = EventType.TODO;
+                task_type_image = EventType.getImage(EventType.TODO.toString());
                 taskTypeReplace(task_type);
                 b.dismiss();
                 break;
 
             case R.id.schedule_type_button:
                 task_type = EventType.SCHEDULE;
+                task_type_image = EventType.getImage(EventType.SCHEDULE.toString());
                 break;
         }
     }

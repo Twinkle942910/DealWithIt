@@ -42,11 +42,24 @@ public enum EventType
        }
         return colors[4];
     }
-
-  /*  public static EventType getName(String stringType)
+                              //TODO: better give EventType as an argument?
+    public static int getImage(String type)
     {
-        return EventType.valueOf(stringType);
-    }*/
+        int[] images = {Constants.TODO_TYPE_IMAGE,
+                Constants.BIRTHDAY_TYPE_IMAGE,
+                Constants.SCHEDULE_TYPE_IMAGE,
+                Constants.WORK_TASK_TYPE_IMAGE,
+                Constants.NO_TYPE_IMAGE};
+
+        for(EventType event_type : EventType.values())
+        {
+            if(type.equals(event_type.toString()))
+            {
+                return images[event_type.ordinal()];
+            }
+        }
+        return images[4];
+    }
 
     public static EventType getName(String stringType)
     {
