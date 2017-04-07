@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -89,7 +91,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         if (menu_item_id == R.id.save)
         {
             addSubTaskToDB();
-            activity.finish();
         }
     }
 
@@ -249,26 +250,34 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     @Override
     public void addSubTaskToDB()
     {
-        //TODO: mock data
-        interestList.add(new Interest(1, 1, "Study", 73));
-        interestList.add(new Interest(2, 1, "Book", 83));
-        interestList.add(new Interest(3, 1, "School", 12));
+        if(!isInputErrors())
+        {
+          interestList = new ArrayList<>();
 
-        ToDo todo = new ToDo(1,
-                title_iet.getText().toString(),
-                start_time_iet.getText().toString(),
-                end_time_iet.getText().toString(),
-                date_iet.getText().toString(),
-                EventType.TODO,
-                "Waiting",
-                importance_value);
+            //TODO: mock data
+            interestList.add(new Interest(1, 1, "Study", 73));
+            interestList.add(new Interest(2, 1, "Book", 83));
+            interestList.add(new Interest(3, 1, "School", 12));
 
-        todo.setListComments(commentList);
-        todo.setListSubTasks(subTaskList);
-        todo.setListInterests(interestList);
+            ToDo todo = new ToDo(1,
+                    title_iet.getText().toString(),
+                    start_time_iet.getText().toString(),
+                    end_time_iet.getText().toString(),
+                    date_iet.getText().toString(),
+                    EventType.TODO,
+                    "Waiting",
+                    importance_value);
 
-        FetchEventsTask addingToDB = new FetchEventsTask(activity);
-        addingToDB.execute("add_data", todo);
+            if(commentList != null)  todo.setListComments(commentList);
+            if(subTaskList != null) todo.setListSubTasks(subTaskList);
+            todo.setListInterests(interestList);
+
+            FetchEventsTask addingToDB = new FetchEventsTask(activity);
+            addingToDB.execute("add_data", todo);
+
+            activity.finish();
+        }
+        else Toast.makeText(activity, "Check your input!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -401,6 +410,41 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 checkEndTimeInput();
                 break;
         }
+    }
+
+    @Override
+    protected boolean isInputErrors()
+    {
+        ViewGroup fragment_view = (ViewGroup) getView();
+        boolean error_state = true;
+
+        if(fragment_view != null)
+        {
+            int inner_views_count = fragment_view.getChildCount();
+
+            for (int fragment_view_position = 0; fragment_view_position < inner_views_count; fragment_view_position++)
+            {
+                View innerView = fragment_view.getChildAt(fragment_view_position);
+
+                if(innerView instanceof ViewGroup)
+                {
+                    for (int inner_view_position = 0; inner_view_position < ((ViewGroup) innerView).getChildCount(); inner_view_position++)
+                    {
+                        if (((ViewGroup) innerView).getChildAt(inner_view_position) instanceof TextInputLayout)
+                        {
+                            if (TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getError()) && !TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getEditText().getText()))
+                            {
+                                error_state = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if(!error_state) break;
+            }
+        }
+        return error_state;
     }
 
     private void setButtonVisibility(boolean isChecked, int[] resource_array, View fragmentView)

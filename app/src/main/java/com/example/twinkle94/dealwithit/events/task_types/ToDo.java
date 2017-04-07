@@ -17,9 +17,6 @@ public class ToDo extends Event
                 EventType type, String state, int importance)
     {
         super(id, title, time_start, time_end, date, type, state, importance);
-
-        subTasks = new ArrayList<>();
-        comments = new ArrayList<>();
     }
 
     public List<Sub_task> getListSubTasks()

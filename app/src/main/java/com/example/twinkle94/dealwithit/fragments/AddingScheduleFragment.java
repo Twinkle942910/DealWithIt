@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class AddingScheduleFragment extends AbstractAddingFragment
 {
@@ -49,7 +50,6 @@ public class AddingScheduleFragment extends AbstractAddingFragment
         if (menu_item_id == R.id.save)
         {
             addSubTaskToDB();
-            activity.finish();
         }
     }
 
@@ -150,36 +150,43 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     public void addSubItem(View view)
     {
-        initScheduleTaskList();
-
-        SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date, scheduleList);
-        ((ScheduleTask)subTask).setOnTimeSetListener(new ScheduleTask.OnTimeSetListener()
+        if(date != null)
         {
-            @Override
-            public void onTimeSet(TextView time_tv, View view)
-            {
-                start_end_time_tv = time_tv;
-                activity.setTimePicker(view);
-            }
-        });
-        subTask.addView();
+            initScheduleTaskList();
+
+            SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date, scheduleList);
+            ((ScheduleTask) subTask).setOnTimeSetListener(new ScheduleTask.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TextView time_tv, View view) {
+                    start_end_time_tv = time_tv;
+                    activity.setTimePicker(view);
+                }
+            });
+            subTask.addView();
+        }
+        else Toast.makeText(activity, "You have to chose a day first!", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void addSubTaskToDB()
     {
-        FetchEventsTask addingToDB = new FetchEventsTask(activity);
-        List<Interest> interestList = new ArrayList<>();
-
-        interestList.add(new Interest(1, 1, "Study", 73));
-        interestList.add(new Interest(2, 1, "Book", 83));
-        interestList.add(new Interest(3, 1, "School", 12));
-
-        for (Schedule schedule : scheduleList)
+        if(!isInputErrors())
         {
-            schedule.setListInterests(interestList);
-            addingToDB.execute("add_data", schedule);
+            List<Interest> interestList = new ArrayList<>();
+
+            interestList.add(new Interest(1, 1, "Study", 73));
+            interestList.add(new Interest(2, 1, "Book", 83));
+            interestList.add(new Interest(3, 1, "School", 12));
+
+            for (Schedule schedule : scheduleList)
+            {
+                schedule.setListInterests(interestList);
+                new FetchEventsTask(activity).execute("add_data", schedule);
+            }
+
+            activity.finish();
         }
+        else Toast.makeText(activity, "Check your input!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -209,6 +216,17 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     protected void validate(TextView textView, String text)
     {
 
+    }
+
+    @Override
+    protected boolean isInputErrors()
+    {
+        if(scheduleList == null) return true;
+
+        if(scheduleList.size() != task_container_ly.getChildCount())
+            return true;
+
+        return false;
     }
 
     @Override
@@ -269,8 +287,8 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                         ((TextView) view).setTextAppearance(R.style.TextRobotoRegular);
                     }
 
-                    date = setFullDay((int)view.getTag());
-                    ((TextView) view).setText(date);
+                    initWeek();
+                    ((TextView) view).setText(setFullDay((int)view.getTag()));
                 }
             });
         }
@@ -303,5 +321,79 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     {
         String[] days_array = getResources().getStringArray(R.array.days_array);
         return days_array[day_index];
+    }
+
+    private void initWeek()
+    {
+        // Get Current Date
+        final Calendar calendar = Calendar.getInstance();
+
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int  mMonth = calendar.get(Calendar.MONTH);
+        int mYear = calendar.get(Calendar.YEAR);
+
+        String myFormatDate = "dd/MM/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormatDate, Locale.US);
+
+        int dayMonday = 0;
+
+        switch (day)
+        {
+            // Current day is Monday
+            case Calendar.MONDAY:
+                dayMonday = 0;
+                break;
+
+            // Current day is Tuesday
+            case Calendar.TUESDAY:
+                dayMonday =  - 1;
+                break;
+
+            // Current day is Wednesday
+            case Calendar.WEDNESDAY:
+                dayMonday =  - 2;
+                break;
+
+            // Current day is Thursday
+            case Calendar.THURSDAY:
+                dayMonday =  - 3;
+                break;
+
+            // Current day is Friday
+            case Calendar.FRIDAY:
+                dayMonday =  - 4;
+                break;
+
+            // Current day is Saturday
+            case Calendar.SATURDAY:
+                dayMonday =  - 5;
+                break;
+
+            // Current day is Sunday
+            case Calendar.SUNDAY:
+                dayMonday =  - 6;
+                break;
+        }
+
+        calendar.set(Calendar.MONTH, mMonth);
+        calendar.set(Calendar.YEAR, mYear);
+
+        setDays(calendar, dateFormat, dayMonday);
+    }
+
+    private void setDays(Calendar c, SimpleDateFormat sdf, int dayMonday)
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            if(i == 0)
+            {
+                c.add(Calendar.DAY_OF_MONTH, dayMonday);
+            }
+            else
+            {
+                c.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+        date = sdf.format(c.getTime());
     }
 }

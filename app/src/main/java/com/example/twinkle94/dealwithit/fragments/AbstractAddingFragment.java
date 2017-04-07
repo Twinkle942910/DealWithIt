@@ -32,6 +32,8 @@ import java.util.Locale;
 
 public abstract class AbstractAddingFragment extends Fragment
 {
+    private static final String NAME = AbstractAddingFragment.class.getSimpleName();
+
     public static final String TASK_TYPE = "task_type";
     public static final String TYPE_NOT_SET = EventType.NO_TYPE.toString();
 
@@ -155,6 +157,37 @@ public abstract class AbstractAddingFragment extends Fragment
             else task_type_layout.setError(error);
         }
     }
+
+  /*  protected boolean isInputErrors()
+    {
+        ViewGroup fragment_view = (ViewGroup) getView();
+
+        if(fragment_view != null) return checkAll(fragment_view);
+        return true;
+    }
+
+    private boolean checkAll(ViewGroup currentView)
+    {
+            for(int i = 0; i < currentView.getChildCount(); i++)
+            {
+                if (currentView.getChildAt(i) instanceof TextInputLayout)
+                {
+                    if (!TextUtils.isEmpty(((TextInputLayout) currentView).getError()))
+                        return false;
+                }
+
+                if (currentView.getChildAt(i) instanceof ViewGroup)
+                {
+                    ViewGroup innerView = (ViewGroup) currentView.getChildAt(i);
+                    return checkAll(innerView);
+                }
+                else
+                    {
+                }
+            }
+
+        return true;
+    }*/
 
     protected void setInputType(String type)
     {
@@ -405,6 +438,7 @@ public abstract class AbstractAddingFragment extends Fragment
     protected abstract void initializeValidators();
     protected abstract void addValidators();
     protected abstract void validate(TextView textView, String text);
+    protected abstract boolean isInputErrors();
     protected abstract void removeValidators();
     protected abstract void initializeListeners();
     protected abstract void setListeners();

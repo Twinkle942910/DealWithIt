@@ -98,6 +98,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
         long newRowId = db.insert(EventInfoContract.EventEntry.TABLE_NAME, null, contentValues);
 
+        if(interests != null)
         //Adding interests
         for(Interest interest : interests)
         {
@@ -151,6 +152,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
         long newRowId = db.insert(EventInfoContract.EventEntry.TABLE_NAME, null, contentValues);
 
+        if(interests != null)
         //Adding interests
         for(Interest interest : interests)
         {
@@ -163,6 +165,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValuesInterests);
         }
 
+        if(sub_tasks != null)
         //Adding subTasks
         for(Sub_task sub_task : sub_tasks)
         {
@@ -175,6 +178,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             db.insert(EventInfoContract.SubTaskEntry.TABLE_NAME, null, contentValuesSubTasks);
         }
 
+        if(comments != null)
         //Adding Comments
         for(Comment comment : comments)
         {
