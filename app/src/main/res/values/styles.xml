@@ -15,8 +15,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -167,6 +165,16 @@
 
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">@color/colorTitleText</item>
+    </style>
+
+
+    <!-- Interests activity theme. -->
+    <style name="InterestsTheme" parent="AppTheme.NoActionBar">
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorInterestsPrimary</item>
+        <item name="colorPrimaryDark">@color/colorInterestsPrimaryDark</item>
+
     </style>
 
 </resources>

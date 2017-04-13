@@ -1,6 +1,9 @@
 package com.example.twinkle94.dealwithit.events;
 
-public class Interest
+import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestItem;
+import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestItemType;
+
+public class Interest implements InterestItem
 {
     private int id;
 
@@ -46,5 +49,11 @@ public class Interest
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @Override
+    public int getType()
+    {
+        return InterestItemType.INTEREST.ordinal();
     }
 }

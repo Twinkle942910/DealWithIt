@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item android:id="@+id/interests_info"
+            android:title="@string/menu_interests"
+            android:orderInCategory="1"
+            android:icon="@drawable/ic_info_interests"
+            app:showAsAction="ifRoom" />
+
+        <item android:id="@+id/show_all"
+            android:title="@string/menu_show_all"
+            android:orderInCategory="2"
+            app:showAsAction="never" />
+
+        <item android:id="@+id/show_important"
+            android:title="@string/menu_important"
+            android:orderInCategory="3"
+            app:showAsAction="never" />
+
+        <item android:id="@+id/show_not_important"
+            android:title="@string/menu_not_important"
+            android:orderInCategory="4"
+            app:showAsAction="never" />
+
+        <item android:id="@+id/show_az"
+            android:title="@string/menu_az"
+            android:orderInCategory="5"
+            app:showAsAction="never" />
+
+        <item android:id="@+id/show_za"
+            android:title="@string/menu_za"
+            android:orderInCategory="6"
+            app:showAsAction="never" />
+
+</menu>

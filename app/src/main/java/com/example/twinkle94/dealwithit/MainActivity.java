@@ -1,6 +1,7 @@
 package com.example.twinkle94.dealwithit;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.view.View;
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.background.TodayTaskListLoader;
+import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 import com.example.twinkle94.dealwithit.util.Constants;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -151,9 +153,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId())
         {
             case R.id.interests:
-               /* Intent intent = new Intent(this, InterestsActivity.class);
-                intent.putExtra("red_code", "From main activity");
-                startActivity(intent);*/
+                Intent intent = new Intent(this, InterestsActivity.class);
+                startActivity(intent);
                 return true;
         }
 

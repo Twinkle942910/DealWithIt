@@ -111,16 +111,8 @@ public class NewTaskActivity extends AppCompatActivity implements OnTypePickList
     //init Toolbar
     private void initToolbar()
     {
-        float density = Resources.getSystem().getDisplayMetrics().density;
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //TODO: Move this, because it wastes a lot of time when activity loads.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            toolbar.setElevation((4 * density));
-        }
     }
 
     private void setHomeButton()
