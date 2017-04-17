@@ -116,6 +116,26 @@
         <item name="android:textColor">@color/colorNotificationText</item>
     </style>
 
+    <style name="InterestEditTextFloatingLabel" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorInterestsPrimary</item>
+        <item name="android:textSize">@dimen/edit_text_floating_label_size</item>
+    </style>
+
+    <style name="InterestEditTextTheme">
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:singleLine">true</item>
+        <item name="colorControlNormal">@color/colorGreyText54</item>
+        <item name="colorControlActivated">@color/colorInterestsPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTitleText</item>
+        <item name="android:textSize">@dimen/edit_text_label_size</item>
+    </style>
+
+    <style name="InterestEditText">
+        <item name="android:textColor">@color/colorNotificationText</item>
+        <item name="android:theme">@style/InterestEditTextTheme</item>
+        <item name="android:paddingTop">4dp</item>
+    </style>
+
     <!-- CheckBox theme. -->
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/colorText87</item>
@@ -125,6 +145,15 @@
     <!-- Seekbar theme. -->
     <style name="MySeekbarStyle">
         <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:minHeight">5dip</item>
+        <item name="android:maxHeight">5dip</item>
+    </style>
+
+    <style name="SeekbarInterestStyle">
+        <item name="colorControlActivated">@color/colorInterestsPrimary</item>
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@android:drawable/progress_indeterminate_horizontal</item>
         <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
@@ -153,6 +182,13 @@
         <item name="colorControlNormal">@color/colorText87</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="android:paddingRight">@dimen/radio_button_text_padding</item>
+    </style>
+
+    <!-- Interest Dialog theme. -->
+    <style name="InterestAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorInterestsPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTitleText</item>
+        <item name="android:background">@color/colorInterestsBackground</item>
     </style>
 
     <!-- Switch theme. -->

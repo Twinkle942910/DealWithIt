@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
@@ -18,39 +18,40 @@
         android:id="@+id/interest_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/interest_color"
+        android:layout_toEndOf="@id/interest_color"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         style="@style/TextRobotoRegular"
         android:textSize="16sp"
         android:textColor="@color/colorNotificationText"
-        android:text="Work"
-        android:layout_weight="9"/>
-
-    <TextView
-        android:id="@+id/interest_importance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_gravity="center_vertical"
-        style="@style/TextRobotoLight"
-        android:textSize="16sp"
-        android:textColor="@color/colorNotificationText"
-        android:text="63%"
-        android:layout_weight="1"/>
+        android:text="Work" />
 
     <ImageView
         android:id="@+id/interest_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:tint="@color/colorTypeToDo"
         app:srcCompat="@drawable/ic_open_menu"
-        android:layout_weight="1"/>
+       android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/interest_importance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true"
+        style="@style/TextRobotoLight"
+        android:textSize="16sp"
+        android:textColor="@color/colorNotificationText"
+        android:text="63%"
+        android:layout_toLeftOf="@id/interest_menu"
+        android:layout_toStartOf="@id/interest_menu"/>
 
 
 
-</LinearLayout>
+</RelativeLayout>

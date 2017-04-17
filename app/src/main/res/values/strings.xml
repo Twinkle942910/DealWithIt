@@ -100,4 +100,11 @@
     <string name="menu_az">A-z</string>
     <string name="menu_za">Z-a</string>
 
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+
+    <string name="interest_input_hint">Interest title</string>
+
+    <string name="input_dialog_title">New interest</string>
+
 </resources>

@@ -10,4 +10,11 @@
     <style name="MyRadioButton" parent="Theme.AppCompat.Light">
         <item name="android:paddingStart">@dimen/radio_button_text_padding</item>
     </style>
+
+    <style name="InterestAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorInterestsPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTitleText</item>
+        <item name="android:titleTextAppearance">@style/TextRobotoLight</item>
+        <item name="android:background">@color/colorInterestsBackground</item>
+    </style>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +25,7 @@
         android:id="@+id/interests_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
+
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </ListView>
 

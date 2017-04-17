@@ -1,23 +1,45 @@
 package com.example.twinkle94.dealwithit.interests_page;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestsAdapter;
 import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.fragments.AddingTaskFragment;
+import com.example.twinkle94.dealwithit.util.TextValidator;
 
-public class InterestsActivity extends AppCompatActivity
+public class InterestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
     private Toolbar toolbar;
     private ListView interests_lv;
+    private FloatingActionButton add_interest_fab;
+
+    private InterestsAdapter interestsAdapter;
+    private int importance_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,39 +48,29 @@ public class InterestsActivity extends AppCompatActivity
         setContentView(R.layout.activity_interests);
 
         initToolbar();
+        initFab();
         initInterestList();
+    }
+
+    private void initFab()
+    {
+        add_interest_fab = (FloatingActionButton) findViewById(R.id.new_interest);
+        add_interest_fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                inputInterestDialog();
+            }
+        });
     }
 
     private void initInterestList()
     {
         interests_lv = (ListView) findViewById(R.id.interests_list);
-        InterestsAdapter interestsAdapter  =  new InterestsAdapter(this);
-
-        interestsAdapter.add(new InterestHeader("Important"));
-        interestsAdapter.add(new Interest(1, 1, "Study", 64));
-        interestsAdapter.add(new Interest(1, 1, "Friends", 83));
-        interestsAdapter.add(new InterestHeader("Not important"));
-        interestsAdapter.add(new Interest(1, 1, "Soc. Networks", 33));
-        interestsAdapter.add(new Interest(1, 1, "Books", 56));
-        interestsAdapter.add(new Interest(1, 1, "Work", 23));
-
-        interestsAdapter.add(new InterestHeader("Important"));
-        interestsAdapter.add(new Interest(1, 1, "Study", 64));
-        interestsAdapter.add(new Interest(1, 1, "Friends", 83));
-        interestsAdapter.add(new InterestHeader("Not important"));
-        interestsAdapter.add(new Interest(1, 1, "Soc. Networks", 33));
-        interestsAdapter.add(new Interest(1, 1, "Books", 56));
-        interestsAdapter.add(new Interest(1, 1, "Work", 23));
-
-        interestsAdapter.add(new InterestHeader("Important"));
-        interestsAdapter.add(new Interest(1, 1, "Study", 64));
-        interestsAdapter.add(new Interest(1, 1, "Friends", 83));
-        interestsAdapter.add(new InterestHeader("Not important"));
-        interestsAdapter.add(new Interest(1, 1, "Soc. Networks", 33));
-        interestsAdapter.add(new Interest(1, 1, "Books", 56));
-        interestsAdapter.add(new Interest(1, 1, "Work", 23));
-
+        interestsAdapter  =  new InterestsAdapter(this);
         interests_lv.setAdapter(interestsAdapter);
+        interests_lv.setOnItemClickListener(this);
     }
 
     //Toolbar menu implementation
@@ -120,5 +132,215 @@ public class InterestsActivity extends AppCompatActivity
         }
     }
 
+    int last_important_position = 0;
+    int last_not_important_position = 0;
 
+    public void inputInterestDialog()
+    {
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_layout);
+
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.InterestAlertDialogStyle);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View dialogView = inflater.inflate(R.layout.dialog_new_interest, null);
+        dialogBuilder.setView(dialogView);
+
+        dialogBuilder.setTitle(R.string.input_dialog_title);
+
+        final TextInputEditText interest_title_iet = (TextInputEditText) dialogView.findViewById(R.id.interest_title_input);
+        final TextInputLayout interest_title_il = (TextInputLayout) dialogView.findViewById(R.id.interest_title_input_layout);
+
+        final TextValidator interest_input_validator = new TextValidator(interest_title_iet)
+        {
+            @Override
+            public void validate(TextView textView, String text)
+            {
+               setInputError(!checkIfTextEmpty(textView), interest_title_il, getString(R.string.empty_error));
+            }
+        };
+
+        interest_title_iet.addTextChangedListener(interest_input_validator);
+        interest_title_iet.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                setInputError(!checkIfTextEmpty(interest_title_iet), interest_title_il, getString(R.string.empty_error));
+            }
+        });
+
+        final SeekBar interest_importance_sb = (SeekBar) dialogView.findViewById(R.id.importance_value);
+        final TextView importance_percent_tv = (TextView) dialogView.findViewById(R.id.importance_percent_value);
+        final TextView importance_type_tv = (TextView) dialogView.findViewById(R.id.importance_type);
+
+        interest_importance_sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+                                                           {
+                                                               @Override
+                                                               public void onProgressChanged(SeekBar seekBar, int i, boolean b)
+                                                               {
+                                                                   importance_value = i;
+                                                                   importance_percent_tv.setText(importance_value + "%");
+
+                                                                   if (importance_value >= 60)
+                                                                       importance_type_tv.setText(R.string.important_text);
+                                                                   else importance_type_tv.setText(R.string.not_important_text);
+                                                               }
+
+                                                               @Override
+                                                               public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                                               }
+
+                                                               @Override
+                                                               public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                                               }
+                                                           });
+
+        dialogBuilder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
+                if(TextUtils.isEmpty(interest_title_il.getError()) && !TextUtils.isEmpty(interest_title_iet.getText()) && importance_value > 0)
+                {
+
+                    if(importance_value >= 60 && !interestsAdapter.isHeaderThere("Important"))
+                    {
+                        interestsAdapter.add(new InterestHeader("Important"));
+                        last_important_position = interestsAdapter.getCount();
+                    }
+                    else if(importance_value < 60 && !interestsAdapter.isHeaderThere("Not important"))
+                    {
+                        interestsAdapter.add(new InterestHeader("Not important"));
+                        last_not_important_position = interestsAdapter.getCount();
+                    }
+
+                    if(importance_value >= 60)
+                    {
+                        interestsAdapter.add(last_important_position, new Interest(0, 0, interest_title_iet.getText().toString(), importance_value));
+                        last_important_position += 1;
+                    }
+                    else
+                    {
+                        interestsAdapter.add(last_not_important_position, new Interest(0, 0, interest_title_iet.getText().toString(), importance_value));
+                        last_not_important_position += 1;
+                    }
+
+                    interestsAdapter.updateAll();
+
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Interest " + "Interest title" + " was created", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View view)
+                                {
+                                    interestsAdapter.remove(interestsAdapter.getCount() - 1);
+                                    interestsAdapter.updateAll();
+                                }
+                            });
+
+                    snackbar.setActionTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorInterestsAccent));
+
+                    View snackbarView = snackbar.getView();
+                    TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setMaxLines(2);
+
+                    snackbar.show();
+                }
+                else
+                    {
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Error! Interest was not created.\nYou must input name and importance", Snackbar.LENGTH_LONG)
+                            .setAction("AGAIN", new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View view)
+                                {
+                                   inputInterestDialog();
+                                }
+                            });
+
+                        snackbar.setActionTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorInterestsAccent));
+
+                        View snackbarView = snackbar.getView();
+                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setMaxLines(2);
+
+                    snackbar.show();
+                }
+
+                interest_title_iet.removeTextChangedListener(interest_input_validator);
+                interest_title_iet.setOnFocusChangeListener(null);
+
+                interest_importance_sb.setProgress(0);
+                interest_importance_sb.setOnSeekBarChangeListener(null);
+            }
+        });
+
+        dialogBuilder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
+                interest_title_iet.removeTextChangedListener(interest_input_validator);
+                interest_title_iet.setOnFocusChangeListener(null);
+
+                interest_importance_sb.setProgress(0);
+                interest_importance_sb.setOnSeekBarChangeListener(null);
+            }
+        });
+
+        dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener()
+        {
+            @Override
+            public void onCancel(DialogInterface dialogInterface)
+            {
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorLayout, "Error! Interest was not created.\nYou must save your input", Snackbar.LENGTH_LONG)
+                        .setAction("AGAIN", new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                inputInterestDialog();
+                            }
+                        });
+
+                snackbar.setActionTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorInterestsAccent));
+
+                View snackbarView = snackbar.getView();
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setMaxLines(2);
+
+                snackbar.show();
+            }
+        });
+
+        final AlertDialog b = dialogBuilder.create();
+
+        b.show();
+    }
+
+    protected boolean checkIfTextEmpty(TextView textInput)
+    {
+        return TextUtils.isEmpty(textInput.getText());
+    }
+
+    protected void setInputError(boolean isAlright, TextInputLayout task_type_layout, String error)
+    {
+        if(task_type_layout != null)
+        {
+            if (isAlright)
+            {
+                task_type_layout.setErrorEnabled(false);
+                task_type_layout.setError(null);
+            }
+            else task_type_layout.setError(error);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        //List item click!
+    }
 }

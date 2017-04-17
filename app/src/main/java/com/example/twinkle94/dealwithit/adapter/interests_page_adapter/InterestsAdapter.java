@@ -2,20 +2,25 @@ package com.example.twinkle94.dealwithit.adapter.interests_page_adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterestsAdapter extends BaseAdapter
+public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuItemClickListener
 {
     private static final int INTEREST = 0;
     private static final int INTEREST_HEADER = 1;
@@ -97,6 +102,34 @@ public class InterestsAdapter extends BaseAdapter
         interests.add(interest);
     }
 
+    public void add(int position, InterestItem interest)
+    {
+        interests.add(position, interest);
+    }
+
+    public boolean isHeaderThere(String importance)
+    {
+        for (InterestItem interest : interests)
+        {
+            if (interest instanceof InterestHeader)
+            {
+                if(((InterestHeader)interest).toString().equals(importance))
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void remove(int position)
+    {
+        interests.remove(position);
+    }
+
+    public void updateAll()
+    {
+        notifyDataSetChanged();
+    }
+
     private View getInflatedLayoutForType(int type, ViewGroup parent)
     {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -152,11 +185,46 @@ public class InterestsAdapter extends BaseAdapter
                 viewHolder.interest_title_tv.setText(((Interest)interestItem).getTitle());
                 viewHolder.interest_importance_tv.setText(Integer.toString(interest_importance) + "%");
                 viewHolder.interest_menu_iv.setColorFilter(interest_color);
+
+                viewHolder.interest_menu_iv.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        showPopup(view);
+                    }
+                });
                 break;
 
             case INTEREST_HEADER:
                 viewHolder.header_text_tv.setText(interestItem.toString());
                 break;
+        }
+    }
+
+    private void showPopup(View v)
+    {
+        PopupMenu popup = new PopupMenu(context, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_interests_item, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.edit:
+                ((InterestsActivity)context).inputInterestDialog();
+               //
+                return true;
+            case R.id.delete:
+                Toast.makeText(context, "Delete!", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return false;
         }
     }
 
