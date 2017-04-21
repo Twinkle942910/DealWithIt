@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Interest;
@@ -20,7 +19,7 @@ import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuItemClickListener
+public class InterestsAdapter extends BaseAdapter
 {
     private static final int INTEREST = 0;
     private static final int INTEREST_HEADER = 1;
@@ -107,17 +106,22 @@ public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuIte
         interests.add(position, interest);
     }
 
-    public boolean isHeaderThere(String importance)
+    public int headerPosition(String importance)
     {
         for (InterestItem interest : interests)
         {
             if (interest instanceof InterestHeader)
             {
                 if(((InterestHeader)interest).toString().equals(importance))
-                return true;
+                    return interests.indexOf(interest);
             }
         }
-        return false;
+        return -1;
+    }
+
+    public int itemPosition(InterestItem interestItem)
+    {
+        return interests.indexOf(interestItem);
     }
 
     public void remove(int position)
@@ -167,7 +171,7 @@ public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuIte
         }
     }
 
-    private void setViewValues(int type, int position,  InterestViewHolder viewHolder)
+    private void setViewValues(int type, final int position, InterestViewHolder viewHolder)
     {
         // Get the data item for this position
         InterestItem interestItem = getItem(position);
@@ -191,7 +195,7 @@ public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuIte
                     @Override
                     public void onClick(View view)
                     {
-                        showPopup(view);
+                        showPopup(view, position);
                     }
                 });
                 break;
@@ -202,30 +206,30 @@ public class InterestsAdapter extends BaseAdapter implements PopupMenu.OnMenuIte
         }
     }
 
-    private void showPopup(View v)
+    private void showPopup(View v, final int interest_position)
     {
         PopupMenu popup = new PopupMenu(context, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_interests_item, popup.getMenu());
-        popup.setOnMenuItemClickListener(this);
-        popup.show();
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item)
-    {
-        switch (item.getItemId())
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
         {
-            case R.id.edit:
-                ((InterestsActivity)context).inputInterestDialog();
-               //
-                return true;
-            case R.id.delete:
-                Toast.makeText(context, "Delete!", Toast.LENGTH_LONG).show();
-                return true;
-            default:
-                return false;
-        }
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                switch (item.getItemId())
+                {
+                    case R.id.edit:
+                        ((InterestsActivity)context).editInterestDialog(interest_position);
+                        return true;
+                    case R.id.delete:
+                        ((InterestsActivity)context).deleteInterestDialog(interest_position);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
     }
 
     private static class InterestViewHolder

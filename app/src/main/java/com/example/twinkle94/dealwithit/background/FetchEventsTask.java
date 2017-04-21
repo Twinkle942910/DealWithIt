@@ -33,42 +33,87 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
     protected String doInBackground(Object... params)
     {
         String operation = (String)params[0];
-        EventType event_type = ((Event)params[1]).getType();
+        String event_type;
+
+        if(params[1] instanceof Event)
+        {
+            event_type = ((Event) params[1]).getType().toString();
+        }
+        else
+        {
+            event_type = params[1].getClass().getSimpleName();
+        }
+
         String result = null;
         EventInfoDB eventInfoDB = new EventInfoDB(context);
 
         switch (operation)
         {
             case "add_data":
-                result = addDataToDB(event_type, eventInfoDB, (Event)params[1]);
+                result = addDataToDB(event_type, eventInfoDB, params[1]);
+                break;
+
+            case "remove_data":
+                result = removeDataFromDB(event_type, eventInfoDB, params[1]);
                 break;
         }
         return result;
     }
 
-    //TODO: change String types to Enum!
-    private String addDataToDB(EventType event_type, EventInfoDB eventInfoDB, Event event)
+    private String addDataToDB(String event_type, EventInfoDB eventInfoDB, Object event)
     {
         switch (event_type)
         {
-            case SCHEDULE:
-                addScheduleTask(eventInfoDB, event);
+            case "Schedule":
+                addScheduleTask(eventInfoDB, (Event) event);
                 break;
 
-            case TODO:
-                addToDoTask(eventInfoDB, event);
+            case "ToDo":
+                addToDoTask(eventInfoDB,  (Event) event);
                 break;
 
-            case WORKTASK:
+            case "Work Task":
 
                 break;
 
-            case BIRTHDAY:
+            case "Birthday":
 
+                break;
+
+            case "Interest":
+                addDataToInterest(eventInfoDB, (Interest) event);
                 break;
         }
 
         return event_type + " was added to DB";
+    }
+
+    private String removeDataFromDB(String event_type, EventInfoDB eventInfoDB, Object event)
+    {
+        switch (event_type)
+        {
+            case "Schedule":
+                // addScheduleTask(eventInfoDB, (Event) event);
+                break;
+
+            case "ToDo":
+                // addToDoTask(eventInfoDB,  (Event) event);
+                break;
+
+            case "Work Task":
+
+                break;
+
+            case "Birthday":
+
+                break;
+
+            case "Interest":
+                removeDataFromInterest(eventInfoDB, ((Interest) event).getId());
+                break;
+        }
+
+        return event_type + " was removed from DB";
     }
 
     private void addScheduleTask(EventInfoDB eventInfoDB, Event event)
@@ -193,6 +238,30 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         Log.i(TAG, "New Row " + newRowId + " Inserted..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
+    private void addDataToInterest(EventInfoDB eventInfoDB, Interest interest)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.InterestEntry.ID_EVENT, interest.getEvent_id());
+        contentValues.put(EventInfoContract.InterestEntry.TITLE, interest.getTitle());
+        contentValues.put(EventInfoContract.InterestEntry.VALUE, interest.getValue());
+
+        long newRowId = db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValues);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
+    }
+
+    private void removeDataFromInterest(EventInfoDB eventInfoDB, int interest_id)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.InterestEntry.TABLE_NAME, EventInfoContract.InterestEntry._ID + "= ?", new String[]{String.valueOf(interest_id)});
+        db.close();
+    }
+
     /*private void addDataToComment(EventInfoDB eventInfoDB)
     {
         int  event_Id = 1;
@@ -233,25 +302,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
     }
 
-    private void addDataToInterest(EventInfoDB eventInfoDB)
-    {
-        int  event_Id = 1;
-        String  title = "Boys";
-        int value = 53;
-
-        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(EventInfoContract.InterestEntry.ID_EVENT, event_Id);
-        contentValues.put(EventInfoContract.InterestEntry.TITLE, title);
-        contentValues.put(EventInfoContract.InterestEntry.VALUE, value);
-
-        long newRowId = db.insert(EventInfoContract.InterestEntry.TABLE_NAME, null, contentValues);
-
-        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
-
-    }
 
     private void addDataToScheduleType(EventInfoDB eventInfoDB)
     {

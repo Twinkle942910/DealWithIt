@@ -106,5 +106,7 @@
     <string name="interest_input_hint">Interest title</string>
 
     <string name="input_dialog_title">New interest</string>
+    <string name="edit_dialog_title">Edit interest</string>
+    <string name="delete_dialog_title">Delete interest</string>
 
 </resources>
