@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        Log.i("MainActivity", "onCreate");
+        Log.i("MainActivity", "(onCreate) The activity is created.");
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -59,47 +59,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //TODO: remove fragment here, or onStop().
-
-        Log.i("MainActivity", "onPause");
-    }
-
-    @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         super.onStart();
-        Log.i("MainActivity", "onStart");
+        Log.i("MainActivity", "(onStart) The activity is visible and about to be started.");
     }
 
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-        Log.i("MainActivity", "onStop");
-    }
 
     @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Log.i("MainActivity", "onDestroy");
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Log.i("MainActivity", "onResume");
-    }
-
-    @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         super.onRestart();
-        Log.i("MainActivity", "onRestart");
+        Log.i("MainActivity", "(onRestart) The activity is visible and about to be restarted.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("MainActivity", "(onResume) The activity is and has focus (it is now \"resumed\")");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("MainActivity",
+                "(onPause) Another activity is taking focus (this activity is about to be \"paused\")");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("MainActivity", "(onStop) The activity is no longer visible (it is now \"stopped\")");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("MainActivity", "(onDestroy) The activity is about to be destroyed.");
     }
 
     //get - select tab position (current page)

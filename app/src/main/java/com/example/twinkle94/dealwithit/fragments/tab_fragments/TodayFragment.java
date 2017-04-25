@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.background.TodayTaskListLoader;
 
 public class TodayFragment extends AbstractTabFragment
 {
@@ -56,9 +57,6 @@ public class TodayFragment extends AbstractTabFragment
     {
         super.onActivityCreated(savedInstanceState);
         Log.i(TODAY_PAGE, "onActivityCreated");
-
-        //TODO: move from here!
-       // new TodayTaskListLoader(context).execute();
     }
 
     @Override
@@ -69,9 +67,13 @@ public class TodayFragment extends AbstractTabFragment
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         Log.i(TODAY_PAGE, "onResume");
+
+        //TODO: move from here!     //why it crashes on portrait view, when we pass context here?
+        new TodayTaskListLoader(getActivity()).execute();
     }
 
     @Override

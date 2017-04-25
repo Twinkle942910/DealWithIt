@@ -24,9 +24,6 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
-import com.example.twinkle94.dealwithit.events.Comment;
-import com.example.twinkle94.dealwithit.events.Interest;
-import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.util.DateTimeValidator;
@@ -34,7 +31,6 @@ import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -55,10 +51,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private TextInputEditText start_time_iet;
     private TextInputEditText end_time_iet;
 
-    private List<Comment> commentList;
-    private List<Sub_task> subTaskList;
-    private List<Interest> interestList;
-
     //Transfer data
     private int importance_value;
 
@@ -68,7 +60,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private TextValidator endTimeValidator;
     private DateTimeValidator dateTimeValidator;
 
-   private View.OnFocusChangeListener inputFocusChangeListener;
+    private View.OnFocusChangeListener inputFocusChangeListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -90,7 +82,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     {
         if (menu_item_id == R.id.save)
         {
-            addSubTaskToDB();
+            saveInput();
         }
     }
 
@@ -248,32 +240,34 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     }
 
     @Override
-    public void addSubTaskToDB()
+    public void saveInput()
     {
         if(!isInputErrors())
         {
-          interestList = new ArrayList<>();
+            switch (task_type)
+            {
+                case TODO:
 
-            //TODO: mock data
-            interestList.add(new Interest(1, 1, "Study", 73));
-            interestList.add(new Interest(2, 1, "Book", 83));
-            interestList.add(new Interest(3, 1, "School", 12));
+                    ToDo todo = new ToDo(-1,
+                            title_iet.getText().toString(),
+                            start_time_iet.getText().toString(),
+                            end_time_iet.getText().toString(),
+                            date_iet.getText().toString(),
+                            EventType.TODO,
+                            "Waiting",
+                            importance_value);
 
-            ToDo todo = new ToDo(1,
-                    title_iet.getText().toString(),
-                    start_time_iet.getText().toString(),
-                    end_time_iet.getText().toString(),
-                    date_iet.getText().toString(),
-                    EventType.TODO,
-                    "Waiting",
-                    importance_value);
+                    FetchEventsTask addingToDB = new FetchEventsTask(activity);
+                    addingToDB.execute("add_data", todo);
 
-            if(commentList != null)  todo.setListComments(commentList);
-            if(subTaskList != null) todo.setListSubTasks(subTaskList);
-            todo.setListInterests(interestList);
+                    break;
 
-            FetchEventsTask addingToDB = new FetchEventsTask(activity);
-            addingToDB.execute("add_data", todo);
+
+
+                case NO_TYPE:
+                    Toast.makeText(activity, "You should pick a type, bro", Toast.LENGTH_LONG).show();
+                    break;
+            }
 
             activity.finish();
         }
@@ -381,7 +375,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     setButtonOff(b, check_buttons, fragmentView);
                     setButtonVisibility(b, check_buttons, fragmentView);
                     checkContainerLayoutVisibility(b, container_layouts, fragmentView);
-                    initAdditionalInfoLists(b);
                     setCheckListeners(b, fragmentView);
                     setImportanceBar(b);
                     break;
@@ -484,14 +477,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
             layout_position++;
         }
-
-       if(!checked) clearSubItemsLists();
-    }
-
-    private void clearSubItemsLists()
-    {
-        if(!commentList.isEmpty())commentList.clear();
-        if(!subTaskList.isEmpty())subTaskList.clear();
     }
 
     private void setButtonOff(boolean checked, int[] buttons, View fragmentView)
@@ -563,22 +548,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         }
     }
 
-    private void initAdditionalInfoLists(boolean checked)
-    {
-        if(checked)
-        {
-            commentList = new ArrayList<>();
-            subTaskList = new ArrayList<>();
-            interestList = new ArrayList<>();
-        }
-        else
-            {
-            commentList = null;
-            subTaskList = null;
-            interestList = null;
-        }
-    }
-
     private void checkTitleInput()
     {
         final View fragmentView = getView();
@@ -637,7 +606,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
     private void addSubTaskComment(final LinearLayout container_layout)
     {
-        SubTask subTask = new Task(activity, container_layout, R.layout.sub_task_comment_item, commentList, subTaskList);
+        SubTask subTask = new Task(activity, container_layout, R.layout.sub_task_comment_item);
         subTask.addView();
     }
 

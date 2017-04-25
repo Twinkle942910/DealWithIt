@@ -2,6 +2,7 @@ package com.example.twinkle94.dealwithit.interests_page;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +35,8 @@ import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.util.SnackBarMessage;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class InterestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
@@ -74,6 +78,9 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
         interestsAdapter  =  new InterestsAdapter(this);
         interests_lv.setAdapter(interestsAdapter);
         interests_lv.setOnItemClickListener(this);
+
+       FetchEventsTask get_interests_task = new FetchEventsTask(this);
+        get_interests_task.execute("get_data", interestsAdapter, "Interest");
     }
 
     //Toolbar menu implementation
@@ -202,7 +209,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
             {
                 if(TextUtils.isEmpty(interest_title_il.getError()) && !TextUtils.isEmpty(interest_title_iet.getText()) && importance_value > 0)
                 {
-                   final Interest interest = new Interest(0, 0, interest_title_iet.getText().toString(), importance_value);
+                   final Interest interest = new Interest(-1, -1, interest_title_iet.getText().toString(), importance_value);
 
                     if(importance_value >= 60)
                     {
@@ -228,6 +235,8 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                     new FetchEventsTask(getApplicationContext()).execute("add_data", interest);
 
                     final int added_interest_position = interestsAdapter.itemPosition(interest);
+
+                    interests_lv.setSelection(added_interest_position);
 
                     SnackBarMessage interestAddedMessage = new SnackBarMessage(coordinatorLayout, "Interest " + "Interest title" + " was created", Snackbar.LENGTH_LONG);
                     interestAddedMessage.action("UNDO", new View.OnClickListener()
@@ -385,7 +394,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                     interestsAdapter.remove(interest_position);
                     new FetchEventsTask(getApplicationContext()).execute("remove_data", old_interest);
 
-                    final Interest new_interest = new Interest(0, 0, interest_title_iet.getText().toString(), importance_value);
+                    final Interest new_interest = new Interest(-1, -1, interest_title_iet.getText().toString(), importance_value);
 
                     if(importance_value >= 60)
                     {

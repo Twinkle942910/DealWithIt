@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
@@ -71,7 +72,7 @@ public class ScheduleTask extends SubTask
     //Time set Listener.
     private OnTimeSetListener onTimeSetListener = null;
 
-    private List<Schedule> scheduleList;
+    private Schedule schedule;
     private ScheduleType scheduleType;
     private int importance_value;
 
@@ -80,14 +81,13 @@ public class ScheduleTask extends SubTask
 
     private boolean isDone = false;
 
-    public ScheduleTask(Context context, ViewGroup container_layout, int resource, String date, List<Schedule> scheduleList)
+    public ScheduleTask(Context context, ViewGroup container_layout, int resource, String date)
     {
         super(context, container_layout, resource);
 
         this.date = date;
         this.scheduleType = ScheduleType.NO_TYPE;
         this.importance_value = 0;
-        this.scheduleList = scheduleList;
     }
 
     @Override
@@ -279,10 +279,10 @@ public class ScheduleTask extends SubTask
                     task_done_tv.setOnClickListener(null);
                     task_edit_tv.setOnClickListener(null);
                 }
-                else
+              /*  else
                     {
-                        removeTaskFromList();
-                    }
+                        removeTaskFromDB();
+                    }*/
 
                 removeView();
                 view.setOnClickListener(null);
@@ -299,7 +299,7 @@ public class ScheduleTask extends SubTask
                 view.setOnClickListener(null);
                 task_done_tv.setOnClickListener(this);
 
-                removeTaskFromList();
+                removeTaskFromDB();
 
                 break;
 
@@ -321,7 +321,7 @@ public class ScheduleTask extends SubTask
                 }
                 else
                 {
-                    addTaskToList();
+                    addTaskToDB();
 
                     task_done_tv.setTextColor(setColor(R.color.colorTypeBirthday));
                     removeComponentsListeners();
@@ -388,27 +388,23 @@ public class ScheduleTask extends SubTask
     }
 
     @Override
-    void addTaskToList()
+    void addTaskToDB()
     {
-        scheduleList.add(new Schedule(1,
+        schedule = new Schedule(-1,
                 task_content_tv.getText().toString(),
                 scheduleType,
                 task_start_time_tv.getText().toString(),
                 task_end_time_tv.getText().toString(),
                 date,
                 "Waiting",
-                importance_value));
-
-        Log.e(NAME, "Schedule " + scheduleList.size() + " added");
+                importance_value);
+        new FetchEventsTask(context).execute("add_data", schedule);
     }
 
     @Override
-    void removeTaskFromList()
+    void removeTaskFromDB()
     {
-        int item_index = container_layout_vg.indexOfChild(subTaskView_v);
-
-        scheduleList.remove(item_index);
-        Log.e(NAME, "Schedule " + item_index + 1 + " removed");
+        new FetchEventsTask(context).execute("remove_data", schedule);
     }
 
     private void pickScheduleTypeDialog(final TextView task_type)

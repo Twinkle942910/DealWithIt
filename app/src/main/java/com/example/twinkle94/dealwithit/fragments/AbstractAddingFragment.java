@@ -445,7 +445,7 @@ public abstract class AbstractAddingFragment extends Fragment
     protected abstract void removeListeners();
 
     public abstract void addSubItem(View view);
-    protected abstract void addSubTaskToDB();
+    protected abstract void saveInput();
     protected abstract void replaceScheduleOrTask(EventType type);
     protected abstract void checkTypeOutputAction(EventType type, boolean isSchedule);
     protected abstract void onTypePickPositive(RadioGroup radioGroup);

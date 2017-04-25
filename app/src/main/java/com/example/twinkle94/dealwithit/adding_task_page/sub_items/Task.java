@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.util.TextValidator;
@@ -27,16 +28,12 @@ public class Task extends SubTask
     //Validators
     private TextValidator content_validator;
 
-    //Task lists
-    private List<Comment> commentList;
-    private List<Sub_task> subTaskList;
+    private Comment comment;
+    private Sub_task sub_task;
 
-    public Task(Context context, ViewGroup container_layout, int resource, List<Comment> commentList,  List<Sub_task> subTaskList)
+    public Task(Context context, ViewGroup container_layout, int resource)
     {
         super(context, container_layout, resource);
-
-        this.commentList = commentList;
-        this.subTaskList = subTaskList;
     }
 
     @Override
@@ -68,7 +65,7 @@ public class Task extends SubTask
                 {
                     if (!isInputEmpty(content_et))
                     {
-                        addTaskToList();
+                        addTaskToDB();
 
                         subTaskView_v.setBackgroundColor(setColor(R.color.colorGreyText10));
 
@@ -114,7 +111,7 @@ public class Task extends SubTask
     @Override
     public void onItemClick(View view)
     {
-        removeTaskFromList();
+       // removeTaskFromDB();
         removeView();
         subItemNumberReorder(content_et);
         view.setOnClickListener(null);
@@ -128,36 +125,35 @@ public class Task extends SubTask
     }
 
     @Override
-    void addTaskToList()
+    void addTaskToDB()
     {
         switch (container_layout_vg.getId())
         {
             case R.id.comment_container:
-                commentList.add(new Comment(1, 1, content_et.getText().toString()));
+                comment = new Comment(-1, -1, content_et.getText().toString());
+                new FetchEventsTask(context).execute("add_data", comment);
                 break;
 
             case R.id.sub_tasks_container:
-                subTaskList.add(new Sub_task(1, 1, content_et.getText().toString(), false));
+                sub_task = new Sub_task(-1, -1, content_et.getText().toString(), false);
+                new FetchEventsTask(context).execute("add_data", sub_task);
                 break;
         }
     }
 
     @Override
-    void removeTaskFromList()
+    void removeTaskFromDB()
     {
-        int item_index = container_layout_vg.indexOfChild(subTaskView_v);
-
-        //TODO: Think of something better.
         if (!isInputEmpty(content_et))
         {
             switch (container_layout_vg.getId())
             {
                 case R.id.comment_container:
-                    commentList.remove(item_index);
+                    new FetchEventsTask(context).execute("remove_data", comment);
                     break;
 
                 case R.id.sub_tasks_container:
-                    subTaskList.remove(item_index);
+                    new FetchEventsTask(context).execute("remove_data", sub_task);
                     break;
             }
         }

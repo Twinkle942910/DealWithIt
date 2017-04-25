@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -15,15 +16,10 @@ import android.widget.Toast;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.ScheduleTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
-import com.example.twinkle94.dealwithit.events.Interest;
-import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class AddingScheduleFragment extends AbstractAddingFragment
@@ -31,9 +27,8 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     private static final String NAME = AddingScheduleFragment.class.getSimpleName();
     private LinearLayout task_container_ly;
 
+    private String[] week_dates;
     private String date;
-
-    private List<Schedule> scheduleList;
 
     private TextView start_end_time_tv;
 
@@ -49,7 +44,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     {
         if (menu_item_id == R.id.save)
         {
-            addSubTaskToDB();
+            saveInput();
         }
     }
 
@@ -152,9 +147,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     {
         if(date != null)
         {
-            initScheduleTaskList();
-
-            SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date, scheduleList);
+            SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date);
             ((ScheduleTask) subTask).setOnTimeSetListener(new ScheduleTask.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TextView time_tv, View view) {
@@ -168,22 +161,10 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     }
 
     @Override
-    protected void addSubTaskToDB()
+    protected void saveInput()
     {
         if(!isInputErrors())
         {
-            List<Interest> interestList = new ArrayList<>();
-
-            interestList.add(new Interest(1, 1, "Study", 73));
-            interestList.add(new Interest(2, 1, "Book", 83));
-            interestList.add(new Interest(3, 1, "School", 12));
-
-            for (Schedule schedule : scheduleList)
-            {
-                schedule.setListInterests(interestList);
-                new FetchEventsTask(activity).execute("add_data", schedule);
-            }
-
             activity.finish();
         }
         else Toast.makeText(activity, "Check your input!", Toast.LENGTH_LONG).show();
@@ -221,11 +202,6 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     protected boolean isInputErrors()
     {
-        if(scheduleList == null) return true;
-
-        if(scheduleList.size() != task_container_ly.getChildCount())
-            return true;
-
         return false;
     }
 
@@ -253,18 +229,11 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
     }
 
-    private void initScheduleTaskList()
-    {
-        if(task_container_ly.getChildCount() == 0)
-        {
-            scheduleList = new ArrayList<>();
-        }
-    }
-
     //TODO: when task is created earlier than day, day is - " ".
     private void initializeDayPicker(View viewHierarchy)
     {
         final LinearLayout daysContainer = (LinearLayout) viewHierarchy.findViewById(R.id.day_container);
+        initWeek();
 
         for (int i = 0; i < daysContainer.getChildCount(); i++)
         {
@@ -287,7 +256,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                         ((TextView) view).setTextAppearance(R.style.TextRobotoRegular);
                     }
 
-                    initWeek();
+                    setDate((int)view.getTag());
                     ((TextView) view).setText(setFullDay((int)view.getTag()));
                 }
             });
@@ -296,7 +265,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
     private void clearDays(LinearLayout daysContainer)
     {
-        String[] cut_day_names = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        String[] cut_day_names = getResources().getStringArray(R.array.days_cut_array);
 
         for (int i = 0; i < daysContainer.getChildCount(); i++)
         {
@@ -325,75 +294,22 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
     private void initWeek()
     {
-        // Get Current Date
-        final Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        week_dates = new String[7];
 
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        int  mMonth = calendar.get(Calendar.MONTH);
-        int mYear = calendar.get(Calendar.YEAR);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 1);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
-        String myFormatDate = "dd/MM/yyyy";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormatDate, Locale.US);
-
-        int dayMonday = 0;
-
-        switch (day)
+        for (int i = 0; i < 7; i++)
         {
-            // Current day is Monday
-            case Calendar.MONDAY:
-                dayMonday = 0;
-                break;
-
-            // Current day is Tuesday
-            case Calendar.TUESDAY:
-                dayMonday =  - 1;
-                break;
-
-            // Current day is Wednesday
-            case Calendar.WEDNESDAY:
-                dayMonday =  - 2;
-                break;
-
-            // Current day is Thursday
-            case Calendar.THURSDAY:
-                dayMonday =  - 3;
-                break;
-
-            // Current day is Friday
-            case Calendar.FRIDAY:
-                dayMonday =  - 4;
-                break;
-
-            // Current day is Saturday
-            case Calendar.SATURDAY:
-                dayMonday =  - 5;
-                break;
-
-            // Current day is Sunday
-            case Calendar.SUNDAY:
-                dayMonday =  - 6;
-                break;
+            week_dates[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_WEEK, 1);
         }
-
-        calendar.set(Calendar.MONTH, mMonth);
-        calendar.set(Calendar.YEAR, mYear);
-
-        setDays(calendar, dateFormat, dayMonday);
     }
 
-    private void setDays(Calendar c, SimpleDateFormat sdf, int dayMonday)
+    private void setDate(int day_position)
     {
-        for(int i = 0; i < 6; i++)
-        {
-            if(i == 0)
-            {
-                c.add(Calendar.DAY_OF_MONTH, dayMonday);
-            }
-            else
-            {
-                c.add(Calendar.DAY_OF_MONTH, 1);
-            }
-        }
-        date = sdf.format(c.getTime());
+        date = week_dates[day_position];
+        Log.i("DATE", date);
     }
 }

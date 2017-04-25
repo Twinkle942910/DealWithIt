@@ -12,7 +12,7 @@ import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.util.Locale;
 
-public abstract class SubTask implements View.OnClickListener
+public abstract class SubTask implements View.OnClickListener, ViewGroup.OnHierarchyChangeListener
 {
     private final int LAYOUT;
 
@@ -24,6 +24,7 @@ public abstract class SubTask implements View.OnClickListener
     {
         this.context = context;
         this.container_layout_vg = container_layout_vg;
+        this.container_layout_vg.setOnHierarchyChangeListener(this);
 
         LAYOUT = resource;
 
@@ -70,8 +71,8 @@ public abstract class SubTask implements View.OnClickListener
     abstract void onItemClick(View view);
     abstract void validate(TextView textView);
 
-    abstract void addTaskToList();
-    abstract void removeTaskFromList();
+    abstract void addTaskToDB();
+    abstract void removeTaskFromDB();
 
     int setColor(int color)
     {
@@ -94,6 +95,18 @@ public abstract class SubTask implements View.OnClickListener
                SubTask.this.validate(textView);
             }
         };
+    }
+
+    @Override
+    public void onChildViewAdded(View view, View view1)
+    {
+
+    }
+
+    @Override
+    public void onChildViewRemoved(View view, View view1)
+    {
+        removeTaskFromDB();
     }
 
     boolean isInputEmpty(TextView textView)
