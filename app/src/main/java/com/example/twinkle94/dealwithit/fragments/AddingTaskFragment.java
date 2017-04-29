@@ -24,15 +24,18 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.events.Comment;
+import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.task_types.Birthday;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
@@ -44,6 +47,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
     private LinearLayout comment_container_ly;
     private LinearLayout sub_task_container_ly;
+
+    //TODO: maybe make it local, as it was before?
+    private SwitchCompat additional_task_info_sw;
 
     //Data form user.
     private TextInputEditText title_iet;
@@ -61,6 +67,10 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private DateTimeValidator dateTimeValidator;
 
     private View.OnFocusChangeListener inputFocusChangeListener;
+
+    private int event_id = -1;
+
+    private Event new_event;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -110,8 +120,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             end_time_iet = (TextInputEditText) fragmentView.findViewById(R.id.task_end_time_input);
 
             //Additional info switch
-            final SwitchCompat additional_task_info_sw = (SwitchCompat) fragmentView.findViewById(R.id.additional_task_available);
+            additional_task_info_sw  = (SwitchCompat) fragmentView.findViewById(R.id.additional_task_available);
             additional_task_info_sw.setOnCheckedChangeListener(this);
+            additional_task_info_sw.setEnabled(false);
 
             //Sub task - Comment containers
             comment_container_ly = (LinearLayout) fragmentView.findViewById(R.id.comment_container);
@@ -248,7 +259,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             {
                 case TODO:
 
-                    ToDo todo = new ToDo(-1,
+                    int this_event_id = new_event.getId();
+
+                    new_event = new ToDo(this_event_id,
                             title_iet.getText().toString(),
                             start_time_iet.getText().toString(),
                             end_time_iet.getText().toString(),
@@ -258,7 +271,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                             importance_value);
 
                     FetchEventsTask addingToDB = new FetchEventsTask(activity);
-                    addingToDB.execute("add_data", todo);
+                    addingToDB.execute("update_data", new_event);
 
                     break;
 
@@ -322,6 +335,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 b.dismiss();
                 break;
         }
+
+        enableSubTasks(task_type);
+        addEmptyEvent(task_type);
     }
 
     @Override
@@ -377,6 +393,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     checkContainerLayoutVisibility(b, container_layouts, fragmentView);
                     setCheckListeners(b, fragmentView);
                     setImportanceBar(b);
+                    clearSubTasksFromDB(b);
                     break;
             }
         }
@@ -409,7 +426,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     protected boolean isInputErrors()
     {
         ViewGroup fragment_view = (ViewGroup) getView();
-        boolean error_state = true;
+        boolean error_state = false;
 
         if(fragment_view != null)
         {
@@ -425,16 +442,16 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     {
                         if (((ViewGroup) innerView).getChildAt(inner_view_position) instanceof TextInputLayout)
                         {
-                            if (TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getError()) && !TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getEditText().getText()))
+                            if (!TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getError()) && TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getEditText().getText()))
                             {
-                                error_state = false;
+                                error_state = true;
                                 break;
                             }
                         }
                     }
                 }
 
-                if(!error_state) break;
+                if(error_state) break;
             }
         }
         return error_state;
@@ -515,7 +532,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
     private void setImportanceBar(boolean checked)
     {
-        importance_value = 0;
+        importance_value = -1;
 
         final View fragmentView = getView();
 
@@ -527,6 +544,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
             if(checked)
             {
+                importance_value = 0;
+
                 importance_setting.setOnSeekBarChangeListener(new ProgressChecker()
                 {
                     @Override
@@ -606,8 +625,53 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
     private void addSubTaskComment(final LinearLayout container_layout)
     {
-        SubTask subTask = new Task(activity, container_layout, R.layout.sub_task_comment_item);
+        SubTask subTask = new Task(activity, event_id = new_event.getId(), container_layout, R.layout.sub_task_comment_item);
         subTask.addView();
+    }
+
+    private void addEmptyEvent(EventType type)
+    {
+        switch (type)
+        {
+            case TODO:
+                new_event = new ToDo();
+                new_event.setType(EventType.TODO);
+                break;
+
+            case BIRTHDAY:
+                new_event = new Birthday();
+                new_event.setType(EventType.BIRTHDAY);
+                break;
+
+            case WORKTASK:
+                new_event = new WorkTask();
+                new_event.setType(EventType.WORKTASK);
+                break;
+        }
+
+        if(new_event != null) new FetchEventsTask(activity).execute("add_data", new_event);
+    }
+
+    private void enableSubTasks(EventType task_type)
+    {
+       if(task_type != EventType.SCHEDULE) additional_task_info_sw.setEnabled(true);
+    }
+
+    //TODO: finish this!
+    private void clearSubTasksFromDB(boolean checked)
+    {
+        if(!checked)
+        {
+            //Remove all sab_tasks.
+            Sub_task subTask = new Sub_task();
+            subTask.setEvent_id(event_id);
+            new FetchEventsTask(activity).execute("remove_data_by", subTask, "event_id");
+
+            //Remove all comments.
+            Comment comment = new Comment();
+            comment.setId_event(event_id);
+            new FetchEventsTask(activity).execute("remove_data_by", comment, "event_id");
+        }
     }
 
     abstract class ProgressChecker implements SeekBar.OnSeekBarChangeListener

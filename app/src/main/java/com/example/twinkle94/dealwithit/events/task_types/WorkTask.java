@@ -22,6 +22,11 @@ public class WorkTask extends Event
         comments = new ArrayList<>();
     }
 
+    public WorkTask()
+    {
+        super();
+    }
+
     public List<Sub_task> getListSubTasks()
     {
         return subTasks;

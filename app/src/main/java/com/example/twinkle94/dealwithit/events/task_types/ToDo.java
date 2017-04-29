@@ -19,6 +19,11 @@ public class ToDo extends Event
         super(id, title, time_start, time_end, date, type, state, importance);
     }
 
+    public ToDo()
+    {
+        super();
+    }
+
     public List<Sub_task> getListSubTasks()
     {
         return subTasks;

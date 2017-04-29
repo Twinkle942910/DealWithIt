@@ -16,6 +16,14 @@ public class Sub_task
         this.checked = checked;
     }
 
+    public Sub_task()
+    {
+        this.id = -1;
+        this.event_id = -1;
+        this.content = "No_content";
+        this.checked = false;
+    }
+
     public int getId() {
         return id;
     }

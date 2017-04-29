@@ -16,6 +16,13 @@ public class Comment
         this.content = content;
     }
 
+    public Comment()
+    {
+        this.id = -1;
+        this.id_event = -1;
+        this.content = "No_content";
+    }
+
     public int getId() {
         return id;
     }

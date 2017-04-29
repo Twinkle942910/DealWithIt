@@ -31,9 +31,12 @@ public class Task extends SubTask
     private Comment comment;
     private Sub_task sub_task;
 
-    public Task(Context context, ViewGroup container_layout, int resource)
+    private int event_id;
+
+    public Task(Context context, int event_id, ViewGroup container_layout, int resource)
     {
         super(context, container_layout, resource);
+        this.event_id = event_id;
     }
 
     @Override
@@ -130,12 +133,12 @@ public class Task extends SubTask
         switch (container_layout_vg.getId())
         {
             case R.id.comment_container:
-                comment = new Comment(-1, -1, content_et.getText().toString());
+                comment = new Comment(-1, event_id, content_et.getText().toString());
                 new FetchEventsTask(context).execute("add_data", comment);
                 break;
 
             case R.id.sub_tasks_container:
-                sub_task = new Sub_task(-1, -1, content_et.getText().toString(), false);
+                sub_task = new Sub_task(-1, event_id, content_et.getText().toString(), false);
                 new FetchEventsTask(context).execute("add_data", sub_task);
                 break;
         }

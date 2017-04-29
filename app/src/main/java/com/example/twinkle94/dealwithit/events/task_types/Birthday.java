@@ -27,6 +27,11 @@ public class Birthday extends Event
         comments = new ArrayList<>();
     }
 
+    public Birthday()
+    {
+        super();
+    }
+
     public List<Sub_task> getListSubTasks()
     {
         return subTasks;

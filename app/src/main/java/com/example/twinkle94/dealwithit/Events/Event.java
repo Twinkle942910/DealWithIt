@@ -38,6 +38,18 @@ public abstract class Event implements Item
         this.importance = importance;
     }
 
+    public Event()
+    {
+        this.id = -1;
+        this.title = "No_title";
+        this.time_start = "No_time_start";
+        this.time_end = "No_time_end";
+        this.date = "No_date";
+        this.type = EventType.NO_TYPE;
+        this.state = "No_state";
+        this.importance = -1;
+    }
+
     public int getId() {
         return id;
     }

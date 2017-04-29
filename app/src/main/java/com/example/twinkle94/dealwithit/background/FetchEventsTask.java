@@ -58,7 +58,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
 
             case "get_data":
-                String get_data_type= (String)params[2];
+                String get_data_type = (String)params[2];
                 result = getDataFromDB(get_data_type, eventInfoDB, params[1]);
                 break;
 
@@ -68,6 +68,11 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
             case "remove_data":
                 result = removeDataFromDB(event_type, eventInfoDB, params[1]);
+                break;
+
+            case "remove_data_by":
+                String delete_type = (String)params[2];
+                result = removeDataFromDBby(delete_type, eventInfoDB, params[1]);
                 break;
         }
         return result;
@@ -150,7 +155,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
 
             case "ToDo":
-
+                updateDataInToDo(eventInfoDB, (ToDo)event);
                 break;
 
             case "Work Task":
@@ -174,7 +179,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
         }
 
-        return event_type + " was added to DB";
+        return event_type + " was updated in DB";
     }
 
     private String removeDataFromDB(String event_type, EventInfoDB eventInfoDB, Object event)
@@ -211,6 +216,44 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         }
 
         return event_type + " was removed from DB";
+    }
+
+
+    private String removeDataFromDBby(String delete_type, EventInfoDB eventInfoDB, Object event)
+    {
+        String remove_from = event.getClass().getSimpleName() + " " + delete_type;
+        switch (remove_from)
+        {
+            case "Schedule":
+
+                break;
+
+            case "ToDo":
+
+                break;
+
+            case "Work Task":
+
+                break;
+
+            case "Birthday":
+
+                break;
+
+            case "Comment event_id":
+                removeDataFromCommentByEventId(eventInfoDB, ((Comment) event).getId_event());
+                break;
+
+            case "Sub_task event_id":
+                removeDataFromSub_taskByEventId(eventInfoDB, ((Sub_task) event).getEvent_id());
+                break;
+
+            case "Interest":
+
+                break;
+        }
+
+        return event.getClass().getSimpleName() + " was removed from DB by " + delete_type;
     }
 
     private void addScheduleTask(EventInfoDB eventInfoDB, Schedule schedule)
@@ -471,11 +514,47 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         String selection = EventInfoContract.SubTaskEntry._ID + "= ?";
         String[] selectionArgs =  new String[]{String.valueOf(sub_task.getId()) };
 
-        int count = db.update(
+        int new_sub_task_id = db.update(
                 EventInfoContract.SubTaskEntry.TABLE_NAME,
                 contentValues,
                 selection,
                 selectionArgs);
+    }
+
+    private void updateDataInToDo(EventInfoDB eventInfoDB, ToDo todo)
+    {
+        EventType type = EventType.TODO;
+        String  title = todo.getTitle();
+        String  date = todo.getDate();
+        String  time_start = todo.getTime_start();
+        String  time_end = todo.getTime_end();
+        String  state = todo.getState();
+        int  importance = todo.getImportance();
+
+        SQLiteDatabase db = eventInfoDB.getReadableDatabase();
+
+        // New value for one column
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.EventEntry.TITLE, title);
+        contentValues.put(EventInfoContract.EventEntry.DATE, date);
+        contentValues.put(EventInfoContract.EventEntry.TIME_START, time_start);
+        contentValues.put(EventInfoContract.EventEntry.TIME_END, time_end);
+        contentValues.put(EventInfoContract.EventEntry.TYPE, type.toString());
+        contentValues.put(EventInfoContract.EventEntry.STATE, state);
+        contentValues.put(EventInfoContract.EventEntry.IMPORTANCE, importance);
+
+        // Which row to update, based on the ID
+        String selection = EventInfoContract.EventEntry._ID + "= ?";
+        String[] selectionArgs =  new String[]{String.valueOf(todo.getId()) };
+
+        int new_todo_id = db.update(
+                EventInfoContract.EventEntry.TABLE_NAME,
+                contentValues,
+                selection,
+                selectionArgs);
+
+        Log.i(TAG, "Row " + new_todo_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
     private void removeDataFromInterest(EventInfoDB eventInfoDB, int interest_id)
@@ -496,12 +575,30 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         db.close();
     }
 
+    private void removeDataFromCommentByEventId(EventInfoDB eventInfoDB, int id_event)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.CommentEntry.TABLE_NAME, EventInfoContract.CommentEntry.ID_EVENT + "= ?", new String[]{String.valueOf(id_event)});
+        db.close();
+    }
+
     private void removeDataFromSub_task(EventInfoDB eventInfoDB, int sub_task_id)
     {
         SQLiteDatabase db = eventInfoDB.getWritableDatabase();
 
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(EventInfoContract.SubTaskEntry.TABLE_NAME, EventInfoContract.SubTaskEntry._ID + "= ?", new String[]{String.valueOf(sub_task_id)});
+        db.close();
+    }
+
+    private void removeDataFromSub_taskByEventId(EventInfoDB eventInfoDB, int event_id)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.SubTaskEntry.TABLE_NAME, EventInfoContract.SubTaskEntry.ID_EVENT + "= ?", new String[]{String.valueOf(event_id)});
         db.close();
     }
 
