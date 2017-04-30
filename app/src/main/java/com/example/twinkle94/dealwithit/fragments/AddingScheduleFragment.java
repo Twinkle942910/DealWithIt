@@ -171,6 +171,12 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     }
 
     @Override
+    public void onCancel()
+    {
+        //TODO: remove all added things to DB.
+    }
+
+    @Override
     protected void setTimeOutput(int type, SimpleDateFormat output_format, Calendar calendar)
     {
         start_end_time_tv.setText(output_format.format(calendar.getTime()));
@@ -178,6 +184,18 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
     @Override
     protected void setDateOutput(int year, int month, int day)
+    {
+
+    }
+
+    @Override
+    public void setInterest(View view)
+    {
+
+    }
+
+    @Override
+    public void onInterestPicked(int interest_id)
     {
 
     }

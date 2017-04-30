@@ -46,11 +46,19 @@ public final class EventInfoContract
     //Interest table of database
     public static class InterestEntry implements BaseColumns
     {
-        public static final String ID_EVENT = "id_event";
         public static final String TITLE = "title";
         public static final String VALUE = "value";
 
         public static final String TABLE_NAME = "interest";
+    }
+
+    //Interest table of database
+    public static class EventsInterestsEntry implements BaseColumns
+    {
+        public static final String ID_EVENT = "id_event";
+        public static final String ID_INTEREST = "id_interest";
+
+        public static final String TABLE_NAME = "events_interests";
     }
 
     //Location table of database

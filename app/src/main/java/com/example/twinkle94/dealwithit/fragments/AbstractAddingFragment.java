@@ -454,5 +454,8 @@ public abstract class AbstractAddingFragment extends Fragment
     protected abstract void setTimeOutput(int type, SimpleDateFormat output_format, Calendar calendar);
     protected abstract void setDateOutput(int year, int month, int day);
 
+    public abstract void setInterest(View view);
+    public abstract void onInterestPicked(int interest_id);
 
+    public abstract void onCancel();
 }

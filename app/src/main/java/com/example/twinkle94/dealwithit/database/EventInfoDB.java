@@ -52,13 +52,22 @@ public class EventInfoDB extends SQLiteOpenHelper
     private static final String CREATE_INTEREST_QUERY = "CREATE TABLE " + EventInfoContract.InterestEntry.TABLE_NAME + "(" +
             EventInfoContract.InterestEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
-            EventInfoContract.InterestEntry.ID_EVENT  + " INTEGER NOT NULL," +
             EventInfoContract.InterestEntry.TITLE  + " TEXT NOT NULL," +
-            EventInfoContract.InterestEntry.VALUE  + " INTEGER NOT NULL," +
+            EventInfoContract.InterestEntry.VALUE  + " INTEGER NOT NULL);";
+
+    //Events_Interests table
+    private static final String CREATE_EVENTS_INTERESTS_QUERY = "CREATE TABLE " + EventInfoContract.EventsInterestsEntry.TABLE_NAME + "(" +
+            EventInfoContract.EventsInterestsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            EventInfoContract.EventsInterestsEntry.ID_EVENT  + " INTEGER NOT NULL," +
+            EventInfoContract.EventsInterestsEntry.ID_INTEREST  + " INTEGER NOT NULL," +
 
             // Set up the event column as a foreign key to event table.
-            " FOREIGN KEY (" + EventInfoContract.InterestEntry.ID_EVENT + ") REFERENCES " +
-            EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + "));";
+            " FOREIGN KEY (" + EventInfoContract.EventsInterestsEntry.ID_EVENT + ") REFERENCES " +
+            EventInfoContract.EventEntry.TABLE_NAME + " (" + EventInfoContract.EventEntry._ID + ")," +
+
+            // Set up the event column as a foreign key to interest table.
+            " FOREIGN KEY (" + EventInfoContract.EventsInterestsEntry.ID_INTEREST + ") REFERENCES " +
+            EventInfoContract.InterestEntry.TABLE_NAME + " (" + EventInfoContract.InterestEntry._ID + "));";
 
     //ScheduleType table
     private static final String CREATE_SCHEDULE_TYPE_QUERY = "CREATE TABLE " + EventInfoContract.ScheduleTypeEntry.TABLE_NAME + "(" +
@@ -103,6 +112,10 @@ public class EventInfoDB extends SQLiteOpenHelper
     private static final String SQL_DELETE_INTEREST_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.InterestEntry.TABLE_NAME;
 
+    //Delete interest
+    private static final String SQL_DELETE_EVENTS_INTERESTS_ENTRY =
+            "DROP TABLE IF EXISTS " + EventInfoContract.EventsInterestsEntry.TABLE_NAME;
+
     //Delete schedule_type
     private static final String SQL_DELETE_SCHEDULE_TYPE_ENTRY =
             "DROP TABLE IF EXISTS " + EventInfoContract.ScheduleTypeEntry.TABLE_NAME;
@@ -128,6 +141,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(CREATE_COMMENT_QUERY);
         db.execSQL(CREATE_SUB_TASK_QUERY);
         db.execSQL(CREATE_INTEREST_QUERY);
+        db.execSQL(CREATE_EVENTS_INTERESTS_QUERY);
         db.execSQL(CREATE_LOCATION_QUERY);
         db.execSQL(CREATE_NOTIFICATION_QUERY);
         db.execSQL(CREATE_SCHEDULE_TYPE_QUERY);
@@ -143,6 +157,7 @@ public class EventInfoDB extends SQLiteOpenHelper
         db.execSQL(SQL_DELETE_COMMENT_ENTRY);
         db.execSQL(SQL_DELETE_SUB_TASK_ENTRY);
         db.execSQL(SQL_DELETE_INTEREST_ENTRY);
+        db.execSQL(SQL_DELETE_EVENTS_INTERESTS_ENTRY);
         db.execSQL(SQL_DELETE_LOCATION_ENTRY);
         db.execSQL(SQL_DELETE_NOTIFICATION_ENTRY);
         db.execSQL(SQL_DELETE_SCHEDULE_TYPE_ENTRY);

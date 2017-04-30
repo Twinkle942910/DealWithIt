@@ -13,6 +13,7 @@ import com.example.twinkle94.dealwithit.database.EventInfoContract;
 import com.example.twinkle94.dealwithit.database.EventInfoDB;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
@@ -109,6 +110,10 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             case "Interest":
                 addDataToInterest(eventInfoDB, (Interest) event);
                 break;
+
+            case "EventInterest":
+                addDataToEventsInterests(eventInfoDB, (EventInterest) event);
+                break;
         }
 
         return event_type + " was added to DB";
@@ -191,7 +196,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
 
             case "ToDo":
-
+                removeToDoTask(eventInfoDB, ((ToDo) event).getId());
                 break;
 
             case "Work Task":
@@ -213,11 +218,14 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             case "Interest":
                 removeDataFromInterest(eventInfoDB, ((Interest) event).getId());
                 break;
+
+            case "EventInterest":
+                removeDataFromEventInterest(eventInfoDB, ((EventInterest) event).getId());
+                break;
         }
 
         return event_type + " was removed from DB";
     }
-
 
     private String removeDataFromDBby(String delete_type, EventInfoDB eventInfoDB, Object event)
     {
@@ -246,6 +254,10 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
             case "Sub_task event_id":
                 removeDataFromSub_taskByEventId(eventInfoDB, ((Sub_task) event).getEvent_id());
+                break;
+
+            case "EventInterest event_id":
+                removeDataFromEventsInterestsByEventId(eventInfoDB, ((EventInterest) event).getId_event());
                 break;
 
             case "Interest":
@@ -334,6 +346,15 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         Log.i(TAG, "New Row " + newRowId + " Inserted..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
+    private void removeToDoTask(EventInfoDB eventInfoDB, int toto_id)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.EventEntry.TABLE_NAME, EventInfoContract.EventEntry._ID + "= ?", new String[]{String.valueOf(toto_id)});
+        db.close();
+    }
+
    /* public void getLastEventId(EventInfoDB eventInfoDB, Integer lastId)
     {
         String query = "SELECT _id from event_table order by _id DESC limit 1";
@@ -356,7 +377,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(EventInfoContract.InterestEntry.ID_EVENT, interest.getEvent_id());
         contentValues.put(EventInfoContract.InterestEntry.TITLE, interest.getTitle());
         contentValues.put(EventInfoContract.InterestEntry.VALUE, interest.getValue());
 
@@ -367,6 +387,22 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.InterestEntry.TABLE_NAME);
     }
 
+    private void addDataToEventsInterests(EventInfoDB eventInfoDB, EventInterest eventInterest)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.EventsInterestsEntry.ID_EVENT, eventInterest.getId_event());
+        contentValues.put(EventInfoContract.EventsInterestsEntry.ID_INTEREST, eventInterest.getId_interest());
+
+        long newRowId = db.insert(EventInfoContract.EventsInterestsEntry.TABLE_NAME, null, contentValues);
+
+        eventInterest.setId((int) newRowId);
+
+        Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.EventsInterestsEntry.TABLE_NAME);
+    }
+
     //Get list of all ToDo
     private void getDataListFromInterest(EventInfoDB eventInfoDB, InterestsAdapter interests_adapter)
     {
@@ -374,7 +410,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         SQLiteDatabase db = eventInfoDB.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 EventInfoContract.InterestEntry._ID + "," +
-                EventInfoContract.InterestEntry.ID_EVENT + "," +
                 EventInfoContract.InterestEntry.TITLE + "," +
                 EventInfoContract.InterestEntry.VALUE +
                 " FROM " + EventInfoContract.InterestEntry.TABLE_NAME;
@@ -389,11 +424,10 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             do
             {
                 int interest_id = interest_cursor.getInt(interest_cursor.getColumnIndex(EventInfoContract.InterestEntry._ID));
-                int interest_event_id = interest_cursor.getInt(interest_cursor.getColumnIndex(EventInfoContract.InterestEntry.ID_EVENT));
                 String interest_title = interest_cursor.getString(interest_cursor.getColumnIndex(EventInfoContract.InterestEntry.TITLE));
                 int interest_value = interest_cursor.getInt(interest_cursor.getColumnIndex(EventInfoContract.InterestEntry.VALUE));
 
-                Interest interest = new Interest(interest_id, interest_event_id, interest_title, interest_value);
+                Interest interest = new Interest(interest_id, interest_title, interest_value);
 
                 if(interest_value >= 60)
                 {
@@ -599,6 +633,24 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
         // It's a good practice to use parameter ?, instead of concatenate string
         db.delete(EventInfoContract.SubTaskEntry.TABLE_NAME, EventInfoContract.SubTaskEntry.ID_EVENT + "= ?", new String[]{String.valueOf(event_id)});
+        db.close();
+    }
+
+    private void removeDataFromEventInterest(EventInfoDB eventInfoDB, int event_interest_id)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.EventsInterestsEntry.TABLE_NAME, EventInfoContract.EventsInterestsEntry.ID_EVENT + "= ?", new String[]{String.valueOf(event_interest_id)});
+        db.close();
+    }
+
+    private void removeDataFromEventsInterestsByEventId(EventInfoDB eventInfoDB, int event_id)
+    {
+        SQLiteDatabase db = eventInfoDB.getWritableDatabase();
+
+        // It's a good practice to use parameter ?, instead of concatenate string
+        db.delete(EventInfoContract.EventsInterestsEntry.TABLE_NAME, EventInfoContract.EventsInterestsEntry.ID_EVENT + "= ?", new String[]{String.valueOf(event_id)});
         db.close();
     }
 

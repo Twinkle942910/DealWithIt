@@ -59,7 +59,7 @@ public class InterestsAdapter extends BaseAdapter
     @Override
     public long getItemId(int position)
     {
-        return interests.get(position).hashCode();
+        return (interests.get(position) instanceof Interest) ? ((Interest)interests.get(position)).getId() : -1;
     }
 
     @Override

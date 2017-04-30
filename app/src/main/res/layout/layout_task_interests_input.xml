@@ -30,6 +30,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_input_interests" />
+            app:srcCompat="@drawable/ic_input_interests"/>
 
 </LinearLayout>

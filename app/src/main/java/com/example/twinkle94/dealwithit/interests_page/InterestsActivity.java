@@ -2,7 +2,7 @@ package com.example.twinkle94.dealwithit.interests_page;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,14 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -35,12 +32,10 @@ import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.util.SnackBarMessage;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class InterestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
+    public static final String INTEREST_ID_EXTRA = "INTEREST_ID_EXTRA";
+
     private Toolbar toolbar;
     private ListView interests_lv;
     private FloatingActionButton add_interest_fab;
@@ -118,6 +113,15 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        // When the user hits the back button set the resultCode
+        // as Activity.RESULT_CANCELED to indicate a failure
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
     //init Toolbar
     private void initToolbar()
     {
@@ -136,6 +140,11 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                 @Override
                 public void onClick(View v)
                 {
+                    if(getCallingActivity() != null)
+                    {
+                        setResult(RESULT_CANCELED);
+                    }
+
                     finish();
                 }
             });
@@ -209,7 +218,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
             {
                 if(TextUtils.isEmpty(interest_title_il.getError()) && !TextUtils.isEmpty(interest_title_iet.getText()) && importance_value > 0)
                 {
-                   final Interest interest = new Interest(-1, -1, interest_title_iet.getText().toString(), importance_value);
+                   final Interest interest = new Interest(-1, interest_title_iet.getText().toString(), importance_value);
 
                     if(importance_value >= 60)
                     {
@@ -394,7 +403,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                     interestsAdapter.remove(interest_position);
                     new FetchEventsTask(getApplicationContext()).execute("remove_data", old_interest);
 
-                    final Interest new_interest = new Interest(-1, -1, interest_title_iet.getText().toString(), importance_value);
+                    final Interest new_interest = new Interest(-1, interest_title_iet.getText().toString(), importance_value);
 
                     if(importance_value >= 60)
                     {
@@ -570,8 +579,16 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        //List item click!
+        if(getCallingActivity() != null)
+        {
+            final Intent data = new Intent();
+
+            data.putExtra(INTEREST_ID_EXTRA, (int)adapterView.getItemIdAtPosition(position));
+            setResult(RESULT_OK, data);
+
+            finish();
+        }
     }
 }

@@ -7,14 +7,12 @@ public class Interest implements InterestItem
 {
     private int id;
 
-    private int event_id;
     private String title;
     private int value;
 
-    public Interest(int id, int event_id, String title, int value)
+    public Interest(int id, String title, int value)
     {
         this.id = id;
-        this.event_id = event_id;
         this.title = title;
         this.value = value;
     }
@@ -25,14 +23,6 @@ public class Interest implements InterestItem
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getEvent_id() {
-        return event_id;
-    }
-
-    public void setEvent_id(int event_id) {
-        this.event_id = event_id;
     }
 
     public String getTitle() {

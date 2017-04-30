@@ -1,5 +1,6 @@
 package com.example.twinkle94.dealwithit.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +26,7 @@ import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.Birthday;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
@@ -38,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
-import static com.example.twinkle94.dealwithit.R.id.button_add_interest;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
 
 public class AddingTaskFragment extends AbstractAddingFragment implements CompoundButton.OnCheckedChangeListener
@@ -67,10 +67,31 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private DateTimeValidator dateTimeValidator;
 
     private View.OnFocusChangeListener inputFocusChangeListener;
+    //TODO: move to abstract, possibly
+    private OnInterestCallListener interestCallListener;
 
     private int event_id = -1;
 
     private Event new_event;
+    //TODO: make something more convenient
+    private int interests_count;
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+
+        //TODO: move to abstract, possibly
+        if (context instanceof OnInterestCallListener)
+        {
+            interestCallListener = (OnInterestCallListener) context;
+        }
+        else
+            {
+            throw new ClassCastException(context.toString()
+                    + " must implement AddingTaskFragment.OnInterestCallListener");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -243,10 +264,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     addSubTaskComment(sub_task_container_ly);
                 }
                 break;
-
-            case button_add_interest:
-                Toast.makeText(activity, "Looooooool!", Toast.LENGTH_LONG).show();
-                break;
         }
     }
 
@@ -285,6 +302,16 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             activity.finish();
         }
         else Toast.makeText(activity, "Check your input!", Toast.LENGTH_LONG).show();
+    }
+
+    //TODO: remove event somehow, when app crashes. To avoid leaving empty object in DB.
+    @Override
+    public void onCancel()
+    {
+        new FetchEventsTask(activity).execute("remove_data", new_event);
+        boolean isThereAnySubItems = additional_task_info_sw.isChecked();
+
+        clearSubItemsFromDB(!isThereAnySubItems);
     }
 
     @Override
@@ -360,6 +387,29 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     }
 
     @Override
+    public void setInterest(View view)
+    {
+        //TODO: move to abstract, possibly
+        interestCallListener.onInterestsCall();
+    }
+
+    @Override
+    public void onInterestPicked(int interest_id)
+    {
+        event_id = new_event.getId();
+
+        new FetchEventsTask(activity).execute("add_data", new EventInterest(-1, event_id, interest_id));
+        interests_count++;
+
+        final View fragmentView = getView();
+        if(fragmentView != null)
+        {
+            final TextView interest_added_text_tv = (TextView) fragmentView.findViewById(R.id.interests_count_text);
+            interest_added_text_tv.setText("Interests added: " + interests_count);
+        }
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b)
     {
         final View fragmentView = getView();
@@ -370,19 +420,26 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             switch (compoundButton.getId())
             {
                 case R.id.use_comment_checkBox:
+                    clearCommentsFromDB(b);
                     setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[0])));
+                    clearContainerLayoutItems(b, ((LinearLayout)fragmentView.findViewById(container_layouts[0])));
                     break;
 
                 case R.id.use_sub_tasks_checkBox:
+                    clearSubTasksFromDB(b);
                     setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[1])));
+                    clearContainerLayoutItems(b, ((LinearLayout)fragmentView.findViewById(container_layouts[1])));
                     break;
 
                 case R.id.use_importance_checkBox:
+                    setImportanceBar(b);
                     setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[2])));
                     break;
 
                 case R.id.use_interests_checkBox:
-                    setLayoutVisibility(b, ((RelativeLayout)fragmentView.findViewById(container_layouts[3])));
+                    clearInterestsFromDB(b);
+                    setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[3])));
+                    clearInterests(b, fragmentView);
                     break;
 
                 case R.id.additional_task_available:
@@ -393,7 +450,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     checkContainerLayoutVisibility(b, container_layouts, fragmentView);
                     setCheckListeners(b, fragmentView);
                     setImportanceBar(b);
-                    clearSubTasksFromDB(b);
+                    clearSubItemsFromDB(b);
                     break;
             }
         }
@@ -472,6 +529,17 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         else layout.setVisibility(View.GONE);
     }
 
+    private void clearContainerLayoutItems(boolean checked, ViewGroup layout)
+    {
+        if(!checked)
+        {
+            int container_layout_element = 1;
+
+            ViewGroup container = (ViewGroup) layout.getChildAt(container_layout_element);
+            if (container.getChildCount() != 0) container.removeAllViews();
+        }
+    }
+
     private void checkContainerLayoutVisibility(boolean checked, int[] layouts, View fragmentView)
     {
         int container_layout_element = 1;
@@ -493,6 +561,15 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             fragmentView.findViewById(container_layout).findViewById(container_layout).setVisibility(View.GONE);
 
             layout_position++;
+        }
+    }
+
+    private void clearInterests(boolean checked, View fragmentView)
+    {
+        if(!checked)
+        {
+            final TextView interest_added_text_tv = (TextView) fragmentView.findViewById(R.id.interests_count_text);
+            interest_added_text_tv.setText("No interests added");
         }
     }
 
@@ -649,6 +726,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 break;
         }
 
+        //TODO: avoid adding when you choose Schedule!
         if(new_event != null) new FetchEventsTask(activity).execute("add_data", new_event);
     }
 
@@ -657,7 +735,19 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
        if(task_type != EventType.SCHEDULE) additional_task_info_sw.setEnabled(true);
     }
 
-    //TODO: finish this!
+    //TODO: make this better!
+    private void clearCommentsFromDB(boolean checked)
+    {
+        if(!checked)
+        {
+            //Remove all comments.
+            Comment comment = new Comment();
+            comment.setId_event(event_id);
+            new FetchEventsTask(activity).execute("remove_data_by", comment, "event_id");
+        }
+    }
+
+    //TODO: make this better!
     private void clearSubTasksFromDB(boolean checked)
     {
         if(!checked)
@@ -666,12 +756,26 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             Sub_task subTask = new Sub_task();
             subTask.setEvent_id(event_id);
             new FetchEventsTask(activity).execute("remove_data_by", subTask, "event_id");
-
-            //Remove all comments.
-            Comment comment = new Comment();
-            comment.setId_event(event_id);
-            new FetchEventsTask(activity).execute("remove_data_by", comment, "event_id");
         }
+    }
+
+    //TODO: make this better!
+    private void clearInterestsFromDB(boolean checked)
+    {
+        if(!checked)
+        {
+            //Remove all sab_tasks.
+            EventInterest eventInterest = new EventInterest();
+            eventInterest.setId_event(event_id);
+            new FetchEventsTask(activity).execute("remove_data_by", eventInterest, "event_id");
+        }
+    }
+
+    private void clearSubItemsFromDB(boolean checked)
+    {
+      clearCommentsFromDB(checked);
+      clearSubTasksFromDB(checked);
+      clearInterestsFromDB(checked);
     }
 
     abstract class ProgressChecker implements SeekBar.OnSeekBarChangeListener
@@ -695,5 +799,10 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         {
 
         }
+    }
+
+    public interface OnInterestCallListener
+    {
+        void onInterestsCall();
     }
 }

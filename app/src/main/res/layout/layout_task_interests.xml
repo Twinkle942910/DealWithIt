@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/interests_container"
+<LinearLayout android:id="@+id/interests_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:onClick="setInterest">
 
        <TextView
            android:id="@+id/interests_count_text"
@@ -14,26 +15,17 @@
            android:layout_height="wrap_content"
            android:paddingRight="16dp"
            android:paddingLeft="16dp"
-           android:paddingTop="3dp"
-           style="@style/TextRobotoRegular"
-           android:textSize="12sp"
+           style="@style/TextRobotoLight"
+           android:textSize="18sp"
            android:text="@string/add_interests_count_hint"
            android:textColor="@color/colorTitleText" />
 
-    <ImageView
-        android:id="@+id/button_add_interest"
-        android:onClick="onAddTaskItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="1dp"
-        app:srcCompat="@drawable/ic_add_task"
-        android:layout_toRightOf="@id/interests_count_text"/>
+       <ImageView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:paddingTop="1dp"
+           android:paddingLeft="16dp"
+           android:paddingRight="16dp"
+           app:srcCompat="@drawable/ic_add_task" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_input_interests_plus_1"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
-
-</RelativeLayout>
+</LinearLayout>

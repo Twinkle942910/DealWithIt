@@ -3,8 +3,7 @@ package com.example.twinkle94.dealwithit.adding_task_page;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.res.Resources;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -25,14 +23,16 @@ import com.example.twinkle94.dealwithit.fragments.AbstractAddingFragment;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.fragments.AddingTaskFragment;
 import com.example.twinkle94.dealwithit.fragments.OnTypePickListener;
+import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 
 import java.util.Calendar;
 
-public class NewTaskActivity extends AppCompatActivity implements OnTypePickListener
+public class NewTaskActivity extends AppCompatActivity implements OnTypePickListener, AddingTaskFragment.OnInterestCallListener
 {
     private static final String NAME = NewTaskActivity.class.getSimpleName();
     static final String TASK_FRAGMENT_TAG = "addTaskFragment";
     static final String SCHEDULE_FRAGMENT_TAG = "addScheduleFragment";
+    static final int PICK_INTEREST_REQUEST = 9;  // The request code
 
     private Toolbar toolbar;
     private AbstractAddingFragment addingFragment;
@@ -52,17 +52,6 @@ public class NewTaskActivity extends AppCompatActivity implements OnTypePickList
         {
            initTaskTypeFragment();
         }
-    }
-
-    private void initTaskTypeFragment()
-    {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        addingTaskFragment = new AddingTaskFragment();
-        addingFragment = addingTaskFragment;
-        ft.add(R.id.fragment_task_type_container, addingFragment, TASK_FRAGMENT_TAG);
-        ft.commit();
     }
 
     @Override
@@ -100,6 +89,37 @@ public class NewTaskActivity extends AppCompatActivity implements OnTypePickList
         }
     }
 
+    @Override
+    public void onInterestsCall()
+    {
+        Intent pickContactIntent = new Intent(NewTaskActivity.this, InterestsActivity.class);
+        startActivityForResult(pickContactIntent, PICK_INTEREST_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PICK_INTEREST_REQUEST)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                int interest_id = data.getIntExtra(InterestsActivity.INTEREST_ID_EXTRA, -1);
+                addingFragment.onInterestPicked(interest_id);
+            }
+        }
+    }
+
+    private void initTaskTypeFragment()
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        addingTaskFragment = new AddingTaskFragment();
+        addingFragment = addingTaskFragment;
+        ft.add(R.id.fragment_task_type_container, addingFragment, TASK_FRAGMENT_TAG);
+        ft.commit();
+    }
+
     private void setFragmentTaskType(EventType type)
     {
         Bundle type_bundle = new Bundle();
@@ -125,10 +145,16 @@ public class NewTaskActivity extends AppCompatActivity implements OnTypePickList
                 @Override
                 public void onClick(View v)
                 {
+                    addingFragment.onCancel();
                    finish();
                 }
             });
         }
+    }
+
+    public void setInterest(View view)
+    {
+        addingFragment.setInterest(view);
     }
 
     public void setTimePicker(View view)
