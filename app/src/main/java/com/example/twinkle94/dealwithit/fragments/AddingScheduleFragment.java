@@ -1,5 +1,7 @@
 package com.example.twinkle94.dealwithit.fragments;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -19,7 +23,9 @@ import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class AddingScheduleFragment extends AbstractAddingFragment
@@ -31,6 +37,10 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     private String date;
 
     private TextView start_end_time_tv;
+
+    //TODO: make something better
+    private ViewGroup.OnHierarchyChangeListener onSubItemRemoveListener;
+    private List<AddingTaskFragment.OnTaskRemovedListener> removed_tasks;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -156,6 +166,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                 }
             });
             subTask.addView();
+            removed_tasks.add(subTask);
         }
         else Toast.makeText(activity, "You have to chose a day first!", Toast.LENGTH_LONG).show();
     }
@@ -173,7 +184,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     public void onCancel()
     {
-        //TODO: remove all added things to DB.
+       clearScheduleContainer();
     }
 
     @Override
@@ -232,19 +243,40 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     protected void initializeListeners()
     {
+        //TODO: is it the best place for this?
+        removed_tasks = new ArrayList<>();
 
+        //TODO: make something better
+        onSubItemRemoveListener = new ViewGroup.OnHierarchyChangeListener()
+        {
+            @Override
+            public void onChildViewAdded(View parent, View child)
+            {
+
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child)
+            {
+                removed_tasks.get(removed_tasks.size() - 1).onTaskRemovedCall();
+                removed_tasks.remove(removed_tasks.size() - 1);
+            }
+        };
     }
 
     @Override
     protected void setListeners()
     {
-
+        task_container_ly.setOnHierarchyChangeListener(onSubItemRemoveListener);
     }
 
     @Override
     protected void removeListeners()
     {
-
+        //TODO: is it the best place for this?
+        removed_tasks = null;
+        //TODO: make something better
+        task_container_ly.setOnHierarchyChangeListener(null);
     }
 
     //TODO: when task is created earlier than day, day is - " ".
@@ -255,13 +287,14 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
         for (int i = 0; i < daysContainer.getChildCount(); i++)
         {
-            final TextView day = (TextView) daysContainer.getChildAt(i);
-            day.setTag(i);
-            day.setOnClickListener(new View.OnClickListener()
+            final TextView day_tv = (TextView) daysContainer.getChildAt(i);
+            day_tv.setTag(i);
+            day_tv.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
+                    clearScheduleContainer();
                     clearDays(daysContainer);
 
                     ((TextView) view).setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
@@ -329,5 +362,10 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     {
         date = week_dates[day_position];
         Log.i("DATE", date);
+    }
+
+    private void clearScheduleContainer()
+    {
+        if(task_container_ly.getChildCount() != 0) task_container_ly.removeAllViews();
     }
 }

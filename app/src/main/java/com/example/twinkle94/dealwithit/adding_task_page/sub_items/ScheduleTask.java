@@ -404,6 +404,7 @@ public class ScheduleTask extends SubTask
     @Override
     void removeTaskFromDB()
     {
+        if(schedule != null)
         new FetchEventsTask(context).execute("remove_data", schedule);
     }
 

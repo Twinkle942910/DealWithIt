@@ -8,11 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.twinkle94.dealwithit.fragments.AddingTaskFragment;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.util.Locale;
 
-public abstract class SubTask implements View.OnClickListener, ViewGroup.OnHierarchyChangeListener
+public abstract class SubTask implements View.OnClickListener, AddingTaskFragment.OnTaskRemovedListener
 {
     private final int LAYOUT;
 
@@ -24,7 +25,6 @@ public abstract class SubTask implements View.OnClickListener, ViewGroup.OnHiera
     {
         this.context = context;
         this.container_layout_vg = container_layout_vg;
-        this.container_layout_vg.setOnHierarchyChangeListener(this);
 
         LAYOUT = resource;
 
@@ -98,13 +98,7 @@ public abstract class SubTask implements View.OnClickListener, ViewGroup.OnHiera
     }
 
     @Override
-    public void onChildViewAdded(View view, View view1)
-    {
-
-    }
-
-    @Override
-    public void onChildViewRemoved(View view, View view1)
+    public void onTaskRemovedCall()
     {
         removeTaskFromDB();
     }

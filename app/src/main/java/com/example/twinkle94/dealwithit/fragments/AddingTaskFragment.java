@@ -24,10 +24,8 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
-import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.EventInterest;
-import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.task_types.Birthday;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
@@ -36,7 +34,9 @@ import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
@@ -67,6 +67,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private DateTimeValidator dateTimeValidator;
 
     private View.OnFocusChangeListener inputFocusChangeListener;
+    //TODO: make something better
+    private ViewGroup.OnHierarchyChangeListener onSubItemRemoveListener;
     //TODO: move to abstract, possibly
     private OnInterestCallListener interestCallListener;
 
@@ -75,6 +77,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private Event new_event;
     //TODO: make something more convenient
     private int interests_count;
+
+    private List<OnTaskRemovedListener> removed_tasks;
 
     @Override
     public void onAttach(Context context)
@@ -106,6 +110,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         super.onResume();
         if(task_type != EventType.NO_TYPE)
             type_iet.setText(task_type_output_tv.getText().toString());
+        //TODO: make it better!
+        addEmptyEvent(task_type);
     }
 
     @Override
@@ -210,6 +216,26 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 }
             }
         };
+
+        //TODO: is it the best place for this?
+        removed_tasks = new ArrayList<>();
+
+        //TODO: make something better
+        onSubItemRemoveListener = new ViewGroup.OnHierarchyChangeListener()
+        {
+            @Override
+            public void onChildViewAdded(View parent, View child)
+            {
+
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child)
+            {
+                removed_tasks.get(removed_tasks.size() - 1).onTaskRemovedCall();
+                removed_tasks.remove(removed_tasks.size() - 1);
+            }
+        };
     }
 
     @Override
@@ -219,6 +245,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         date_iet.setOnFocusChangeListener(inputFocusChangeListener);
         start_time_iet.setOnFocusChangeListener(inputFocusChangeListener);
         end_time_iet.setOnFocusChangeListener(inputFocusChangeListener);
+        //TODO: make something better
+        comment_container_ly.setOnHierarchyChangeListener(onSubItemRemoveListener);
+        sub_task_container_ly.setOnHierarchyChangeListener(onSubItemRemoveListener);
     }
 
     @Override
@@ -228,6 +257,12 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         date_iet.setOnFocusChangeListener(null);
         start_time_iet.setOnFocusChangeListener(null);
         end_time_iet.setOnFocusChangeListener(null);
+
+        //TODO: is it the best place for this?
+        removed_tasks = null;
+        //TODO: make something better
+        comment_container_ly.setOnHierarchyChangeListener(null);
+        sub_task_container_ly.setOnHierarchyChangeListener(null);
     }
 
     @Override
@@ -292,8 +327,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                     break;
 
-
-
                 case NO_TYPE:
                     Toast.makeText(activity, "You should pick a type, bro", Toast.LENGTH_LONG).show();
                     break;
@@ -308,10 +341,10 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     @Override
     public void onCancel()
     {
-        new FetchEventsTask(activity).execute("remove_data", new_event);
+        clearEvent();
         boolean isThereAnySubItems = additional_task_info_sw.isChecked();
 
-        clearSubItemsFromDB(!isThereAnySubItems);
+        clearInterestsFromDB(!isThereAnySubItems);
     }
 
     @Override
@@ -420,13 +453,11 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             switch (compoundButton.getId())
             {
                 case R.id.use_comment_checkBox:
-                    clearCommentsFromDB(b);
                     setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[0])));
                     clearContainerLayoutItems(b, ((LinearLayout)fragmentView.findViewById(container_layouts[0])));
                     break;
 
                 case R.id.use_sub_tasks_checkBox:
-                    clearSubTasksFromDB(b);
                     setLayoutVisibility(b, ((LinearLayout)fragmentView.findViewById(container_layouts[1])));
                     clearContainerLayoutItems(b, ((LinearLayout)fragmentView.findViewById(container_layouts[1])));
                     break;
@@ -450,7 +481,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     checkContainerLayoutVisibility(b, container_layouts, fragmentView);
                     setCheckListeners(b, fragmentView);
                     setImportanceBar(b);
-                    clearSubItemsFromDB(b);
                     break;
             }
         }
@@ -499,7 +529,10 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                     {
                         if (((ViewGroup) innerView).getChildAt(inner_view_position) instanceof TextInputLayout)
                         {
-                            if (!TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getError()) && TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getEditText().getText()))
+                            boolean isError = TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getError());
+                            boolean isEmpty = TextUtils.isEmpty(((TextInputLayout) ((ViewGroup) innerView).getChildAt(inner_view_position)).getEditText().getText());
+
+                            if (!isError || isEmpty)
                             {
                                 error_state = true;
                                 break;
@@ -704,6 +737,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     {
         SubTask subTask = new Task(activity, event_id = new_event.getId(), container_layout, R.layout.sub_task_comment_item);
         subTask.addView();
+        removed_tasks.add(subTask);
     }
 
     private void addEmptyEvent(EventType type)
@@ -711,52 +745,43 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         switch (type)
         {
             case TODO:
+                clearEvent();
                 new_event = new ToDo();
                 new_event.setType(EventType.TODO);
                 break;
 
             case BIRTHDAY:
+                clearEvent();
                 new_event = new Birthday();
                 new_event.setType(EventType.BIRTHDAY);
                 break;
 
             case WORKTASK:
+                clearEvent();
                 new_event = new WorkTask();
                 new_event.setType(EventType.WORKTASK);
                 break;
+
+            case SCHEDULE:
+                clearEvent();
+                break;
         }
 
-        //TODO: avoid adding when you choose Schedule!
-        if(new_event != null) new FetchEventsTask(activity).execute("add_data", new_event);
+        if(new_event != null && type != EventType.SCHEDULE) new FetchEventsTask(activity).execute("add_data", new_event);
+    }
+
+    private void clearEvent()
+    {
+        if(new_event != null)
+        {
+            new FetchEventsTask(activity).execute("remove_data", new_event);
+            new_event = null;
+        }
     }
 
     private void enableSubTasks(EventType task_type)
     {
        if(task_type != EventType.SCHEDULE) additional_task_info_sw.setEnabled(true);
-    }
-
-    //TODO: make this better!
-    private void clearCommentsFromDB(boolean checked)
-    {
-        if(!checked)
-        {
-            //Remove all comments.
-            Comment comment = new Comment();
-            comment.setId_event(event_id);
-            new FetchEventsTask(activity).execute("remove_data_by", comment, "event_id");
-        }
-    }
-
-    //TODO: make this better!
-    private void clearSubTasksFromDB(boolean checked)
-    {
-        if(!checked)
-        {
-            //Remove all sab_tasks.
-            Sub_task subTask = new Sub_task();
-            subTask.setEvent_id(event_id);
-            new FetchEventsTask(activity).execute("remove_data_by", subTask, "event_id");
-        }
     }
 
     //TODO: make this better!
@@ -769,13 +794,6 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             eventInterest.setId_event(event_id);
             new FetchEventsTask(activity).execute("remove_data_by", eventInterest, "event_id");
         }
-    }
-
-    private void clearSubItemsFromDB(boolean checked)
-    {
-      clearCommentsFromDB(checked);
-      clearSubTasksFromDB(checked);
-      clearInterestsFromDB(checked);
     }
 
     abstract class ProgressChecker implements SeekBar.OnSeekBarChangeListener
@@ -804,5 +822,10 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     public interface OnInterestCallListener
     {
         void onInterestsCall();
+    }
+
+    public interface OnTaskRemovedListener
+    {
+        void onTaskRemovedCall();
     }
 }

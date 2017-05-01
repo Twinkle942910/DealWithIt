@@ -152,10 +152,12 @@ public class Task extends SubTask
             switch (container_layout_vg.getId())
             {
                 case R.id.comment_container:
+                    if(comment != null)
                     new FetchEventsTask(context).execute("remove_data", comment);
                     break;
 
                 case R.id.sub_tasks_container:
+                    if(sub_task != null)
                     new FetchEventsTask(context).execute("remove_data", sub_task);
                     break;
             }
