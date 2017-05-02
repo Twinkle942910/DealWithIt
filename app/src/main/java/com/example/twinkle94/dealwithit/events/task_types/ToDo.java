@@ -13,10 +13,9 @@ public class ToDo extends Event
     private List<Sub_task> subTasks;
     private List<Comment> comments;
 
-    public ToDo(int id, String title, String time_start, String time_end, String date,
-                EventType type, String state, int importance)
+    public ToDo(int id, String title, String time_start, String time_end, String date, String state, int importance)
     {
-        super(id, title, time_start, time_end, date, type, state, importance);
+        super(id, title, time_start, time_end, date, EventType.TODO, state, importance);
     }
 
     public ToDo()

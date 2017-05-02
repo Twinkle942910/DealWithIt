@@ -7,14 +7,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.background.TodayTaskListLoader;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
+import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class TodayFragment extends AbstractTabFragment
 {
     public static final String TODAY_PAGE = "TODAY_PAGE";
     private static final int LAYOUT = R.layout.fragment_today;
+
+    private ListView task_list;
+    private TodayTaskAdapter today_task_adapter;
+    private String today_date;
 
     public static TodayFragment newInstance(int page, Context context)
     {
@@ -41,6 +51,7 @@ public class TodayFragment extends AbstractTabFragment
     {
         super.onAttach(context);
         Log.i(TODAY_PAGE, "onAttach");
+        this.context = context;
     }
 
     @Override
@@ -48,6 +59,11 @@ public class TodayFragment extends AbstractTabFragment
     {
         Log.i(TODAY_PAGE, "onCreateView");
         view = inflater.inflate(LAYOUT, container, false);
+        setTodayDate();
+        setTodayEventsAdapter(view);
+
+        //Get data into adapter from db.
+        new FetchEventsTask(getActivity()).execute("get_data", today_task_adapter, "TodayList");
 
         return view;
     }
@@ -71,9 +87,6 @@ public class TodayFragment extends AbstractTabFragment
     {
         super.onResume();
         Log.i(TODAY_PAGE, "onResume");
-
-        //TODO: move from here!     //why it crashes on portrait view, when we pass context here?
-        new TodayTaskListLoader(getActivity()).execute();
     }
 
     @Override
@@ -106,4 +119,22 @@ public class TodayFragment extends AbstractTabFragment
         Log.i(TODAY_PAGE, "onDestroyView");
     }
 
+
+    private void setTodayDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        today_date = dateFormat.format(calendar.getTime());
+    }
+
+    private void setTodayEventsAdapter(View view)
+    {                            //TODO: Figure out, why this context doesn't work!
+        //task_list = (ListView) ((Activity)context).findViewById(R.id.tasks_list);
+
+            task_list = (ListView) view.findViewById(R.id.tasks_list);
+            today_task_adapter = new TodayTaskAdapter(context, R.layout.today_list_item);
+            today_task_adapter.setTodaysDate(today_date);
+            task_list.setAdapter(today_task_adapter);
+    }
 }

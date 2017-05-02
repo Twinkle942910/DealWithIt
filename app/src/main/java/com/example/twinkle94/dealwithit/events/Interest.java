@@ -17,6 +17,13 @@ public class Interest implements InterestItem
         this.value = value;
     }
 
+    public Interest()
+    {
+        this.id = -1;
+        this.title = "no_title";
+        this.value = -1;
+    }
+
     public int getId() {
         return id;
     }

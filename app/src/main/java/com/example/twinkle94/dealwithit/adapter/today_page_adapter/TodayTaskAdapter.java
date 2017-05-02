@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
@@ -26,7 +27,9 @@ public class TodayTaskAdapter extends ArrayAdapter
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_LIST = 1;
 
-    private List<Item> list_of_tasks = new ArrayList<>();
+    private List<Item> list_of_events = new ArrayList<>();
+
+    private String todaysDate;
 
     public TodayTaskAdapter(Context context, int resource)
     {
@@ -35,20 +38,30 @@ public class TodayTaskAdapter extends ArrayAdapter
 
     public void add(Item event)
     {
-        list_of_tasks.add(event);
+        list_of_events.add(event);
+    }
+
+    public void add(int position, Item event)
+    {
+        list_of_events.add(position, event);
+    }
+
+    public void updateAll()
+    {
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount()
     {
-        return list_of_tasks.size();
+        return list_of_events.size();
     }
 
     @Nullable
     @Override
     public Item getItem(int position)
     {
-        return list_of_tasks.get(position);
+        return list_of_events.get(position);
     }
 
     @Override
@@ -105,6 +118,21 @@ public class TodayTaskAdapter extends ArrayAdapter
         setViewValues(position, eventViewHolder);
 
         return convertView;
+    }
+
+                             //TODO: change parameter to EventType, maybe?
+    public int headerPosition(String header_type)
+    {
+        //TODO: check if list empty, on first attempt!
+        for (Item event : list_of_events)
+        {
+            if (event instanceof EventTypeSection)
+            {
+                if(((EventTypeSection)event).toString().equals(header_type))
+                    return list_of_events.indexOf(event);
+            }
+        }
+        return -1;
     }
 
     private void setViewValues(int position, EventViewHolder eventViewHolder)
@@ -295,6 +323,16 @@ public class TodayTaskAdapter extends ArrayAdapter
 
         eventViewHolder.interest = (TextView) row.findViewById(R.id.interest_percent);
         eventViewHolder.interest_image = (ImageView) row.findViewById(R.id.interest_icon);
+    }
+
+    public void setTodaysDate(String todaysDate)
+    {
+        this.todaysDate = todaysDate;
+    }
+
+    public String getTodaysDate()
+    {
+        return todaysDate;
     }
 
     private static class EventViewHolder

@@ -20,4 +20,16 @@ public enum ScheduleType
     {
         return this.type;
     }
+
+    public static ScheduleType getName(String schedule_event_type_string)
+    {
+        for(ScheduleType type : values())
+        {
+            if( type.type.equals(schedule_event_type_string))
+            {
+                return type;
+            }
+        }
+        return null;
+    }
 }

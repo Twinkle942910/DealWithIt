@@ -1,7 +1,6 @@
 package com.example.twinkle94.dealwithit;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,7 +19,6 @@ import android.view.View;
 
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
-import com.example.twinkle94.dealwithit.background.TodayTaskListLoader;
 import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 import com.example.twinkle94.dealwithit.util.Constants;
 

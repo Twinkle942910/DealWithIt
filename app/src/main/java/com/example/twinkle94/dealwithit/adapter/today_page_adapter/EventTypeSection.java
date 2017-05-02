@@ -21,4 +21,9 @@ public class EventTypeSection implements Item
     {
         return EventType.NO_TYPE;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

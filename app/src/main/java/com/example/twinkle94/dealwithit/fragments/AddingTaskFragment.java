@@ -26,6 +26,7 @@ import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.EventInterest;
+import com.example.twinkle94.dealwithit.events.Location;
 import com.example.twinkle94.dealwithit.events.task_types.Birthday;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
 import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
@@ -37,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
@@ -307,23 +309,51 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     {
         if(!isInputErrors())
         {
+            int this_event_id = new_event.getId();
+
             switch (task_type)
             {
-                case TODO:
 
-                    int this_event_id = new_event.getId();
+                //TODO: refactor!
+                case TODO:
 
                     new_event = new ToDo(this_event_id,
                             title_iet.getText().toString(),
                             start_time_iet.getText().toString(),
                             end_time_iet.getText().toString(),
                             date_iet.getText().toString(),
-                            EventType.TODO,
                             "Waiting",
                             importance_value);
 
-                    FetchEventsTask addingToDB = new FetchEventsTask(activity);
-                    addingToDB.execute("update_data", new_event);
+                    new FetchEventsTask(activity).execute("update_data", new_event);
+
+                    break;
+
+                case WORKTASK:
+
+                    new_event = new WorkTask(this_event_id,
+                            title_iet.getText().toString(),
+                            start_time_iet.getText().toString(),
+                            end_time_iet.getText().toString(),
+                            date_iet.getText().toString(),
+                            "Waiting",
+                            importance_value);
+
+                    new FetchEventsTask(activity).execute("update_data", new_event);
+
+                    break;
+
+                case BIRTHDAY:
+
+                    new_event = new Birthday(this_event_id,
+                            title_iet.getText().toString(),
+                            start_time_iet.getText().toString(),
+                            end_time_iet.getText().toString(),
+                            date_iet.getText().toString(),
+                            "Waiting",
+                            importance_value, new Location(-1, -1, "Poor","Loov", "Boi"));
+
+                    new FetchEventsTask(activity).execute("update_data", new_event);
 
                     break;
 
@@ -416,7 +446,11 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     @Override
     protected void setDateOutput(int year, int month, int day)
     {
-        date_iet.setText(day + "/" + (month + 1) + "/" + year);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        date_iet.setText(dateFormat.format(calendar.getTime()));
     }
 
     @Override

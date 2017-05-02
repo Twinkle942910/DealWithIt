@@ -9,15 +9,20 @@ import android.util.Log;
 
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestsAdapter;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
+import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
 import com.example.twinkle94.dealwithit.database.EventInfoContract;
 import com.example.twinkle94.dealwithit.database.EventInfoDB;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.Location;
 import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.task_types.Birthday;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
@@ -92,7 +97,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
 
             case "Work Task":
-
+                //TODO: add to work!
                 break;
 
             case "Birthday":
@@ -146,6 +151,10 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
             case "Interest":
                 getDataListFromInterest(eventInfoDB, (InterestsAdapter) event);
                 break;
+
+            case "TodayList":
+                getTodayDataListFromEvents(eventInfoDB, (TodayTaskAdapter) event);
+                break;
         }
 
         return get_data_type + " was got from DB";
@@ -164,7 +173,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 break;
 
             case "Work Task":
-
+                updateDataInWorkTask(eventInfoDB, (WorkTask)event);
                 break;
 
             case "Birthday":
@@ -403,7 +412,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         Log.d("FetchEventsTask", "New Row " + newRowId + " Inserted..." + EventInfoContract.EventsInterestsEntry.TABLE_NAME);
     }
 
-    //Get list of all ToDo
+    //Get list of all Interests
     private void getDataListFromInterest(EventInfoDB eventInfoDB, InterestsAdapter interests_adapter)
     {
         //Open connection to read only
@@ -457,50 +466,317 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         db.close();
     }
 
-   /* //Get ToDo by id
-    public ToDo getToDoById(int Id)
+    //Get list of all Events
+    private void getTodayDataListFromEvents(EventInfoDB eventInfoDB, TodayTaskAdapter todayTaskAdapter)
     {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //Open connection to read only
+        SQLiteDatabase database1 = eventInfoDB.getReadableDatabase();
 
-        String selectQuery =  "SELECT  " +
-                ToDo.ID + "," +
-                ToDo.TASK + "," +
-                ToDo.TYPE + "," +
-                ToDo.DATE + "," +
-                ToDo.TIME + "," +
-                ToDo.COMMENT + "," +
-                ToDo.IMPORTANCE + "," +
-                ToDo.IMPORTANCE_VALUE +
-                " FROM " + ToDo.TABLE
-                + " WHERE " +
-                ToDo.ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+        String simple_event_select_query =  "SELECT  " +
+                EventInfoContract.EventEntry.TABLE_NAME + "." + EventInfoContract.EventEntry._ID + "," +
+                EventInfoContract.EventEntry.TITLE + "," +
+                EventInfoContract.EventEntry.DATE + "," +
+                EventInfoContract.EventEntry.TIME_START + "," +
+                EventInfoContract.EventEntry.TIME_END + "," +
+                EventInfoContract.EventEntry.TYPE + "," +
+                EventInfoContract.EventEntry.STATE + "," +
+                EventInfoContract.EventEntry.IMPORTANCE +
+                " FROM " + EventInfoContract.EventEntry.TABLE_NAME +
+                " WHERE " +  EventInfoContract.EventEntry.DATE + " = "  + " '" +
+                todayTaskAdapter.getTodaysDate() + "' ";
 
-        ToDo todo = new ToDo();
+        String schedule_event_select_query =  "SELECT  " +
+                EventInfoContract.EventEntry.TABLE_NAME + "." + EventInfoContract.EventEntry._ID + "," +
+                EventInfoContract.EventEntry.TITLE + "," +
+                EventInfoContract.ScheduleTypeEntry.CONTENT + "," +
+                EventInfoContract.EventEntry.DATE + "," +
+                EventInfoContract.EventEntry.TIME_START + "," +
+                EventInfoContract.EventEntry.TIME_END + "," +
+                EventInfoContract.EventEntry.STATE + "," +
+                EventInfoContract.EventEntry.IMPORTANCE +
+                " FROM " + EventInfoContract.EventEntry.TABLE_NAME + " INNER JOIN " +
+                EventInfoContract.ScheduleTypeEntry.TABLE_NAME + " ON " +  EventInfoContract.EventEntry.TABLE_NAME + "." +
+                EventInfoContract.EventEntry._ID + " = " +
+                EventInfoContract.ScheduleTypeEntry.ID_EVENT +
+                " WHERE " +  EventInfoContract.EventEntry.DATE + " = "  + " '" +
+                todayTaskAdapter.getTodaysDate() + "' ";
 
-        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
+        String birthday_event_select_query =  "SELECT  " +
+                EventInfoContract.EventEntry.TABLE_NAME + "." + EventInfoContract.EventEntry._ID + "," +
+                EventInfoContract.EventEntry.TITLE + "," +
+                EventInfoContract.EventEntry.DATE + "," +
+                EventInfoContract.EventEntry.TIME_START + "," +
+                EventInfoContract.EventEntry.TIME_END + "," +
+                EventInfoContract.EventEntry.STATE + "," +
+                EventInfoContract.EventEntry.IMPORTANCE + "," +
+                EventInfoContract.LocationEntry.STREET + "," +
+                EventInfoContract.LocationEntry.CITY + "," +
+                EventInfoContract.LocationEntry.COUNTRY +
+                " FROM " + EventInfoContract.EventEntry.TABLE_NAME + " INNER JOIN " +
+                EventInfoContract.LocationEntry.TABLE_NAME + " ON " +  EventInfoContract.EventEntry.TABLE_NAME + "." +
+                EventInfoContract.EventEntry._ID + " = " +
+                EventInfoContract.LocationEntry.ID_EVENT +
+                " WHERE " +  EventInfoContract.EventEntry.DATE + " = " + " '" +
+                todayTaskAdapter.getTodaysDate() + "' ";
+
+        Cursor simple_event_cursor = database1.rawQuery(simple_event_select_query, null);
+
+        //TODO: cursor here goes by all values that have this date, even when there's Schedule and B-day type. Check this!
+        if (simple_event_cursor.moveToFirst())
+        {
+            do
+            {
+                int simple_event_id = (int) simple_event_cursor.getLong(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry._ID));
+                String simple_event_title = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TITLE));
+                String simple_event_date = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.DATE));
+                String simple_event_time_start = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_START));
+                String simple_event_time_end = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_END));
+                String simple_event_type = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TYPE));
+                String simple_event_state = simple_event_cursor.getString(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
+                int simple_event_importance = simple_event_cursor.getInt(simple_event_cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
+
+                EventType event_type = EventType.getName(simple_event_type);
+                Event event = null;
+
+                if (event_type != null)
+                {
+                    switch (event_type)
+                    {
+                        case TODO:
+                            event = new ToDo(simple_event_id, simple_event_title, simple_event_time_start, simple_event_time_end, simple_event_date, simple_event_state, simple_event_importance);
+                            ((ToDo)event).setListSubTasks(getSubTasksByEventId(eventInfoDB, event.getId()));
+                            ((ToDo)event).setListComments(getCommentsByEventId(eventInfoDB, event.getId()));
+                            event.setListInterests(getInterestsByEventId(eventInfoDB, event.getId()));
+                                                                 //TODO: maybe, its more efficient to use just String?
+                            if (todayTaskAdapter.headerPosition(EventType.TODO.toString()) == -1)
+                            {
+                                todayTaskAdapter.add(new EventTypeSection(EventType.TODO.toString()));
+                                todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.TODO.toString()) + 1, event);
+                            }
+                            else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.TODO.toString()) + 1, event);
+                            break;
+
+                        case WORKTASK:
+                            event = new WorkTask(simple_event_id, simple_event_title, simple_event_time_start, simple_event_time_end, simple_event_date, simple_event_state, simple_event_importance);
+                            ((WorkTask)event).setListSubTasks(getSubTasksByEventId(eventInfoDB, event.getId()));
+                            ((WorkTask)event).setListComments(getCommentsByEventId(eventInfoDB, event.getId()));
+                            event.setListInterests(getInterestsByEventId(eventInfoDB, event.getId()));
+
+                            if (todayTaskAdapter.headerPosition(EventType.WORKTASK.toString()) == -1)
+                            {
+                                todayTaskAdapter.add(new EventTypeSection(EventType.WORKTASK.toString()));
+                                todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.WORKTASK.toString()) + 1, event);
+                            }
+                            else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.WORKTASK.toString()) + 1, event);
+                            break;
+                    }
+                }
+
+               // todayTaskAdapter.updateAll();
+            }
+            while (simple_event_cursor.moveToNext());
+        }
+        simple_event_cursor.close();
+        database1.close();
+
+        SQLiteDatabase database2 = eventInfoDB.getReadableDatabase();
+        Cursor schedule_event_cursor = database2.rawQuery(schedule_event_select_query, null);
+
+        if (schedule_event_cursor.moveToFirst())
+        {
+            do
+            {
+                int schedule_event_id = (int) schedule_event_cursor.getLong(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry._ID));
+                String schedule_event_title = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TITLE));
+                String schedule_event_date = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.DATE));
+                String schedule_event_time_start = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_START));
+                String schedule_event_time_end = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_END));
+                String schedule_event_type = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.ScheduleTypeEntry.CONTENT));
+                String schedule_event_state = schedule_event_cursor.getString(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
+                int schedule_event_importance = schedule_event_cursor.getInt(schedule_event_cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
+
+                ScheduleType schedule_type = ScheduleType.getName(schedule_event_type);
+
+
+                Event event = new Schedule(schedule_event_id, schedule_event_title, schedule_type, schedule_event_time_start, schedule_event_time_end, schedule_event_date, schedule_event_state, schedule_event_importance);
+                event.setListInterests(getInterestsByEventId(eventInfoDB, event.getId()));
+
+                //TODO: maybe, its more efficient to use just String?
+                if (todayTaskAdapter.headerPosition(EventType.SCHEDULE.toString()) == -1)
+                {
+                    todayTaskAdapter.add(new EventTypeSection(EventType.SCHEDULE.toString()));
+                    todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.SCHEDULE.toString()) + 1, event);
+                }
+                else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.SCHEDULE.toString()) + 1, event);
+
+                //todayTaskAdapter.updateAll();
+            }
+            while (schedule_event_cursor.moveToNext());
+        }
+        schedule_event_cursor.close();
+        database2.close();
+
+        SQLiteDatabase database3 = eventInfoDB.getReadableDatabase();
+        Cursor birthday_event_cursor = database3.rawQuery(birthday_event_select_query, null);
+
+        if (birthday_event_cursor.moveToFirst())
+        {
+            do
+            {
+                int birthday_event_id = (int) birthday_event_cursor.getLong(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry._ID));
+                String birthday_event_title = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TITLE));
+                String birthday_event_date = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.DATE));
+                String birthday_event_time_start = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_START));
+                String birthday_event_time_end = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_END));
+                String birthday_event_state = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
+                int birthday_event_importance = birthday_event_cursor.getInt(birthday_event_cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
+                String birthday_event_street = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.LocationEntry.STREET));
+                String birthday_event_city = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.LocationEntry.CITY));
+                String birthday_event_country = birthday_event_cursor.getString(birthday_event_cursor.getColumnIndex(EventInfoContract.LocationEntry.COUNTRY));
+
+                                                //TODO: possibly, can add real id.
+                Location location = new Location(-1, birthday_event_id, birthday_event_street, birthday_event_city, birthday_event_country);
+
+                Event event = new Birthday(birthday_event_id, birthday_event_title, birthday_event_time_start, birthday_event_time_end, birthday_event_date, birthday_event_state, birthday_event_importance, location);
+                ((Birthday)event).setListSubTasks(getSubTasksByEventId(eventInfoDB, event.getId()));
+                ((Birthday)event).setListComments(getCommentsByEventId(eventInfoDB, event.getId()));
+                event.setListInterests(getInterestsByEventId(eventInfoDB, event.getId()));
+
+                //TODO: maybe, its more efficient to use just String?
+                if (todayTaskAdapter.headerPosition(EventType.BIRTHDAY.toString()) == -1)
+                {
+                    todayTaskAdapter.add(new EventTypeSection(EventType.BIRTHDAY.toString()));
+                    todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.BIRTHDAY.toString()) + 1, event);
+                }
+                else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.BIRTHDAY.toString()) + 1, event);
+
+                //todayTaskAdapter.updateAll();
+            }
+            while (birthday_event_cursor.moveToNext());
+        }
+        birthday_event_cursor.close();
+
+        database3.close();
+
+        todayTaskAdapter.updateAll();
+    }
+
+    //TODO; make them convenient (3 methods).
+    private List<Sub_task> getSubTasksByEventId(EventInfoDB eventInfoDB, int event_id)
+    {
+        SQLiteDatabase database = eventInfoDB.getReadableDatabase();
+        List<Sub_task> sub_tasks = new ArrayList<>();
+
+        String sub_tasks_select_query =  "SELECT  " +
+                EventInfoContract.SubTaskEntry.TABLE_NAME + "." + EventInfoContract.SubTaskEntry._ID + "," +
+                EventInfoContract.SubTaskEntry.ID_EVENT + "," +
+                EventInfoContract.SubTaskEntry.CONTENT + "," +
+                EventInfoContract.SubTaskEntry.CHECKED +  " FROM " +
+                EventInfoContract.SubTaskEntry.TABLE_NAME + " WHERE " +
+                EventInfoContract.SubTaskEntry.ID_EVENT + " =? ";
+
+        Cursor cursor = database.rawQuery(sub_tasks_select_query, new String[] { String.valueOf(event_id) });
 
         if (cursor.moveToFirst())
         {
             do
             {
-                todo.setID(cursor.getInt(cursor.getColumnIndex(ToDo.ID)));
-                todo.setTask(cursor.getString(cursor.getColumnIndex(ToDo.TASK)));
-                todo.setType(cursor.getString(cursor.getColumnIndex(ToDo.TYPE)));
-                todo.setDate(cursor.getString(cursor.getColumnIndex(ToDo.DATE)));
-                todo.setTime(cursor.getString(cursor.getColumnIndex(ToDo.TIME)));
-                todo.setComment(cursor.getString(cursor.getColumnIndex(ToDo.COMMENT)));
-                todo.setImportance(cursor.getString(cursor.getColumnIndex(ToDo.IMPORTANCE)));
-                todo.setImportance_value(cursor.getInt(cursor.getColumnIndex(ToDo.IMPORTANCE_VALUE)));
+                Sub_task sub_task = new Sub_task();
 
-            } while (cursor.moveToNext());
+                sub_task.setId(cursor.getInt(cursor.getColumnIndex(EventInfoContract.SubTaskEntry._ID)));
+                sub_task.setEvent_id(cursor.getInt(cursor.getColumnIndex(EventInfoContract.SubTaskEntry.ID_EVENT)));
+                sub_task.setContent(cursor.getString(cursor.getColumnIndex(EventInfoContract.SubTaskEntry.CONTENT)));
+                boolean checked = cursor.getInt(cursor.getColumnIndex(EventInfoContract.SubTaskEntry.CHECKED)) != 0;
+                sub_task.setChecked(checked);
+
+                sub_tasks.add(sub_task);
+            }
+            while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        db.close();
+        database.close();
 
-        return todo;
-    }*/
+        return sub_tasks;
+    }
+
+    private List<Comment> getCommentsByEventId(EventInfoDB eventInfoDB, int event_id)
+    {
+        SQLiteDatabase database = eventInfoDB.getReadableDatabase();
+        List<Comment> comments = new ArrayList<>();
+
+        String comments_select_query =  "SELECT  " +
+                EventInfoContract.CommentEntry.TABLE_NAME + "." + EventInfoContract.CommentEntry._ID + "," +
+                EventInfoContract.CommentEntry.ID_EVENT + "," +
+                EventInfoContract.CommentEntry.CONTENT +  " FROM " +
+                EventInfoContract.CommentEntry.TABLE_NAME + " WHERE " +
+                EventInfoContract.CommentEntry.ID_EVENT + " =? ";
+
+        Cursor cursor = database.rawQuery(comments_select_query, new String[] { String.valueOf(event_id) } );
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                Comment comment = new Comment();
+
+                comment.setId(cursor.getInt(cursor.getColumnIndex(EventInfoContract.CommentEntry._ID)));
+                comment.setId_event(cursor.getInt(cursor.getColumnIndex(EventInfoContract.CommentEntry.ID_EVENT)));
+                comment.setContent(cursor.getString(cursor.getColumnIndex(EventInfoContract.CommentEntry.CONTENT)));
+
+                comments.add(comment);
+            }
+            while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        database.close();
+
+        return comments;
+    }
+
+    private List<Interest> getInterestsByEventId(EventInfoDB eventInfoDB, int event_id)
+    {
+        SQLiteDatabase database = eventInfoDB.getReadableDatabase();
+        List<Interest> interests = new ArrayList<>();
+
+        String interests_select_query =  "SELECT  " +
+                EventInfoContract.InterestEntry.TABLE_NAME + "." + EventInfoContract.InterestEntry._ID + "," +
+                EventInfoContract.InterestEntry.TABLE_NAME + "." +EventInfoContract.InterestEntry.TITLE + "," +
+                EventInfoContract.InterestEntry.TABLE_NAME + "." +EventInfoContract.InterestEntry.VALUE +  " FROM " +
+                EventInfoContract.EventEntry.TABLE_NAME + " INNER JOIN " +
+                EventInfoContract.EventsInterestsEntry.TABLE_NAME + " ON " +
+                EventInfoContract.EventEntry.TABLE_NAME + "." + EventInfoContract.EventEntry._ID + " = " + EventInfoContract.EventsInterestsEntry.ID_EVENT + " INNER JOIN " +
+                EventInfoContract.InterestEntry.TABLE_NAME + " ON " +
+                EventInfoContract.InterestEntry.TABLE_NAME + "." + EventInfoContract.InterestEntry._ID + " = " + EventInfoContract.EventsInterestsEntry.ID_INTEREST + " WHERE " +
+                EventInfoContract.EventEntry.TABLE_NAME + "." + EventInfoContract.EventEntry._ID + " =? ";
+
+        Cursor cursor = database.rawQuery(interests_select_query, new String[] { String.valueOf(event_id) });
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                Interest interest = new Interest();
+
+                interest.setId(cursor.getInt(cursor.getColumnIndex(EventInfoContract.InterestEntry._ID)));
+                interest.setTitle(cursor.getString(cursor.getColumnIndex(EventInfoContract.InterestEntry.TITLE)));
+                interest.setValue(cursor.getInt(cursor.getColumnIndex(EventInfoContract.InterestEntry.VALUE)));
+
+                interests.add(interest);
+            }
+            while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        database.close();
+
+        return interests;
+    }
+
 
     private void addDataToComment(EventInfoDB eventInfoDB, Comment comment)
     {
@@ -589,6 +865,43 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 selectionArgs);
 
         Log.i(TAG, "Row " + new_todo_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
+    }
+
+
+    private void updateDataInWorkTask(EventInfoDB eventInfoDB, WorkTask workTask)
+    {
+        EventType type = EventType.WORKTASK;
+        String  title = workTask.getTitle();
+        String  date = workTask.getDate();
+        String  time_start = workTask.getTime_start();
+        String  time_end = workTask.getTime_end();
+        String  state = workTask.getState();
+        int  importance = workTask.getImportance();
+
+        SQLiteDatabase db = eventInfoDB.getReadableDatabase();
+
+        // New value for one column
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.EventEntry.TITLE, title);
+        contentValues.put(EventInfoContract.EventEntry.DATE, date);
+        contentValues.put(EventInfoContract.EventEntry.TIME_START, time_start);
+        contentValues.put(EventInfoContract.EventEntry.TIME_END, time_end);
+        contentValues.put(EventInfoContract.EventEntry.TYPE, type.toString());
+        contentValues.put(EventInfoContract.EventEntry.STATE, state);
+        contentValues.put(EventInfoContract.EventEntry.IMPORTANCE, importance);
+
+        // Which row to update, based on the ID
+        String selection = EventInfoContract.EventEntry._ID + "= ?";
+        String[] selectionArgs =  new String[]{String.valueOf(workTask.getId()) };
+
+        int new_work_task_id = db.update(
+                EventInfoContract.EventEntry.TABLE_NAME,
+                contentValues,
+                selection,
+                selectionArgs);
+
+        Log.i(TAG, "Row " + new_work_task_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
     private void removeDataFromInterest(EventInfoDB eventInfoDB, int interest_id)
