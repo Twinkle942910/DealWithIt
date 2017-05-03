@@ -27,7 +27,7 @@ import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 
 import java.util.Calendar;
 
-public class NewTaskActivity extends AppCompatActivity implements OnTypePickListener, AddingTaskFragment.OnInterestCallListener
+public class NewTaskActivity extends AppCompatActivity implements OnTypePickListener, AddingTaskFragment.OnInterestCallListener, AddingScheduleFragment.OnInterestCallListener
 {
     private static final String NAME = NewTaskActivity.class.getSimpleName();
     static final String TASK_FRAGMENT_TAG = "addTaskFragment";

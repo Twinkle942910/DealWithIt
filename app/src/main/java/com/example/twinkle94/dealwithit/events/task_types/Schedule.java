@@ -18,6 +18,12 @@ public class Schedule extends Event
         this.scheduleType = scheduleType;
     }
 
+    public Schedule()
+    {
+        super();
+        this.scheduleType = ScheduleType.NO_TYPE;
+    }
+
     public void setScheduleType(ScheduleType scheduleType)
     {
         this.scheduleType = scheduleType;

@@ -1,7 +1,6 @@
 package com.example.twinkle94.dealwithit.fragments;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -41,6 +39,28 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     //TODO: make something better
     private ViewGroup.OnHierarchyChangeListener onSubItemRemoveListener;
     private List<AddingTaskFragment.OnTaskRemovedListener> removed_tasks;
+    //TODO: move to abstract, possibly
+    private OnInterestCallListener interestCallListener;
+
+
+    private OnInterestPickedListener interestPickedListener;
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+
+        //TODO: move to abstract, possibly
+        if (context instanceof OnInterestCallListener)
+        {
+            interestCallListener = (OnInterestCallListener) context;
+        }
+        else
+        {
+            throw new ClassCastException(context.toString()
+                    + " must implement AddingScheduleFragment.OnInterestCallListener");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -157,7 +177,8 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     {
         if(date != null)
         {
-            SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date);
+            final SubTask subTask = new ScheduleTask(activity, task_container_ly, R.layout.schedule_task_item, date);
+
             ((ScheduleTask) subTask).setOnTimeSetListener(new ScheduleTask.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TextView time_tv, View view) {
@@ -165,6 +186,17 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                     activity.setTimePicker(view);
                 }
             });
+            //TODO: awful callback, think of something better!
+            ((ScheduleTask) subTask).setInterestPickedListener(new ScheduleTask.OnInterestPickedListener()
+            {
+                @Override
+                public void onInterestPicked(View view)
+                {
+                    activity.setInterest(view);
+                    interestPickedListener = (OnInterestPickedListener) subTask;
+                }
+            });
+
             subTask.addView();
             removed_tasks.add(subTask);
         }
@@ -202,13 +234,13 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     public void setInterest(View view)
     {
-
+        interestCallListener.onInterestsCall();
     }
 
     @Override
     public void onInterestPicked(int interest_id)
     {
-
+        interestPickedListener.onInterestsPick(interest_id);
     }
 
     @Override
@@ -367,5 +399,15 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     private void clearScheduleContainer()
     {
         if(task_container_ly.getChildCount() != 0) task_container_ly.removeAllViews();
+    }
+
+    public interface OnInterestCallListener
+    {
+        void onInterestsCall();
+    }
+
+    public interface OnInterestPickedListener
+    {
+        void onInterestsPick(int interest_id);
     }
 }

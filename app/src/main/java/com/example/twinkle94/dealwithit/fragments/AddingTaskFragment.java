@@ -793,6 +793,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             case WORKTASK:
                 clearEvent();
                 new_event = new WorkTask();
+                //TODO: add type in a constructor?!
                 new_event.setType(EventType.WORKTASK);
                 break;
 

@@ -165,7 +165,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         switch (event_type)
         {
             case "Schedule":
-
+                updateDataInSchedule(eventInfoDB, (Schedule)event);
                 break;
 
             case "ToDo":
@@ -824,7 +824,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         String selection = EventInfoContract.SubTaskEntry._ID + "= ?";
         String[] selectionArgs =  new String[]{String.valueOf(sub_task.getId()) };
 
-        int new_sub_task_id = db.update(
+       db.update(
                 EventInfoContract.SubTaskEntry.TABLE_NAME,
                 contentValues,
                 selection,
@@ -833,6 +833,7 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
 
     private void updateDataInToDo(EventInfoDB eventInfoDB, ToDo todo)
     {
+        int todo_id = todo.getId();
         EventType type = EventType.TODO;
         String  title = todo.getTitle();
         String  date = todo.getDate();
@@ -858,18 +859,77 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         String selection = EventInfoContract.EventEntry._ID + "= ?";
         String[] selectionArgs =  new String[]{String.valueOf(todo.getId()) };
 
-        int new_todo_id = db.update(
+        db.update(
                 EventInfoContract.EventEntry.TABLE_NAME,
                 contentValues,
                 selection,
                 selectionArgs);
 
-        Log.i(TAG, "Row " + new_todo_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
+        Log.i(TAG, "Row " + todo_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
+    }
+
+    private void updateDataInSchedule(EventInfoDB eventInfoDB, Schedule schedule)
+    {
+        int schedule_id = schedule.getId();
+        EventType type = EventType.SCHEDULE;
+        String  title = schedule.getTitle();
+        String  date = schedule.getDate();
+        String  time_start = schedule.getTime_start();
+        String  time_end = schedule.getTime_end();
+        String  state = schedule.getState();
+        int  importance = schedule.getImportance();
+        ScheduleType schedule_type = schedule.getScheduleType();
+
+        SQLiteDatabase db = eventInfoDB.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(EventInfoContract.EventEntry.TITLE, title);
+        contentValues.put(EventInfoContract.EventEntry.DATE, date);
+        contentValues.put(EventInfoContract.EventEntry.TIME_START, time_start);
+        contentValues.put(EventInfoContract.EventEntry.TIME_END, time_end);
+        contentValues.put(EventInfoContract.EventEntry.TYPE, type.toString());
+        contentValues.put(EventInfoContract.EventEntry.STATE, state);
+        contentValues.put(EventInfoContract.EventEntry.IMPORTANCE, importance);
+
+        // Which row to update, based on the ID
+        String selection = EventInfoContract.EventEntry._ID + "= ?";
+        String[] selectionArgs =  new String[]{String.valueOf(schedule.getId()) };
+
+        db.update(
+                EventInfoContract.EventEntry.TABLE_NAME,
+                contentValues,
+                selection,
+                selectionArgs);
+
+        //Delete old type
+        db.delete(EventInfoContract.ScheduleTypeEntry.TABLE_NAME, EventInfoContract.ScheduleTypeEntry.ID_EVENT + "= ?", new String[]{String.valueOf(schedule_id)});
+
+        //Adding Schedule type
+        ContentValues contentValuesScheduleType = new ContentValues();
+
+        contentValuesScheduleType.put(EventInfoContract.ScheduleTypeEntry.ID_EVENT, schedule_id);
+        contentValuesScheduleType.put(EventInfoContract.ScheduleTypeEntry.CONTENT, schedule_type.toString());
+
+        db.insert(EventInfoContract.ScheduleTypeEntry.TABLE_NAME, null, contentValuesScheduleType);
+
+        // Which row to update, based on the ID
+        String selection_type = EventInfoContract.ScheduleTypeEntry.ID_EVENT + "= ?";
+        String[] selectionArgs_type =  new String[]{String.valueOf(schedule_id) };
+
+       db.update(
+                EventInfoContract.ScheduleTypeEntry.TABLE_NAME,
+               contentValuesScheduleType,
+               selection_type,
+               selectionArgs_type);
+
+        Log.i(TAG, "Row " + schedule_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
 
     private void updateDataInWorkTask(EventInfoDB eventInfoDB, WorkTask workTask)
     {
+        int work_task_id = workTask.getId();
         EventType type = EventType.WORKTASK;
         String  title = workTask.getTitle();
         String  date = workTask.getDate();
@@ -895,13 +955,13 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
         String selection = EventInfoContract.EventEntry._ID + "= ?";
         String[] selectionArgs =  new String[]{String.valueOf(workTask.getId()) };
 
-        int new_work_task_id = db.update(
+        db.update(
                 EventInfoContract.EventEntry.TABLE_NAME,
                 contentValues,
                 selection,
                 selectionArgs);
 
-        Log.i(TAG, "Row " + new_work_task_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
+        Log.i(TAG, "Row " + work_task_id + " Updated..." + EventInfoContract.EventEntry.TABLE_NAME);
     }
 
     private void removeDataFromInterest(EventInfoDB eventInfoDB, int interest_id)

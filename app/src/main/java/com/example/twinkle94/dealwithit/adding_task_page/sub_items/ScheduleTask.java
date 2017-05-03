@@ -19,16 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
+import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
-import java.util.List;
 import java.util.Locale;
 
-public class ScheduleTask extends SubTask
+public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnInterestPickedListener
 {
     private static final String NAME = AddingScheduleFragment.class.getSimpleName();
 
@@ -71,15 +73,20 @@ public class ScheduleTask extends SubTask
 
     //Time set Listener.
     private OnTimeSetListener onTimeSetListener = null;
+    //TODO: awful callback, think of something better!
+    private OnInterestPickedListener onInterestPickedListener = null;
 
     private Schedule schedule;
     private ScheduleType scheduleType;
+    private EventInterest pickedInterest;
     private int importance_value;
 
     private String date;
     private boolean isExpanded = false;
 
     private boolean isDone = false;
+
+    private int interests_count = 0;
 
     public ScheduleTask(Context context, ViewGroup container_layout, int resource, String date)
     {
@@ -88,6 +95,8 @@ public class ScheduleTask extends SubTask
         this.date = date;
         this.scheduleType = ScheduleType.NO_TYPE;
         this.importance_value = 0;
+
+        addEmptySchedule();
     }
 
     @Override
@@ -181,6 +190,12 @@ public class ScheduleTask extends SubTask
         onTimeSetListener = listener;
     }
 
+    public void setInterestPickedListener(OnInterestPickedListener listener)
+    {
+        onInterestPickedListener = listener;
+    }
+
+
     @Override
     public void removeComponentsListeners()
     {
@@ -260,8 +275,7 @@ public class ScheduleTask extends SubTask
                 break;
 
             case R.id.schedule_interests_title_section:
-                //fake method
-                task_interests_tv.setText("3 interests");
+                onInterestPickedListener.onInterestPicked(view);
                 break;
 
             case R.id.schedule_input_delete:
@@ -284,6 +298,8 @@ public class ScheduleTask extends SubTask
                         removeTaskFromDB();
                     }*/
 
+                removeInterest();
+
                 removeView();
                 view.setOnClickListener(null);
 
@@ -300,6 +316,7 @@ public class ScheduleTask extends SubTask
                 task_done_tv.setOnClickListener(this);
 
                 removeTaskFromDB();
+                removeInterest();
 
                 break;
 
@@ -390,7 +407,9 @@ public class ScheduleTask extends SubTask
     @Override
     void addTaskToDB()
     {
-        schedule = new Schedule(-1,
+        int schedule_id = schedule.getId();
+
+        schedule = new Schedule(schedule_id,
                 task_content_tv.getText().toString(),
                 scheduleType,
                 task_start_time_tv.getText().toString(),
@@ -398,7 +417,7 @@ public class ScheduleTask extends SubTask
                 date,
                 "Waiting",
                 importance_value);
-        new FetchEventsTask(context).execute("add_data", schedule);
+        new FetchEventsTask(context).execute("update_data", schedule);
     }
 
     @Override
@@ -406,6 +425,28 @@ public class ScheduleTask extends SubTask
     {
         if(schedule != null)
         new FetchEventsTask(context).execute("remove_data", schedule);
+    }
+
+    @Override
+    public void onInterestsPick(int interest_id)
+    {
+        pickedInterest = new EventInterest(-1, schedule.getId(), interest_id);
+        new FetchEventsTask(context).execute("add_data", pickedInterest);
+        interests_count++;
+
+        task_interests_tv.setText("Interests added: " + interests_count);
+    }
+
+    private void removeInterest()
+    {
+        if(pickedInterest != null) new FetchEventsTask(context).execute("remove_data", pickedInterest);
+    }
+
+    private void addEmptySchedule()
+    {
+        schedule = new Schedule();
+        schedule.setType(EventType.SCHEDULE);
+        new FetchEventsTask(context).execute("add_data", schedule);
     }
 
     private void pickScheduleTypeDialog(final TextView task_type)
@@ -556,5 +597,10 @@ public class ScheduleTask extends SubTask
     public interface OnTimeSetListener
     {
         void onTimeSet(TextView time_tv, View view);
+    }
+
+    public interface OnInterestPickedListener
+    {
+        void onInterestPicked(View view);
     }
 }
