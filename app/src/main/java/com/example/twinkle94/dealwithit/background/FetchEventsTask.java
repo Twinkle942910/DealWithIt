@@ -34,9 +34,16 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
     private static final String TAG = FetchEventsTask.class.getSimpleName();
     private Context context;
 
+    private OnAdapterUpdateListener onAdapterUpdateListener;
+
     public FetchEventsTask(Context context)
     {
         this.context = context;
+    }
+
+    public void setOnAdapterUpdateListener(OnAdapterUpdateListener onAdapterUpdateListener)
+    {
+        this.onAdapterUpdateListener = onAdapterUpdateListener;
     }
 
     @Override
@@ -572,7 +579,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                     }
                 }
 
-               // todayTaskAdapter.updateAll();
             }
             while (simple_event_cursor.moveToNext());
         }
@@ -609,7 +615,6 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 }
                 else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.SCHEDULE.toString()) + 1, event);
 
-                //todayTaskAdapter.updateAll();
             }
             while (schedule_event_cursor.moveToNext());
         }
@@ -650,15 +655,12 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
                 }
                 else todayTaskAdapter.add(todayTaskAdapter.headerPosition(EventType.BIRTHDAY.toString()) + 1, event);
 
-                //todayTaskAdapter.updateAll();
             }
             while (birthday_event_cursor.moveToNext());
         }
         birthday_event_cursor.close();
 
         database3.close();
-
-        todayTaskAdapter.updateAll();
     }
 
     //TODO; make them convenient (3 methods).
@@ -1078,6 +1080,19 @@ public class FetchEventsTask extends AsyncTask <Object, Void, String>
     @Override
     protected void onPostExecute(String result)
     {
+        if (result.equals("TodayList" + " was got from DB"))
+        {
+            if (onAdapterUpdateListener != null)
+            {
+                onAdapterUpdateListener.onDataUpdate();
+            }
+        }
+
         Log.i(TAG, result);
     }
+
+  public interface OnAdapterUpdateListener
+  {
+      void onDataUpdate();
+  }
 }

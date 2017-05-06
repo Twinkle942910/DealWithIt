@@ -375,6 +375,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
         return days_array[day_index];
     }
 
+    //TODO: problem, sometimes one day are missing (between saturday and sunday).
     private void initWeek()
     {
         Calendar calendar = Calendar.getInstance();

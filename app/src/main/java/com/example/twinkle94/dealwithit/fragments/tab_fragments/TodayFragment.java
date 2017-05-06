@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class TodayFragment extends AbstractTabFragment
+public class TodayFragment extends AbstractTabFragment implements FetchEventsTask.OnAdapterUpdateListener
 {
     public static final String TODAY_PAGE = "TODAY_PAGE";
     private static final int LAYOUT = R.layout.fragment_today;
@@ -62,9 +62,6 @@ public class TodayFragment extends AbstractTabFragment
         setTodayDate();
         setTodayEventsAdapter(view);
 
-        //Get data into adapter from db.
-        new FetchEventsTask(getActivity()).execute("get_data", today_task_adapter, "TodayList");
-
         return view;
     }
 
@@ -79,6 +76,12 @@ public class TodayFragment extends AbstractTabFragment
     public void onStart()
     {
         super.onStart();
+
+        //Get data into adapter from db.
+       FetchEventsTask get_data_task = new FetchEventsTask(getActivity());
+        get_data_task.execute("get_data", today_task_adapter, "TodayList");
+        get_data_task.setOnAdapterUpdateListener(this);
+
         Log.i(TODAY_PAGE, "onStart");
     }
 
@@ -136,5 +139,11 @@ public class TodayFragment extends AbstractTabFragment
             today_task_adapter = new TodayTaskAdapter(context, R.layout.today_list_item);
             today_task_adapter.setTodaysDate(today_date);
             task_list.setAdapter(today_task_adapter);
+    }
+
+    @Override
+    public void onDataUpdate()
+    {
+        today_task_adapter.updateAll();
     }
 }
