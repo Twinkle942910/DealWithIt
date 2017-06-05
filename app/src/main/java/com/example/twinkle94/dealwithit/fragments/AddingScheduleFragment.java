@@ -381,7 +381,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
         Calendar calendar = Calendar.getInstance();
         week_dates = new String[7];
 
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 1);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
         for (int i = 0; i < 7; i++)

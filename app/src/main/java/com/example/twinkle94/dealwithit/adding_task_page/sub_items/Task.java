@@ -10,12 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.database.CommentDAO;
+import com.example.twinkle94.dealwithit.database.Sub_taskDAO;
 import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
-import java.util.List;
 import java.util.Locale;
 
 public class Task extends SubTask
@@ -134,12 +134,12 @@ public class Task extends SubTask
         {
             case R.id.comment_container:
                 comment = new Comment(-1, event_id, content_et.getText().toString());
-                new FetchEventsTask(context).execute("add_data", comment);
+                new CommentDAO(context).addTaskOnBG(comment);
                 break;
 
             case R.id.sub_tasks_container:
                 sub_task = new Sub_task(-1, event_id, content_et.getText().toString(), false);
-                new FetchEventsTask(context).execute("add_data", sub_task);
+                new Sub_taskDAO(context).addTaskOnBG(sub_task);
                 break;
         }
     }
@@ -153,12 +153,13 @@ public class Task extends SubTask
             {
                 case R.id.comment_container:
                     if(comment != null)
-                    new FetchEventsTask(context).execute("remove_data", comment);
+                    //TODO: maybe it's better not to create object every time, but use static method?
+                    new CommentDAO(context).deleteTaskOnBG(comment);
                     break;
 
                 case R.id.sub_tasks_container:
                     if(sub_task != null)
-                    new FetchEventsTask(context).execute("remove_data", sub_task);
+                        new Sub_taskDAO(context).deleteTaskOnBG(sub_task);
                     break;
             }
         }

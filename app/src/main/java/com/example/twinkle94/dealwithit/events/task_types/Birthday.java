@@ -48,4 +48,12 @@ public class Birthday extends Event
     public void setListSubTasks(List<Sub_task> subTasks) {
         this.subTasks = subTasks;
     }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

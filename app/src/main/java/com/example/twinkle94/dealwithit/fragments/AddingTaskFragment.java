@@ -23,7 +23,8 @@ import android.widget.Toast;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.database.EventDAO;
+import com.example.twinkle94.dealwithit.database.InterestDAO;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.Location;
@@ -79,6 +80,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     private Event new_event;
     //TODO: make something more convenient
     private int interests_count;
+
+    //TODO: temporary!
+    private List<EventInterest> pickedInterests;
 
     private List<OnTaskRemovedListener> removed_tasks;
 
@@ -325,7 +329,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                             "Waiting",
                             importance_value);
 
-                    new FetchEventsTask(activity).execute("update_data", new_event);
+                    new EventDAO(activity).updateEventOnBG(new_event);
 
                     break;
 
@@ -339,7 +343,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                             "Waiting",
                             importance_value);
 
-                    new FetchEventsTask(activity).execute("update_data", new_event);
+                    new EventDAO(activity).updateEventOnBG(new_event);
 
                     break;
 
@@ -353,7 +357,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                             "Waiting",
                             importance_value, new Location(-1, -1, "Poor","Loov", "Boi"));
 
-                    new FetchEventsTask(activity).execute("update_data", new_event);
+                    EventDAO eventDAO = new EventDAO(activity);
+                    eventDAO.updateEventOnBG(new_event);
 
                     break;
 
@@ -465,7 +470,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     {
         event_id = new_event.getId();
 
-        new FetchEventsTask(activity).execute("add_data", new EventInterest(-1, event_id, interest_id));
+        EventInterest interest = new EventInterest(-1, event_id, interest_id);
+        pickedInterests.add(interest);
+        new InterestDAO(activity).addTaskOnBG(interest);
         interests_count++;
 
         final View fragmentView = getView();
@@ -637,7 +644,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         {
             final TextView interest_added_text_tv = (TextView) fragmentView.findViewById(R.id.interests_count_text);
             interest_added_text_tv.setText("No interests added");
-        }
+            pickedInterests = null;
+        } else pickedInterests = new ArrayList<>();
     }
 
     private void setButtonOff(boolean checked, int[] buttons, View fragmentView)
@@ -788,6 +796,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 clearEvent();
                 new_event = new Birthday();
                 new_event.setType(EventType.BIRTHDAY);
+
+                //TODO: temporary!
+                ((Birthday)new_event).setLocation(new Location(-1, -1, "Poor","Loov", "Boi"));
                 break;
 
             case WORKTASK:
@@ -802,14 +813,18 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 break;
         }
 
-        if(new_event != null && type != EventType.SCHEDULE) new FetchEventsTask(activity).execute("add_data", new_event);
+        if(new_event != null && type != EventType.SCHEDULE) {
+            EventDAO eventDAO = new EventDAO(activity);
+            eventDAO.addEventOnBG(new_event);
+        }
     }
 
     private void clearEvent()
     {
         if(new_event != null)
         {
-            new FetchEventsTask(activity).execute("remove_data", new_event);
+            EventDAO eventDAO = new EventDAO(activity);
+            eventDAO.deleteEventOnBG(new_event);
             new_event = null;
         }
     }
@@ -824,10 +839,14 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
     {
         if(!checked)
         {
-            //Remove all sab_tasks.
             EventInterest eventInterest = new EventInterest();
             eventInterest.setId_event(event_id);
-            new FetchEventsTask(activity).execute("remove_data_by", eventInterest, "event_id");
+            if(pickedInterests != null)
+            {
+                for(int i = 0; i < pickedInterests.size(); i++)
+                    new InterestDAO(activity).deleteTaskOnBG(pickedInterests.get(i));
+            }
+
         }
     }
 

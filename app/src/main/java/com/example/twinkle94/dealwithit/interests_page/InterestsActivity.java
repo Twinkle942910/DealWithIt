@@ -27,11 +27,12 @@ import android.widget.TextView;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestsAdapter;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.database.InterestDAO;
 import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.util.SnackBarMessage;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
+//TODO: maybe use update in DB when editing interest!
 public class InterestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
     public static final String INTEREST_ID_EXTRA = "INTEREST_ID_EXTRA";
@@ -74,8 +75,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
         interests_lv.setAdapter(interestsAdapter);
         interests_lv.setOnItemClickListener(this);
 
-       FetchEventsTask get_interests_task = new FetchEventsTask(this);
-        get_interests_task.execute("get_data", interestsAdapter, "Interest");
+        new InterestDAO(this).getTaskOnBG(interestsAdapter);
     }
 
     //Toolbar menu implementation
@@ -241,7 +241,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
 
                     interestsAdapter.updateAll();
 
-                    new FetchEventsTask(getApplicationContext()).execute("add_data", interest);
+                    new InterestDAO(getApplicationContext()).addTaskOnBG(interest);
 
                     final int added_interest_position = interestsAdapter.itemPosition(interest);
 
@@ -256,7 +256,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                             interestsAdapter.remove(added_interest_position);
                             interestsAdapter.updateAll();
 
-                            new FetchEventsTask(getApplicationContext()).execute("remove_data", interest);
+                            new InterestDAO(getApplicationContext()).deleteTaskOnBG(interest);
                         }
                     });
 
@@ -401,7 +401,8 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                 if(TextUtils.isEmpty(interest_title_il.getError()) && !TextUtils.isEmpty(interest_title_iet.getText()) && importance_value > 0)
                 {
                     interestsAdapter.remove(interest_position);
-                    new FetchEventsTask(getApplicationContext()).execute("remove_data", old_interest);
+
+                    new InterestDAO(getApplicationContext()).deleteTaskOnBG(old_interest);
 
                     final Interest new_interest = new Interest(-1, interest_title_iet.getText().toString(), importance_value);
 
@@ -426,7 +427,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
 
                     interestsAdapter.updateAll();
 
-                    new FetchEventsTask(getApplicationContext()).execute("add_data", new_interest);
+                    new InterestDAO(getApplicationContext()).addTaskOnBG(new_interest);
 
                     final int added_interest_position = interestsAdapter.itemPosition(new_interest);
 
@@ -439,12 +440,12 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                             interestsAdapter.remove(added_interest_position);
                             interestsAdapter.updateAll();
 
-                            new FetchEventsTask(getApplicationContext()).execute("remove_data", new_interest);
+                            new InterestDAO(getApplicationContext()).deleteTaskOnBG(new_interest);
 
                             interestsAdapter.add(interest_position, old_interest);
                             interestsAdapter.updateAll();
 
-                            new FetchEventsTask(getApplicationContext()).execute("add_data", old_interest);
+                            new InterestDAO(getApplicationContext()).addTaskOnBG(old_interest);
                         }
                     });
 
@@ -525,7 +526,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                     interestsAdapter.remove(interest_position);
                     interestsAdapter.updateAll();
 
-                    new FetchEventsTask(getApplicationContext()).execute("remove_data", old_interest);
+                    new InterestDAO(getApplicationContext()).deleteTaskOnBG(old_interest);
 
                     final int removed_interest_position = interest_position;
 
@@ -538,7 +539,7 @@ public class InterestsActivity extends AppCompatActivity implements AdapterView.
                             interestsAdapter.add(removed_interest_position, old_interest);
                             interestsAdapter.updateAll();
 
-                            new FetchEventsTask(getApplicationContext()).execute("add_data", old_interest);
+                            new InterestDAO(getApplicationContext()).addTaskOnBG(old_interest);
                         }
                     });
 

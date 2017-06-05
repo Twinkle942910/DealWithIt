@@ -19,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.database.EventDAO;
+import com.example.twinkle94.dealwithit.database.InterestDAO;
 import com.example.twinkle94.dealwithit.events.EventInterest;
 import com.example.twinkle94.dealwithit.events.task_types.Schedule;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
@@ -417,21 +417,22 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
                 date,
                 "Waiting",
                 importance_value);
-        new FetchEventsTask(context).execute("update_data", schedule);
+        new EventDAO(context).updateEventOnBG(schedule);
     }
 
     @Override
     void removeTaskFromDB()
     {
         if(schedule != null)
-        new FetchEventsTask(context).execute("remove_data", schedule);
+        //TODO: delete item only last added schedule item (not item of this instance!).
+            new EventDAO(context).deleteEventOnBG(schedule);
     }
 
     @Override
     public void onInterestsPick(int interest_id)
     {
         pickedInterest = new EventInterest(-1, schedule.getId(), interest_id);
-        new FetchEventsTask(context).execute("add_data", pickedInterest);
+        new InterestDAO(context).addTaskOnBG(pickedInterest);
         interests_count++;
 
         task_interests_tv.setText("Interests added: " + interests_count);
@@ -439,14 +440,15 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
     private void removeInterest()
     {
-        if(pickedInterest != null) new FetchEventsTask(context).execute("remove_data", pickedInterest);
+        if(pickedInterest != null)
+            new InterestDAO(context).deleteTaskOnBG(pickedInterest);
     }
 
     private void addEmptySchedule()
     {
         schedule = new Schedule();
         schedule.setType(EventType.SCHEDULE);
-        new FetchEventsTask(context).execute("add_data", schedule);
+        new EventDAO(context).addEventOnBG(schedule);
     }
 
     private void pickScheduleTypeDialog(final TextView task_type)

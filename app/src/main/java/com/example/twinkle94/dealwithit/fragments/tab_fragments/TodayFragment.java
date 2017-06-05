@@ -11,13 +11,13 @@ import android.widget.ListView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
-import com.example.twinkle94.dealwithit.background.FetchEventsTask;
+import com.example.twinkle94.dealwithit.database.EventDAO;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class TodayFragment extends AbstractTabFragment implements FetchEventsTask.OnAdapterUpdateListener
+public class TodayFragment extends AbstractTabFragment
 {
     public static final String TODAY_PAGE = "TODAY_PAGE";
     private static final int LAYOUT = R.layout.fragment_today;
@@ -77,10 +77,13 @@ public class TodayFragment extends AbstractTabFragment implements FetchEventsTas
     {
         super.onStart();
 
+        if(!today_task_adapter.isEmpty())
+        {
+            today_task_adapter.clear();
+        }
+
         //Get data into adapter from db.
-       FetchEventsTask get_data_task = new FetchEventsTask(getActivity());
-        get_data_task.execute("get_data", today_task_adapter, "TodayList");
-        get_data_task.setOnAdapterUpdateListener(this);
+        new EventDAO(context).getTodayEventListOnBG(today_task_adapter);
 
         Log.i(TODAY_PAGE, "onStart");
     }
@@ -139,11 +142,5 @@ public class TodayFragment extends AbstractTabFragment implements FetchEventsTas
             today_task_adapter = new TodayTaskAdapter(context, R.layout.today_list_item);
             today_task_adapter.setTodaysDate(today_date);
             task_list.setAdapter(today_task_adapter);
-    }
-
-    @Override
-    public void onDataUpdate()
-    {
-        today_task_adapter.updateAll();
     }
 }

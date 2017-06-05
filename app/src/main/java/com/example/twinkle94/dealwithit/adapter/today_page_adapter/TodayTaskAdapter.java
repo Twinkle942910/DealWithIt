@@ -50,6 +50,12 @@ public class TodayTaskAdapter extends ArrayAdapter
         notifyDataSetChanged();
     }
 
+    public void clear()
+    {
+        list_of_events.clear();
+        updateAll();
+    }
+
     @Override
     public int getCount()
     {
