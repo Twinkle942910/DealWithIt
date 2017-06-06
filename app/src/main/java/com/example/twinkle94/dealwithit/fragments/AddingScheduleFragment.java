@@ -38,7 +38,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
 
     //TODO: make something better
     private ViewGroup.OnHierarchyChangeListener onSubItemRemoveListener;
-    private List<AddingTaskFragment.OnTaskRemovedListener> removed_tasks;
+    private List<AddingTaskFragment.OnTaskRemovedListener> removed_tasks = new ArrayList<>();
     //TODO: move to abstract, possibly
     private OnInterestCallListener interestCallListener;
 
@@ -275,8 +275,8 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     protected void initializeListeners()
     {
-        //TODO: is it the best place for this?
-        removed_tasks = new ArrayList<>();
+       /* //TODO: is it the best place for this?
+        removed_tasks = new ArrayList<>();*/
 
         //TODO: make something better
         onSubItemRemoveListener = new ViewGroup.OnHierarchyChangeListener()
@@ -284,14 +284,22 @@ public class AddingScheduleFragment extends AbstractAddingFragment
             @Override
             public void onChildViewAdded(View parent, View child)
             {
-
+                //TODO: find better solution.
+                child.setTag(task_container_ly.getChildCount() - 1);
             }
 
             @Override
             public void onChildViewRemoved(View parent, View child)
             {
-                removed_tasks.get(removed_tasks.size() - 1).onTaskRemovedCall();
-                removed_tasks.remove(removed_tasks.size() - 1);
+                int childPosition = (Integer) child.getTag();
+                removed_tasks.get(childPosition).onTaskRemovedCall();
+                removed_tasks.remove(childPosition);
+
+                //TODO: find better solution.
+                for(int i = 0; i < ((ViewGroup)parent).getChildCount(); i++)
+                {
+                    ((ViewGroup)parent).getChildAt(i).setTag(i);
+                }
             }
         };
     }
@@ -305,8 +313,8 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     @Override
     protected void removeListeners()
     {
-        //TODO: is it the best place for this?
-        removed_tasks = null;
+        /*//TODO: is it the best place for this?
+        removed_tasks = null;*/
         //TODO: make something better
         task_container_ly.setOnHierarchyChangeListener(null);
     }

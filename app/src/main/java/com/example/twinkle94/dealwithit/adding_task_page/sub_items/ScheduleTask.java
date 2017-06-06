@@ -440,6 +440,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
     private void removeInterest()
     {
+        //TODO: provide possibility to remove more than 1 interest.!
         if(pickedInterest != null)
             new InterestDAO(context).deleteTaskOnBG(pickedInterest);
     }
