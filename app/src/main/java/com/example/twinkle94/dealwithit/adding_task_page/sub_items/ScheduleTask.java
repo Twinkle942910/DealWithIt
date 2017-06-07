@@ -28,6 +28,8 @@ import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnInterestPickedListener
@@ -78,7 +80,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
     private Schedule schedule;
     private ScheduleType scheduleType;
-    private EventInterest pickedInterest;
+    private List<EventInterest> pickedInterests = new ArrayList<>();
     private int importance_value;
 
     private String date;
@@ -279,7 +281,6 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
                 break;
 
             case R.id.schedule_input_delete:
-                subItemNumberReorder(task_content_tv);
 
                 //disable expand_collapse listener
                 task_expand_collapse_iv.setOnClickListener(null);
@@ -302,6 +303,8 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
                 removeView();
                 view.setOnClickListener(null);
+
+                subItemNumberReorder(task_number_tv);
 
                 break;
 
@@ -431,8 +434,9 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     @Override
     public void onInterestsPick(int interest_id)
     {
-        pickedInterest = new EventInterest(-1, schedule.getId(), interest_id);
-        new InterestDAO(context).addTaskOnBG(pickedInterest);
+        final EventInterest interest = new EventInterest(-1, schedule.getId(), interest_id);
+        pickedInterests.add(interest);
+        new InterestDAO(context).addTaskOnBG(interest);
         interests_count++;
 
         task_interests_tv.setText("Interests added: " + interests_count);
@@ -441,8 +445,11 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     private void removeInterest()
     {
         //TODO: provide possibility to remove more than 1 interest.!
-        if(pickedInterest != null)
-            new InterestDAO(context).deleteTaskOnBG(pickedInterest);
+        if(pickedInterests != null && pickedInterests.size() > 0)
+        {
+            for(int i = 0; i < pickedInterests.size(); i++)
+                new InterestDAO(context).deleteTaskOnBG(pickedInterests.get(i));
+        }
     }
 
     private void addEmptySchedule()

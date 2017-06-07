@@ -285,6 +285,8 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             taskTypeReplace(type);
             removeOutputTypeValidator();
         }
+        //TODO: not right place for this!
+        else enableSubTasks(task_type);
     }
 
     @Override
@@ -431,7 +433,9 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 break;
         }
 
-        enableSubTasks(task_type);
+        //TODO: do we need this here (or is it better to be on that place on the top ^)?
+        //enableSubTasks(task_type);
+
         addEmptyEvent(task_type);
     }
 
@@ -831,7 +835,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
     private void enableSubTasks(EventType task_type)
     {
-       if(task_type != EventType.SCHEDULE) additional_task_info_sw.setEnabled(true);
+       if(task_type != EventType.SCHEDULE && task_type != EventType.NO_TYPE) additional_task_info_sw.setEnabled(true);
     }
 
     //TODO: make this better!

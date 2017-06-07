@@ -116,7 +116,7 @@ public class Task extends SubTask
     {
        // removeTaskFromDB();
         removeView();
-        subItemNumberReorder(content_et);
+        subItemNumberReorder(number_tv);
         view.setOnClickListener(null);
     }
 

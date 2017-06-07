@@ -288,17 +288,27 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                 child.setTag(task_container_ly.getChildCount() - 1);
             }
 
+            //TODO: refactor. This is disgusting!
             @Override
             public void onChildViewRemoved(View parent, View child)
             {
-                int childPosition = (Integer) child.getTag();
-                removed_tasks.get(childPosition).onTaskRemovedCall();
-                removed_tasks.remove(childPosition);
-
-                //TODO: find better solution.
-                for(int i = 0; i < ((ViewGroup)parent).getChildCount(); i++)
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP)
                 {
-                    ((ViewGroup)parent).getChildAt(i).setTag(i);
+                    removed_tasks.get(((ViewGroup)parent).indexOfChild(child)).onTaskRemovedCall();
+                    removed_tasks.remove(((ViewGroup)parent).indexOfChild(child));
+                }
+                else
+                {
+                    int childPosition = (Integer) child.getTag();
+                    int childCount = ((ViewGroup)parent).getChildCount();
+                    removed_tasks.get(childPosition).onTaskRemovedCall();
+                    removed_tasks.remove(childPosition);
+
+                    //TODO: find better solution.
+                    for(int i = 0; i < childCount; i++)
+                    {
+                        ((ViewGroup)parent).getChildAt(i).setTag(i);
+                    }
                 }
             }
         };

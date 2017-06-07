@@ -117,7 +117,7 @@ public abstract class SubTask implements View.OnClickListener, AddingTaskFragmen
         {
             for (int i = 0; i < child_count; i++)
             {
-                number_tv.setText(String.format(Locale.US, "%d.", i + 1));
+                ((TextView)container_layout_vg.getChildAt(i).findViewById(number_tv.getId())).setText(String.format(Locale.US, "%d", i + 1));
             }
         }
     }
