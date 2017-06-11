@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.twinkle94.dealwithit.adapter.ScheduleDayEventAdapter;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
 import com.example.twinkle94.dealwithit.events.Event;
@@ -514,10 +515,19 @@ public class EventDAO
         new BackgroundEventQueries().execute("get_today_data", todayTaskAdapter);
     }
 
+    public void getEventListByDateOnBG(ScheduleDayEventAdapter scheduleDayEventAdapter)
+    {
+        open();
+        new BackgroundEventQueries().execute("get_data_by_date", scheduleDayEventAdapter);
+    }
+
     private class BackgroundEventQueries extends AsyncTask<Object, Event, String>
     {
         private final String TAG_THIS = BackgroundEventQueries.class.getSimpleName();
+
+        //Adapters
         private TodayTaskAdapter todayTaskAdapter;
+        private ScheduleDayEventAdapter scheduleDayEventAdapter;
 
         @Override
         protected String doInBackground(Object... params)
@@ -547,6 +557,12 @@ public class EventDAO
                     getTodayList();
                     result = TAG + " " + "got today list on Background";
                     break;
+
+                case "get_data_by_date":
+                    this.scheduleDayEventAdapter = (ScheduleDayEventAdapter) params[1];
+                    getEventListByDate();
+                    result = TAG + " " + "got list of " + scheduleDayEventAdapter.getDate() + " on Background";
+                    break;
             }
             return result;
         }
@@ -556,12 +572,19 @@ public class EventDAO
         {
             Event event = events[0];
 
-            if (todayTaskAdapter.headerPosition(event.getType().toString()) == -1)
+            if(todayTaskAdapter == null)
             {
-                todayTaskAdapter.add(new EventTypeSection(event.getType().toString()));
-                todayTaskAdapter.add(todayTaskAdapter.headerPosition(event.getType().toString()) + 1, event);
+                scheduleDayEventAdapter.add(event);
             }
-            else todayTaskAdapter.add(todayTaskAdapter.headerPosition(event.getType().toString()) + 1, event);
+            else
+            {
+                if (todayTaskAdapter.headerPosition(event.getType().toString()) == -1)
+                {
+                    todayTaskAdapter.add(new EventTypeSection(event.getType().toString()));
+                    todayTaskAdapter.add(todayTaskAdapter.headerPosition(event.getType().toString()) + 1, event);
+                } else
+                    todayTaskAdapter.add(todayTaskAdapter.headerPosition(event.getType().toString()) + 1, event);
+            }
         }
 
         @Override
@@ -569,6 +592,9 @@ public class EventDAO
         {
             //TODO: think of something better.!
             if(s.equals(TAG + " " + "got today list on Background")) todayTaskAdapter.updateAll();
+            else if(s.equals(TAG + " " + "got list of " + scheduleDayEventAdapter.getDate() + " on Background"))
+                scheduleDayEventAdapter.updateAll();
+
             Log.i(TAG_THIS, s);
             close();
         }
@@ -576,6 +602,13 @@ public class EventDAO
         private void getTodayList()
         {
             List<Event> events = getAllEventsByDate(todayTaskAdapter.getTodaysDate());
+            for(int i = 0; i < events.size(); i++)
+                publishProgress(events.get(i));
+        }
+
+        public void getEventListByDate()
+        {
+            List<Event> events = getAllEventsByDate(scheduleDayEventAdapter.getDate());
             for(int i = 0; i < events.size(); i++)
                 publishProgress(events.get(i));
         }

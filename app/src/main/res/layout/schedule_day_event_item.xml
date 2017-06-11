@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:paddingTop="16dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/schedule_day_task_start_time"
+            style="@style/TextRobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="09:00 AM"
+            android:textColor="@color/scheduleDayTime"
+            android:textSize="12sp"/>
+
+        <View
+            android:id="@+id/task_duration_view"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/schedule_day_task_start_time"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorDivider"/>
+
+        <TextView
+            android:id="@+id/schedule_day_task_end_time"
+            style="@style/TextRobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/task_duration_view"
+            android:text="11:00 AM"
+            android:textColor="@color/scheduleDayTime"
+            android:textSize="12sp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="4"
+        android:padding="16dp"
+        android:background="@color/colorTypeToDo">
+
+
+        <TextView
+            android:id="@+id/schedule_day_task_type"
+            style="@style/TextRobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ToDo"
+            android:textColor="@color/scheduleListBackgroundColor"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/schedule_day_task_title"
+            style="@style/TextRobotoLight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Clean the house"
+            android:textColor="@color/scheduleListBackgroundColor"
+            android:layout_below="@+id/schedule_day_task_type"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/schedule_day_task_state"
+            style="@style/TextRobotoThin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NOW"
+            android:textColor="@color/scheduleListBackgroundColor"
+            android:textSize="12sp"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/schedule_day_task_state_image"
+            style="@style/TextRobotoThin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NOW"
+            android:textColor="@color/scheduleListBackgroundColor"
+            android:textSize="12sp"
+            android:layout_below="@+id/schedule_day_task_state"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_state_now" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

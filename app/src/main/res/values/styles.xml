@@ -64,6 +64,12 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <!-- Text Light style. -->
+    <style name="TextRobotoThin">
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 
   <!-- Text Input theme. -->
     <style name="StyledTilEditTextFloatingLabel" parent="@android:style/TextAppearance">

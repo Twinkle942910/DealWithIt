@@ -44,4 +44,11 @@
     <color name="colorInterestsImportant">#ed7e80</color>
     <color name="colorInterestsNotImportant">#64aaeb</color>
 
+    <!-- Schedule page -->
+    <color name="scheduleListItemBackground">#263238</color>
+    <color name="scheduleListItemFontColor">#e0f2f1</color>
+    <color name="scheduleListBackgroundColor">#e0f2f1</color>
+
+    <color name="scheduleDayTime">#37474f</color>
+
 </resources>
