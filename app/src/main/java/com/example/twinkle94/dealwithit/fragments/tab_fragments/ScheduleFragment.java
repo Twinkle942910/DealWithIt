@@ -17,6 +17,9 @@ import com.example.twinkle94.dealwithit.database.EventDAO;
 import com.example.twinkle94.dealwithit.fragments.tab_fragments.schedule_page.ScheduleDay;
 import com.example.twinkle94.dealwithit.fragments.tab_fragments.schedule_page.ScheduleList;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class ScheduleFragment extends AbstractTabFragment implements AdapterView.OnItemClickListener
 {
     private static final String TAG = ScheduleFragment.class.getSimpleName();
@@ -51,6 +54,7 @@ public class ScheduleFragment extends AbstractTabFragment implements AdapterView
         tv_currentDay = (TextView) view.findViewById(R.id.picked_day);
 
         initList();
+        initCurrentDay();
 
         return view;
     }
@@ -95,5 +99,11 @@ public class ScheduleFragment extends AbstractTabFragment implements AdapterView
         dayList.setAdapter(scheduleDaysAdapter);
     }
 
-
+    private void initCurrentDay()
+    {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd");
+        String currentDay = simpleDateFormat.format(calendar.getTime());
+        tv_currentDay.setText(currentDay);
+    }
 }

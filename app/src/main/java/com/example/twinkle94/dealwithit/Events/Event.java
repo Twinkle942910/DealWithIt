@@ -11,6 +11,7 @@ public abstract class Event implements Item
     //TODO: check if we need this field
     private int id;
     private String title;
+    //TODO: is it right for time to be String?
     private String time_start;
     private String time_end;
     //TODO: Should I use DateTime class?
@@ -154,5 +155,38 @@ public abstract class Event implements Item
 
     public void setListInterests(List<Interest> list_interests) {
         this.list_interests = list_interests;
+    }
+
+    public int getDuration()
+    {
+        int startTime = convertTime(time_start);
+        int endTime = convertTime(time_end);
+
+        this.duration = endTime - startTime;
+
+        /*int minutes = duration % 60;
+        int hours = duration - minutes;*/
+
+        //TODO: what if end time is greater than start (when tasks starts before midnight)?
+        return duration > 0 ? duration : 0  /*(hours * 60) + minutes*/;
+    }
+
+    //TODO: think about AM - PM
+    private int convertTime(String timeString)
+    {
+        char[] timeCharacters = timeString.toCharArray();
+        int result = 0;
+        int numbPosition = 1;
+        for(int charPosition = timeCharacters.length - 1; charPosition >= 0; charPosition--)
+        {
+            if(timeCharacters[charPosition] >= '0' && timeCharacters[charPosition] <= '9')
+            {
+                int number = Character.getNumericValue(timeCharacters[charPosition]);
+                result += number * numbPosition;
+                numbPosition *= 10;
+            }
+        }
+
+        return result;
     }
 }

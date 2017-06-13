@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tuesday"
-        android:textColor="@color/scheduleListItemFontColor"
+        android:textColor="@color/schedule_day_text_color"
         android:textSize="12sp" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="7"
-        android:textColor="@color/scheduleListItemFontColor"
+        android:textColor="@color/schedule_day_text_color"
         android:textSize="18sp" />
 
 </LinearLayout>

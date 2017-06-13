@@ -1,11 +1,14 @@
 package com.example.twinkle94.dealwithit.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
@@ -65,6 +68,9 @@ public class ScheduleDayEventAdapter extends BaseAdapter
             scheduleDayEventViewHolder.tv_endTime =
                     (TextView) convertView.findViewById(R.id.schedule_day_task_end_time);
 
+            scheduleDayEventViewHolder.rl_background =
+                    (RelativeLayout) convertView.findViewById(R.id.schedule_day_task_background);
+
             scheduleDayEventViewHolder.v_duration =
                     convertView.findViewById(R.id.task_duration_view);
 
@@ -88,7 +94,28 @@ public class ScheduleDayEventAdapter extends BaseAdapter
         scheduleDayEventViewHolder.tv_endTime.setText(event.getTime_end());
 
         //TODO: set color depending on time.
-        //scheduleDayEventViewHolder.v_duration.setBackgroundColor();
+        switch (event.getType())
+        {
+            case TODO:
+                scheduleDayEventViewHolder.rl_background.setBackgroundColor(ContextCompat.getColor(context, R.color.colorTypeToDo));
+                break;
+
+            case SCHEDULE:
+                scheduleDayEventViewHolder.rl_background.setBackgroundColor(ContextCompat.getColor(context, R.color.colorTypeSchedule));
+                break;
+
+            case WORKTASK:
+                scheduleDayEventViewHolder.rl_background.setBackgroundColor(ContextCompat.getColor(context, R.color.colorTypeWorkTasks));
+                break;
+
+            case BIRTHDAY:
+                scheduleDayEventViewHolder.rl_background.setBackgroundColor(ContextCompat.getColor(context, R.color.colorTypeBirthday));
+                break;
+        }
+
+        //TODO: change size depending on time  (refactor this).
+        int height =  40 + event.getDuration();
+        scheduleDayEventViewHolder.v_duration.getLayoutParams().height = height;
 
         scheduleDayEventViewHolder.tv_type.setText(event.getType().toString());
         scheduleDayEventViewHolder.tv_title.setText(event.getTitle());
@@ -129,6 +156,7 @@ public class ScheduleDayEventAdapter extends BaseAdapter
     {
         TextView tv_startTime;
         TextView tv_endTime;
+        RelativeLayout rl_background;
         View v_duration;
         TextView tv_type;
         TextView tv_title;

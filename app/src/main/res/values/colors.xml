@@ -51,4 +51,7 @@
 
     <color name="scheduleDayTime">#37474f</color>
 
+    <color name="scheduleListSelectColor">#1de9b6</color>
+
+
 </resources>

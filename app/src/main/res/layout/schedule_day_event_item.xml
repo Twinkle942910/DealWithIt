@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:paddingTop="16dp">
+    android:paddingBottom="16dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -42,6 +42,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/schedule_day_task_background"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
