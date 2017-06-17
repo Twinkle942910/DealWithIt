@@ -561,7 +561,7 @@ public class EventDAO
                 case "get_data_by_date":
                     this.scheduleDayEventAdapter = (ScheduleDayEventAdapter) params[1];
                     getEventListByDate();
-                    result = TAG + " " + "got list of " + scheduleDayEventAdapter.getDate() + " on Background";
+                    result = TAG + " " + "got list of events on picked date on Background";
                     break;
             }
             return result;
@@ -592,7 +592,7 @@ public class EventDAO
         {
             //TODO: think of something better.!
             if(s.equals(TAG + " " + "got today list on Background")) todayTaskAdapter.updateAll();
-            else if(s.equals(TAG + " " + "got list of " + scheduleDayEventAdapter.getDate() + " on Background"))
+            else if(s.equals(TAG + " " + "got list of events on picked date on Background"))
                 scheduleDayEventAdapter.updateAll();
 
             Log.i(TAG_THIS, s);

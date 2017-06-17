@@ -30,8 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public abstract class AbstractAddingFragment extends Fragment
-{
+public abstract class AbstractAddingFragment extends Fragment {
     private static final String NAME = AbstractAddingFragment.class.getSimpleName();
 
     public static final String TASK_TYPE = "task_type";
@@ -59,23 +58,20 @@ public abstract class AbstractAddingFragment extends Fragment
     private View.OnFocusChangeListener inputTypeFocusChangeListener;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onAttach(Context context)
-    {
+    public void onAttach(Context context) {
         super.onAttach(context);
         this.activity = (NewTaskActivity) context;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(getFragmentLayout(), container, false);
         initializeTypeViews(fragmentView);
         initializeViews(fragmentView);
@@ -83,16 +79,14 @@ public abstract class AbstractAddingFragment extends Fragment
         return fragmentView;
     }
 
-    private void initializeTypeViews(View fragmentView)
-    {
+    private void initializeTypeViews(View fragmentView) {
         type_iet = (TextInputEditText) fragmentView.findViewById(R.id.task_type_input);
         task_type_output_tv = (TextView) fragmentView.findViewById(R.id.task_type);
         task_type_output_image_iv = (ImageView) fragmentView.findViewById(R.id.task_type_image);
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         initializeValidators();
@@ -115,8 +109,7 @@ public abstract class AbstractAddingFragment extends Fragment
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         removeValidators();
         removeInputTypeValidator();
@@ -126,35 +119,28 @@ public abstract class AbstractAddingFragment extends Fragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(getFragmentMenu(), menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int menu_item_id = item.getItemId();
         onMenuItemClick(menu_item_id);
 
         return super.onOptionsItemSelected(item);
     }
 
-    protected boolean checkIfTextEmpty(TextView textInput)
-    {
+    protected boolean checkIfTextEmpty(TextView textInput) {
         return TextUtils.isEmpty(textInput.getText());
     }
 
-    protected void setInputError(boolean isAlright, TextInputLayout task_type_layout, String error)
-    {
-        if(task_type_layout != null)
-        {
-            if (isAlright)
-            {
+    protected void setInputError(boolean isAlright, TextInputLayout task_type_layout, String error) {
+        if (task_type_layout != null) {
+            if (isAlright) {
                 task_type_layout.setErrorEnabled(false);
                 task_type_layout.setError(null);
-            }
-            else task_type_layout.setError(error);
+            } else task_type_layout.setError(error);
         }
     }
 
@@ -189,30 +175,25 @@ public abstract class AbstractAddingFragment extends Fragment
         return true;
     }*/
 
-    protected void setInputType(String type)
-    {
+    protected void setInputType(String type) {
         type_iet.setText(type);
     }
 
-    protected void setOutputType(String type)
-    {
+    protected void setOutputType(String type) {
         task_type_output_tv.setText(type);
         task_type_output_tv.setTextColor(ContextCompat.getColor(activity, EventType.getColor(type)));
     }
 
-    protected void setOutputTypeImage(int type_image)
-    {
+    protected void setOutputTypeImage(int type_image) {
         task_type_output_image_iv.setImageResource(type_image);
     }
 
-    protected void setTaskType()
-    {
+    protected void setTaskType() {
         Bundle bundle = getArguments();
         String type = bundle != null ? bundle.getString(TASK_TYPE, TYPE_NOT_SET) : TYPE_NOT_SET;
         int type_image = bundle != null ? bundle.getInt(TASK_TYPE_IMAGE, TYPE_IMAGE_NOT_SET) : TYPE_IMAGE_NOT_SET;
 
-        if (!type.equals(TYPE_NOT_SET))
-        {
+        if (!type.equals(TYPE_NOT_SET)) {
             setInputType(type);
             setOutputType(type);
             setOutputTypeImage(type_image);
@@ -220,25 +201,21 @@ public abstract class AbstractAddingFragment extends Fragment
     }
 
     //TODO: Make it simpler(refactor).
-    private void checkTypeInput(TextView textView, String text)
-    {
+    private void checkTypeInput(TextView textView, String text) {
         final View fragmentView = getView();
         TextInputLayout typeInputLayout = null;
 
-        if(fragmentView != null)
-        {
+        if (fragmentView != null) {
             typeInputLayout = (TextInputLayout) fragmentView.findViewById(R.id.task_type_input_layout);
         }
 
         boolean fullWord = false;
 
-        if(checkIfTextEmpty(textView)) setInputError(false, typeInputLayout, getString(R.string.empty_error));
-        else
-            {
-            for (EventType type : EventType.values())
-            {
-                if (text.toLowerCase().equals(type.toString().toLowerCase()))
-                {
+        if (checkIfTextEmpty(textView))
+            setInputError(false, typeInputLayout, getString(R.string.empty_error));
+        else {
+            for (EventType type : EventType.values()) {
+                if (text.toLowerCase().equals(type.toString().toLowerCase())) {
                     setInputError(true, typeInputLayout, getString(R.string.type_error));
                     task_type = type;
                     task_type_image = EventType.getImage(task_type.toString());
@@ -251,52 +228,41 @@ public abstract class AbstractAddingFragment extends Fragment
                     task_type_image = Constants.NO_TYPE_IMAGE;
                 }
             }
-            if (fullWord)
-            {
+            if (fullWord) {
                 setOutputType(task_type.toString());
                 setOutputTypeImage(task_type_image);
             }
         }
     }
 
-    private void checkTypeOutput(String outputType)
-    {
+    private void checkTypeOutput(String outputType) {
         EventType type = EventType.getName(outputType);
         boolean isSchedule = EventType.compare(type, EventType.SCHEDULE);
         checkTypeOutputAction(type, isSchedule);
     }
 
     //TODO: compare with task method. Do we need type parameter when we have task_type field?
-    protected void taskTypeReplace(EventType type)
-    {
-        try
-        {
-           typePickListener = (OnTypePickListener) activity;
+    protected void taskTypeReplace(EventType type) {
+        try {
+            typePickListener = (OnTypePickListener) activity;
             replaceScheduleOrTask(type);
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnTypePickListener");
         }
     }
 
-    protected TextValidator validator(TextView textView)
-    {
-        return new TextValidator(textView)
-        {
+    protected TextValidator validator(TextView textView) {
+        return new TextValidator(textView) {
             @Override
-            public void validate(TextView textView, String text)
-            {
+            public void validate(TextView textView, String text) {
                 validateType(textView, text);
                 AbstractAddingFragment.this.validate(textView, text);
             }
         };
     }
 
-    private void validateType(TextView textView, String text)
-    {
-        switch (textView.getId())
-        {
+    private void validateType(TextView textView, String text) {
+        switch (textView.getId()) {
             case R.id.task_type:
                 checkTypeOutput(text);
                 break;
@@ -307,63 +273,50 @@ public abstract class AbstractAddingFragment extends Fragment
         }
     }
 
-    private void initializeOutputTypeValidator()
-    {
+    private void initializeOutputTypeValidator() {
         outputTypeValidator = validator(task_type_output_tv);
     }
 
-    private void addOutputTypeValidator()
-    {
+    private void addOutputTypeValidator() {
         task_type_output_tv.addTextChangedListener(outputTypeValidator);
     }
 
-    protected void removeOutputTypeValidator()
-    {
+    protected void removeOutputTypeValidator() {
         task_type_output_tv.removeTextChangedListener(outputTypeValidator);
     }
 
-    private void initializeInputTypeValidator()
-    {
+    private void initializeInputTypeValidator() {
         inputTypeValidator = validator(type_iet);
     }
 
-    private void addInputTypeValidator()
-    {
+    private void addInputTypeValidator() {
         type_iet.addTextChangedListener(inputTypeValidator);
     }
 
-    private void removeInputTypeValidator()
-    {
+    private void removeInputTypeValidator() {
         type_iet.removeTextChangedListener(inputTypeValidator);
     }
 
-    private void initializeInputTypeListener()
-    {
-        inputTypeFocusChangeListener = new View.OnFocusChangeListener()
-        {
+    private void initializeInputTypeListener() {
+        inputTypeFocusChangeListener = new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b)
-            {
-                if (!b)
-                {
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
                     checkTypeInput(type_iet, type_iet.getText().toString());
                 }
             }
         };
     }
 
-    private void setInputTypeListener()
-    {
+    private void setInputTypeListener() {
         type_iet.setOnFocusChangeListener(inputTypeFocusChangeListener);
     }
 
-    protected void removeInputTypeListener()
-    {
+    protected void removeInputTypeListener() {
         type_iet.setOnFocusChangeListener(null);
     }
 
-    public void pickTypeDialog()
-    {
+    public void pickTypeDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity, R.style.AppCompatAlertDialogStyle);
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View dialogView = inflater.inflate(R.layout.dialog_type_choice, null);
@@ -373,47 +326,37 @@ public abstract class AbstractAddingFragment extends Fragment
 
         final RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.type_group);
 
-        dialogBuilder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int whichButton)
-            {
-              onTypePickPositive(radioGroup);
+        dialogBuilder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                onTypePickPositive(radioGroup);
             }
         });
 
-        dialogBuilder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int whichButton)
-            {
+        dialogBuilder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
                 onTypePickNegative(dialog);
             }
         });
 
         final AlertDialog b = dialogBuilder.create();
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId)
-            {
-               onTypePickChanged(checkedId, b);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                onTypePickChanged(checkedId, b);
             }
         });
 
         b.show();
     }
 
-    public void setTime(int hour, int minute, boolean am_pm, int type)
-    {
+    public void setTime(int hour, int minute, boolean am_pm, int type) {
         Calendar c = Calendar.getInstance();
         String myFormatTime;
 
-        if (!am_pm)
-        {
+        if (!am_pm) {
             myFormatTime = "hh:mm a";
-        }
-        else
-        {
+        } else {
             myFormatTime = "kk:mm";
         }
 
@@ -426,35 +369,54 @@ public abstract class AbstractAddingFragment extends Fragment
         setTimeOutput(type, stf, c);
     }
 
-    public void setDate(int year, int month, int day)
-    {
-       setDateOutput(year, month, day);
+    public void setDate(int year, int month, int day) {
+        setDateOutput(year, month, day);
     }
 
     protected abstract void onMenuItemClick(int menu_item_id);
+
     public abstract int getFragmentMenu();
+
     public abstract int getFragmentLayout();
+
     protected abstract void initializeViews(View fragmentView);
+
     protected abstract void initializeValidators();
+
     protected abstract void addValidators();
+
     protected abstract void validate(TextView textView, String text);
+
     protected abstract boolean isInputErrors();
+
     protected abstract void removeValidators();
+
     protected abstract void initializeListeners();
+
     protected abstract void setListeners();
+
     protected abstract void removeListeners();
 
     public abstract void addSubItem(View view);
+
     protected abstract void saveInput();
+
     protected abstract void replaceScheduleOrTask(EventType type);
+
     protected abstract void checkTypeOutputAction(EventType type, boolean isSchedule);
+
     protected abstract void onTypePickPositive(RadioGroup radioGroup);
+
     protected abstract void onTypePickNegative(DialogInterface dialog);
+
     protected abstract void onTypePickChanged(int checkedId, AlertDialog b);
+
     protected abstract void setTimeOutput(int type, SimpleDateFormat output_format, Calendar calendar);
+
     protected abstract void setDateOutput(int year, int month, int day);
 
     public abstract void setInterest(View view);
+
     public abstract void onInterestPicked(int interest_id);
 
     public abstract void onCancel();

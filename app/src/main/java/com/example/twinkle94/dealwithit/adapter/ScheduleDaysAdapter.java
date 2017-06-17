@@ -85,9 +85,20 @@ public class ScheduleDaysAdapter extends BaseAdapter
         scheduleDays.addAll(scheduleDayList);
     }
 
+    public void clear(){
+        if(!scheduleDays.isEmpty())
+            scheduleDays.clear();
+    }
+
+    public void updateAll() {
+        notifyDataSetChanged();
+    }
+
     private static class ScheduleDaysViewHolder
     {
         TextView tv_dayName;
         TextView tv_dayNumber;
     }
+
+
 }

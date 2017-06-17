@@ -137,6 +137,12 @@ public class ScheduleDayEventAdapter extends BaseAdapter
         this.eventList.addAll(eventList);
     }
 
+    public  void clear()
+    {
+        if(!eventList.isEmpty())
+        eventList.clear();
+    }
+
     public String getDate()
     {
         return date;

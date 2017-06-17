@@ -1,81 +1,78 @@
 package com.example.twinkle94.dealwithit.fragments.tab_fragments.schedule_page;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-public class ScheduleList
-{
-    private int year;
-    private String month;
-    private List<ScheduleDay> scheduleDayList;
+public class ScheduleList {
+    private int mYear;
+    private int mMonth;
+    private List<ScheduleDay> mScheduleList;
 
-    private int daysNumber;
+    private int mDaysNumber;
 
-    public ScheduleList()
-    {
-        scheduleDayList = new ArrayList<>();
+    public ScheduleList() {
+        mScheduleList = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
-        //Set current year by default
-        year = calendar.get(Calendar.YEAR);
-        //Set current month by default
-        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-        month = month_date.format(calendar.getTime());
 
-        daysNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        //Set current mYear by default
+        mYear = calendar.get(Calendar.YEAR);
+
+        //Set current mMonth by default
+        mMonth = calendar.get(Calendar.MONTH);
+
+        mDaysNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         initDayList();
     }
 
-    private void initDayList()
-    {
-
-        for (int i = 1; i <= daysNumber; i++)
-        {
+    private void initDayList() {
+        for (int i = 1; i <= mDaysNumber; i++) {
             //TODO: Maybe make a field?
-            //TODO: HARDCODEEEE!
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-
-            Date date = null;
-            try
-            {
-                date = new SimpleDateFormat("MMMM").parse(month);
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            calendar.set(Calendar.MONTH, cal.get(Calendar.MONTH));
+            calendar.set(Calendar.YEAR, mYear);
+            calendar.set(Calendar.MONTH, mMonth);
             calendar.set(Calendar.DAY_OF_MONTH, i);
 
             SimpleDateFormat day_name = new SimpleDateFormat("EEEE");
             String dayName = day_name.format(calendar.getTime());
 
             ScheduleDay scheduleDay = new ScheduleDay(dayName, i);
-            scheduleDay.setYear(year);
-            scheduleDay.setMonth(cal.get(Calendar.MONTH));
-            scheduleDayList.add(scheduleDay);
+            scheduleDay.setYear(mYear);
+            scheduleDay.setMonth(mMonth);
+            mScheduleList.add(scheduleDay);
         }
     }
 
-    public int getYear()
-    {
-        return year;
+    public int getYear() {
+        return mYear;
     }
 
-    public String getMonth()
-    {
-        return month;
+    public String getMonth() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, mMonth);
+        return simpleDateFormat.format(calendar.getTime());
     }
 
-    public List<ScheduleDay> getScheduleDayList()
-    {
-        return scheduleDayList;
+    public void update(int year, int month) {
+        mYear = year;
+        mMonth = month;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, mYear);
+        calendar.set(Calendar.MONTH, mMonth);
+        mDaysNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        if (!mScheduleList.isEmpty()) {
+            mScheduleList.clear();
+            initDayList();
+        }
+    }
+
+    public List<ScheduleDay> getScheduleDayList() {
+        return mScheduleList;
     }
 }
