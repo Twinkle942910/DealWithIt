@@ -21,6 +21,9 @@
     <color name="colorText87">#87455A64</color>
     <color name="colorDivider">#a3000000</color>
 
+    <color name="fontColor">#455a64</color>
+    <color name="fontColor87">#b5455a64</color>
+
     <!-- Adding page colors -->
     <color name="colorGreyText54">#8C455A64</color>
     <color name="colorGreyText10">#1A455A64</color>

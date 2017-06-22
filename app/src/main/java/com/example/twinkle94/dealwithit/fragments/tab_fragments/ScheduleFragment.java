@@ -2,6 +2,7 @@ package com.example.twinkle94.dealwithit.fragments.tab_fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,8 @@ public class ScheduleFragment extends AbstractTabFragment implements AdapterView
         Log.i(TAG, "Day date: " + day.getCurrentDate());
 
         new EventDAO(getActivity()).getEventListByDateOnBG(scheduleDayEventAdapter);
+
+        //view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.scheduleListSelectColor));
     }
 
     private void initYearMonthPicker() {
@@ -136,6 +139,8 @@ public class ScheduleFragment extends AbstractTabFragment implements AdapterView
         scheduleDaysAdapter.addAll(scheduleList.getScheduleDayList());
 
         dayList.setAdapter(scheduleDaysAdapter);
+
+
     }
 
     private void initCurrentDay()
