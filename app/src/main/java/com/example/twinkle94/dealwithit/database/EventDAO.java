@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.twinkle94.dealwithit.adapter.ScheduleDayEventAdapter;
+import com.example.twinkle94.dealwithit.adapter.ToDoListAdapter;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
 import com.example.twinkle94.dealwithit.events.Event;
@@ -491,6 +492,50 @@ public class EventDAO
         return events;
     }
 
+    public List<ToDo> getAllToDoList(){
+        Cursor cursor = database.query(EventInfoContract.EventEntry.TABLE_NAME,
+                columns,
+                EventInfoContract.EventEntry.TYPE + "= ?",
+                new String[]{String.valueOf(EventType.TODO.toString())},
+                null,
+                null,
+                null);
+
+        List<ToDo> toDoList = new ArrayList<>();
+
+        Sub_taskDAO sub_taskDAO = new Sub_taskDAO(context);
+        CommentDAO commentDAO = new CommentDAO(context);
+        InterestDAO interestDAO = new InterestDAO(context);
+
+        while(cursor.moveToNext()){
+            int id = (int) cursor.getLong(cursor.getColumnIndex(EventInfoContract.EventEntry._ID));
+            String title = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.TITLE));
+            String startTime = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_START));
+            String endTime = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.TIME_END));
+            String date = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.DATE));
+            String state = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
+            int importance = cursor.getInt(cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
+
+            ToDo toDo = new ToDo(id, title, startTime, endTime, date, state, importance);
+
+            commentDAO.open();
+            toDo.setListComments(commentDAO.getCommentsByEventId(id));
+            commentDAO.close();
+
+            sub_taskDAO.open();
+            toDo.setListSubTasks(sub_taskDAO.getSubTasksByEventId(id));
+            sub_taskDAO.close();
+
+            interestDAO.open();
+            toDo.setListInterests(interestDAO.getInterestsByEventId(id));
+            interestDAO.close();
+
+            toDoList.add(toDo);
+        }
+
+        return toDoList;
+    }
+
     public void addEventOnBG(Event event)
     {
         open();
@@ -521,6 +566,12 @@ public class EventDAO
         new BackgroundEventQueries().execute("get_data_by_date", scheduleDayEventAdapter);
     }
 
+    public void getToDoListOnBG(ToDoListAdapter toDoListAdapter)
+    {
+        open();
+        new BackgroundEventQueries().execute("get_todo_list", toDoListAdapter);
+    }
+
     private class BackgroundEventQueries extends AsyncTask<Object, Event, String>
     {
         private final String TAG_THIS = BackgroundEventQueries.class.getSimpleName();
@@ -528,6 +579,7 @@ public class EventDAO
         //Adapters
         private TodayTaskAdapter todayTaskAdapter;
         private ScheduleDayEventAdapter scheduleDayEventAdapter;
+        private ToDoListAdapter toDoListAdapter;
 
         @Override
         protected String doInBackground(Object... params)
@@ -563,6 +615,12 @@ public class EventDAO
                     getEventListByDate();
                     result = TAG + " " + "got list of events on picked date on Background";
                     break;
+
+                case "get_todo_list":
+                    this.toDoListAdapter = (ToDoListAdapter) params[1];
+                    getToDoList();
+                    result = TAG + " " + "got ToDo list on Background";
+                    break;
             }
             return result;
         }
@@ -572,9 +630,12 @@ public class EventDAO
         {
             Event event = events[0];
 
-            if(todayTaskAdapter == null)
+            if(todayTaskAdapter == null && toDoListAdapter == null)
             {
                 scheduleDayEventAdapter.add(event);
+            }
+            else if (scheduleDayEventAdapter == null && todayTaskAdapter == null){
+                toDoListAdapter.add((ToDo) event);
             }
             else
             {
@@ -594,6 +655,7 @@ public class EventDAO
             if(s.equals(TAG + " " + "got today list on Background")) todayTaskAdapter.updateAll();
             else if(s.equals(TAG + " " + "got list of events on picked date on Background"))
                 scheduleDayEventAdapter.updateAll();
+            else if(s.equals(TAG + " " + "got ToDo list on Background")) toDoListAdapter.updateAll();
 
             Log.i(TAG_THIS, s);
             close();
@@ -611,6 +673,13 @@ public class EventDAO
             List<Event> events = getAllEventsByDate(scheduleDayEventAdapter.getDate());
             for(int i = 0; i < events.size(); i++)
                 publishProgress(events.get(i));
+        }
+
+        public void getToDoList()
+        {
+            List<ToDo> toDoList = getAllToDoList();
+            for(int i = 0; i < toDoList.size(); i++)
+                publishProgress(toDoList.get(i));
         }
     }
 }

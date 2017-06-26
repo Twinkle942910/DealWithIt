@@ -25,9 +25,11 @@
 
         <activity android:name=".interests_page.InterestsActivity"
             android:label="@string/activity_interests_name"
-            android:theme="@style/InterestsTheme">
+            android:theme="@style/InterestsTheme"/>
 
-        </activity>
+        <activity android:name=".task_list_page.TaskListActivity"
+            android:label="@string/activity_task_list_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

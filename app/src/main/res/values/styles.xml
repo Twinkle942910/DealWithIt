@@ -219,4 +219,13 @@
 
     </style>
 
+    <!-- Task List activity theme. -->
+    <style name="TaskListTheme" parent="AppTheme.NoActionBar">
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorTypeToDo</item>
+        <item name="colorPrimaryDark">@color/todoStatusBarColor</item>
+
+    </style>
+
 </resources>

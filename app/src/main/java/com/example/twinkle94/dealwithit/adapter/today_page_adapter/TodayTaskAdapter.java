@@ -311,7 +311,7 @@ public class TodayTaskAdapter extends ArrayAdapter
     {
         eventViewHolder.type_color = row.findViewById(R.id.type_color);
 
-        eventViewHolder.task_title = (TextView) row.findViewById(R.id.task_title);
+        eventViewHolder.task_title = (TextView) row.findViewById(R.id.today_task_title);
         eventViewHolder.task_type = (TextView) row.findViewById(R.id.schedule_type);
         eventViewHolder.task_type_image = (ImageView) row.findViewById(R.id.lesson_type);
 

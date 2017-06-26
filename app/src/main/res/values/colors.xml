@@ -56,5 +56,9 @@
 
     <color name="scheduleListSelectColor">#1de9b6</color>
 
+    <!-- Task List page -->
+    <color name="todoStatusBarColor">#b53e47</color>
+    <color name="mainBackgroundColor">#e0e0e0</color>
+
 
 </resources>
