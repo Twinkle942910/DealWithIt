@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -90,8 +89,8 @@ public class ScheduleDayEventAdapter extends BaseAdapter
         }
         else scheduleDayEventViewHolder = (ScheduleDayEventViewHolder) convertView.getTag();
 
-        scheduleDayEventViewHolder.tv_startTime.setText(event.getTime_start());
-        scheduleDayEventViewHolder.tv_endTime.setText(event.getTime_end());
+        scheduleDayEventViewHolder.tv_startTime.setText(event.getStartTime());
+        scheduleDayEventViewHolder.tv_endTime.setText(event.getEndTime());
 
         //TODO: set color depending on time.
         switch (event.getType())
@@ -114,12 +113,12 @@ public class ScheduleDayEventAdapter extends BaseAdapter
         }
 
         //TODO: change size depending on time  (refactor this).
-        int height =  40 + event.getDuration();
-        scheduleDayEventViewHolder.v_duration.getLayoutParams().height = height;
+       // int height =  40 + event.getDuration();
+  //      scheduleDayEventViewHolder.v_duration.getLayoutParams().height = height;
 
         scheduleDayEventViewHolder.tv_type.setText(event.getType().toString());
         scheduleDayEventViewHolder.tv_title.setText(event.getTitle());
-        scheduleDayEventViewHolder.tv_state.setText(event.getState());
+        scheduleDayEventViewHolder.tv_state.setText(event.getStateName());
 
         //TODO: set image using new enum for states, maybe?
         //scheduleDayEventViewHolder.tv_state_image.setBackgroundResource();

@@ -455,7 +455,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     private void addEmptySchedule()
     {
         schedule = new Schedule();
-        schedule.setType(EventType.SCHEDULE);
+      //  schedule.setType(EventType.SCHEDULE);
         new EventDAO(context).addEventOnBG(schedule);
     }
 

@@ -160,8 +160,8 @@ public class TodayTaskAdapter extends ArrayAdapter
                     task_title = ((Event)(event)).getTitle();
                     String schedule_type = ((Schedule)(event)).getScheduleType().toString();
                     int schedule_type_image = getSchedule_type_image(event);
-                    from_time = ((Event)(event)).getTime_start();
-                    to_time = ((Event)(event)).getTime_end();
+                    from_time = ((Event)(event)).getStartTime();
+                    to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
@@ -171,8 +171,8 @@ public class TodayTaskAdapter extends ArrayAdapter
                 case TODO:
                     type_color = ContextCompat.getColor(getContext(), R.color.colorTypeToDo);
                     task_title = ((Event)(event)).getTitle();
-                    from_time = ((Event)(event)).getTime_start();
-                    to_time = ((Event)(event)).getTime_end();
+                    from_time = ((Event)(event)).getStartTime();
+                    to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
@@ -182,8 +182,8 @@ public class TodayTaskAdapter extends ArrayAdapter
                 case WORKTASK:
                     type_color = ContextCompat.getColor(getContext(), R.color.colorTypeWorkTasks);
                     task_title = ((Event)(event)).getTitle();
-                    from_time = ((Event)(event)).getTime_start();
-                    to_time = ((Event)(event)).getTime_end();
+                    from_time = ((Event)(event)).getStartTime();
+                    to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 
@@ -193,8 +193,8 @@ public class TodayTaskAdapter extends ArrayAdapter
                 case BIRTHDAY:
                     type_color = ContextCompat.getColor(getContext(), R.color.colorTypeBirthday);
                     task_title = ((Event)(event)).getTitle();
-                    from_time = ((Event)(event)).getTime_start();
-                    to_time = ((Event)(event)).getTime_end();
+                    from_time = ((Event)(event)).getStartTime();
+                    to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
                     interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
 

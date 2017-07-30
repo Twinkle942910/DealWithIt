@@ -7,6 +7,13 @@
     <color name="colorWhite">#00695C</color>
     <color name="colorNotificationText">#455A64</color>
 
+    <color name="waitingStateColor">#795548</color>
+    <color name="processStateColor">#5c6bc0</color>
+    <color name="nowStateColor">#22c3e0</color>
+    <color name="finishedStateColor">#73bd72</color>
+    <color name="missedStateColor">#e9aa63</color>
+    <color name="canceledStateColor">#ec7477</color>
+
     <!-- Today page -->
     <color name="colorTitleText">#455A64</color>
 

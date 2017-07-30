@@ -148,11 +148,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+     //   event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         long new_todo_id = database.insert(EventInfoContract.EventEntry.TABLE_NAME, null, event_values);
@@ -166,11 +166,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+      //  event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         long new_schedule_id = database.insert(EventInfoContract.EventEntry.TABLE_NAME, null, event_values);
@@ -192,11 +192,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+    //    event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         long new_work_task_id = database.insert(EventInfoContract.EventEntry.TABLE_NAME, null, event_values);
@@ -210,11 +210,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+     //   event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         long new_birthday_id = database.insert(EventInfoContract.EventEntry.TABLE_NAME, null, event_values);
@@ -240,11 +240,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+       // event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         database.update(EventInfoContract.EventEntry.TABLE_NAME, event_values, EventInfoContract.EventEntry._ID + "= ?", new String[]{String.valueOf(event.getId())});
@@ -265,11 +265,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+      //  event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         database.update(EventInfoContract.EventEntry.TABLE_NAME, event_values, EventInfoContract.EventEntry._ID + "= ?", new String[]{String.valueOf(event.getId())});
@@ -282,11 +282,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+      //  event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         database.update(EventInfoContract.EventEntry.TABLE_NAME, event_values, EventInfoContract.EventEntry._ID + "= ?", new String[]{String.valueOf(event.getId())});
@@ -311,11 +311,11 @@ public class EventDAO
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getDate());
-        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getTime_start());
-        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getTime_end());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
+        event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
-        event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
+      //  event_values.put(EventInfoContract.EventEntry.STATE, event.getState());
         event_values.put(EventInfoContract.EventEntry.IMPORTANCE, event.getImportance());
 
         database.update(EventInfoContract.EventEntry.TABLE_NAME, event_values, EventInfoContract.EventEntry._ID + "= ?", new String[]{String.valueOf(event.getId())});
@@ -429,7 +429,7 @@ public class EventDAO
                 switch (eventType)
                 {
                     case TODO:
-                        event = new ToDo(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance);
+                       // event = new ToDo(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance);
                         commentDAO.open();
                         ((ToDo)event).setListComments(commentDAO.getCommentsByEventId(event_id));
                         commentDAO.close();
@@ -444,7 +444,7 @@ public class EventDAO
                         break;
 
                     case WORKTASK:
-                        event = new WorkTask(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance);
+                       // event = new WorkTask(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance);
                         commentDAO.open();
                         ((WorkTask)event).setListComments(commentDAO.getCommentsByEventId(event_id));
                         commentDAO.close();
@@ -460,7 +460,7 @@ public class EventDAO
 
                     case BIRTHDAY:
                         Location location = getLocation(event_id);
-                        event = new Birthday(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance, location);
+                       // event = new Birthday(event_id, event_title, event_time_start, event_time_end, event_date, event_state, event_importance, location);
                         commentDAO.open();
                         ((Birthday)event).setListComments(commentDAO.getCommentsByEventId(event_id));
                         commentDAO.close();
@@ -516,7 +516,7 @@ public class EventDAO
             String state = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
             int importance = cursor.getInt(cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
 
-            ToDo toDo = new ToDo(id, title, startTime, endTime, date, state, importance);
+          /*  ToDo toDo = new ToDo(id, title, startTime, endTime, date, state, importance);
 
             commentDAO.open();
             toDo.setListComments(commentDAO.getCommentsByEventId(id));
@@ -530,7 +530,7 @@ public class EventDAO
             toDo.setListInterests(interestDAO.getInterestsByEventId(id));
             interestDAO.close();
 
-            toDoList.add(toDo);
+            toDoList.add(toDo);*/
         }
 
         return toDoList;

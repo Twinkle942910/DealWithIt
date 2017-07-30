@@ -44,6 +44,7 @@ import java.util.Locale;
 import static com.example.twinkle94.dealwithit.R.id.button_add_comment;
 import static com.example.twinkle94.dealwithit.R.id.button_add_sub_task;
 
+//TODO: repair datetime validator.
 public class AddingTaskFragment extends AbstractAddingFragment implements CompoundButton.OnCheckedChangeListener
 {
     private static final String NAME = AddingTaskFragment.class.getSimpleName();
@@ -170,7 +171,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         dateValidator = validator(date_iet);
         startTimeValidator = validator(start_time_iet);
         endTimeValidator = validator(end_time_iet);
-        dateTimeValidator = new DateTimeValidator(activity, DateFormat.is24HourFormat(activity));
+        dateTimeValidator = new DateTimeValidator(DateFormat.is24HourFormat(activity));
     }
 
     @Override
@@ -322,14 +323,14 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                 //TODO: refactor!
                 case TODO:
-
-                    new_event = new ToDo(this_event_id,
+                    //TODO: Use builder pattern here.
+                   /* new_event = new ToDo(this_event_id,
                             title_iet.getText().toString(),
                             start_time_iet.getText().toString(),
                             end_time_iet.getText().toString(),
                             date_iet.getText().toString(),
                             "Waiting",
-                            importance_value);
+                            importance_value);*/
 
                     new EventDAO(activity).updateEventOnBG(new_event);
 
@@ -337,13 +338,13 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                 case WORKTASK:
 
-                    new_event = new WorkTask(this_event_id,
+                /*    new_event = new WorkTask(this_event_id,
                             title_iet.getText().toString(),
                             start_time_iet.getText().toString(),
                             end_time_iet.getText().toString(),
                             date_iet.getText().toString(),
                             "Waiting",
-                            importance_value);
+                            importance_value);*/
 
                     new EventDAO(activity).updateEventOnBG(new_event);
 
@@ -351,13 +352,13 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                 case BIRTHDAY:
 
-                    new_event = new Birthday(this_event_id,
+                   /* new_event = new Birthday(this_event_id,
                             title_iet.getText().toString(),
                             start_time_iet.getText().toString(),
                             end_time_iet.getText().toString(),
                             date_iet.getText().toString(),
                             "Waiting",
-                            importance_value, new Location(-1, -1, "Poor","Loov", "Boi"));
+                            importance_value, new Location(-1, -1, "Poor","Loov", "Boi"));*/
 
                     EventDAO eventDAO = new EventDAO(activity);
                     eventDAO.updateEventOnBG(new_event);
@@ -458,7 +459,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
 
-        SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         date_iet.setText(dateFormat.format(calendar.getTime()));
     }
 
@@ -746,7 +747,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         }
 
         if (checkIfTextEmpty(start_time_iet)) setInputError(false, startInputLayout, getString(R.string.empty_error));
-        else setInputError(dateTimeValidator.validateTime(start_time_iet.getText().toString()), startInputLayout, dateTimeValidator.timeErrorMessage());
+        else setInputError(dateTimeValidator.validateTime(DateFormat.is24HourFormat(activity), start_time_iet.getText().toString()), startInputLayout, dateTimeValidator.timeErrorMessage());
     }
 
     private void checkEndTimeInput()
@@ -761,7 +762,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
         }
 
         if (checkIfTextEmpty(end_time_iet)) setInputError(false, endInputLayout, getString(R.string.empty_error));
-        else setInputError(dateTimeValidator.validateTime(end_time_iet.getText().toString()), endInputLayout, dateTimeValidator.timeErrorMessage());
+        else setInputError(dateTimeValidator.validateTime(DateFormat.is24HourFormat(activity), end_time_iet.getText().toString()), endInputLayout, dateTimeValidator.timeErrorMessage());
     }
 
     private void checkDateInput()
@@ -793,13 +794,13 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             case TODO:
                 clearEvent();
                 new_event = new ToDo();
-                new_event.setType(EventType.TODO);
+              //  new_event.setType(EventType.TODO);
                 break;
 
             case BIRTHDAY:
                 clearEvent();
                 new_event = new Birthday();
-                new_event.setType(EventType.BIRTHDAY);
+              //  new_event.setType(EventType.BIRTHDAY);
 
                 //TODO: temporary!
                 ((Birthday)new_event).setLocation(new Location(-1, -1, "Poor","Loov", "Boi"));
@@ -809,7 +810,7 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
                 clearEvent();
                 new_event = new WorkTask();
                 //TODO: add type in a constructor?!
-                new_event.setType(EventType.WORKTASK);
+              //  new_event.setType(EventType.WORKTASK);
                 break;
 
             case SCHEDULE:

@@ -1,54 +1,65 @@
 package com.example.twinkle94.dealwithit.events;
 
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
+import com.example.twinkle94.dealwithit.events.state.State;
+import com.example.twinkle94.dealwithit.events.state.WaitingState;
+import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.type_enums.EventAction;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-//TODO: Something wrong with git. Check what.!
-public abstract class Event implements Item
-{
-    //TODO: check if we need this field
-    private int id;
-    private String title;
-    //TODO: is it right for time to be String?
-    private String time_start;
-    private String time_end;
-    //TODO: Should I use DateTime class?
-    private String date;
-    private EventType type;
-    private String state;
-    private int importance;
-    private List<Interest> list_interests;
+//TODO: Does it have to somehow know about current time?
+public abstract class Event implements Item {
+    public static final String DATE_FORMAT = "EEEE, MMMM dd";
+    public static final String TIME_FORMAT_24_HOURS = "kk:mm";
+    public static final String TIME_FORMAT_12_HOURS = "hh:mm a";
 
-    //TODO: The average value of all interests of task. Not sure if I have to leave it here?
+    private int id; //optional
+    private String title; //required
+    private Calendar dateStart; //required
+    private Calendar dateEnd; //required
+    private int importance; //optional
+
+    protected EventType type; //required (set trough this(child) constructor)
+    private State state; //required (set trough this constructor)
+    private List<Interest> interestList; //optional
+
+    //12 hours - false, 24 hours - true.
+    private boolean is24Hours;
+
     private int interests;
-
-    //TODO: Duration of task. Not sure if I have to leave it here(because Birthday have no duration)?
     private int duration;
 
-    public Event(int id, String title, String time_start, String time_end, String date, EventType type, String state, int importance)
-    {
-        this.id = id;
-        this.title = title;
-        this.time_start = time_start;
-        this.time_end = time_end;
-        this.date = date;
-        this.type = type;
-        this.state = state;
-        this.importance = importance;
+    public Event(EventBuilder eventBuilder) {
+        this.id = eventBuilder.id;
+        this.title = eventBuilder.title;
+        this.importance = eventBuilder.importance;
+        this.dateStart = eventBuilder.dateStart;
+        this.dateEnd = eventBuilder.dateEnd;
+        this.state = new WaitingState();
+        this.interestList = new ArrayList<>();
+
+        setType();
     }
 
-    public Event()
-    {
+    public Event() {
         this.id = -1;
         this.title = "No_title";
-        this.time_start = "No_time_start";
-        this.time_end = "No_time_end";
-        this.date = "No_date";
-        this.type = EventType.NO_TYPE;
-        this.state = "No_state";
+        this.dateStart = Calendar.getInstance();
+        this.dateEnd = Calendar.getInstance();
         this.importance = -1;
+        this.state = new WaitingState();
+        interestList = new ArrayList<>();
+
+        setType();
     }
 
     public int getId() {
@@ -67,47 +78,77 @@ public abstract class Event implements Item
         this.title = title;
     }
 
-    public String getTime_start() {
-        return time_start;
-    }
+    public void setDateTime(String date, String startTime, String endTime) {
+        is24Hours = EventBuilder.getTimeFormat(startTime.toLowerCase());
 
-    public void setTime_start(String time_start) {
-        this.time_start = time_start;
-    }
+        setDate(date);
+        setStartTime(startTime);
+        setEndTime(endTime);
 
-    public String getTime_end() {
-        return time_end;
-    }
-
-    public void setTime_end(String time_end) {
-        this.time_end = time_end;
-    }
-
-    public String getDate() {
-        return date;
+        toNextDay();
     }
 
     public void setDate(String date) {
-        this.date = date;
+        if (DateTimeValidator.validateDate(date)) {
+            Calendar givenDate = EventBuilder.convertDate(date);
+
+            EventBuilder.copyDate(dateStart, givenDate);
+            EventBuilder.copyDate(dateEnd, givenDate);
+        }
+        toNextDay();
+    }
+
+    public void setStartTime(String startTime) {
+        is24Hours = EventBuilder.getTimeFormat(startTime.toLowerCase());
+
+        if (DateTimeValidator.validateTime(is24Hours, startTime)) {
+            EventBuilder.copyTime(dateStart, EventBuilder.convertTime(is24Hours, startTime));
+        }
+        toNextDay();
+    }
+
+    public void setEndTime(String endTime) {
+        is24Hours = EventBuilder.getTimeFormat(endTime.toLowerCase());
+
+        if (DateTimeValidator.validateTime(is24Hours, endTime)) {
+            EventBuilder.copyTime(dateEnd, EventBuilder.convertTime(is24Hours, endTime));
+        }
+        toNextDay();
+    }
+
+    public String getStartTime() {
+        return EventBuilder.getTime(is24Hours, dateStart.getTime());
+    }
+
+    public String getEndTime() {
+        return EventBuilder.getTime(is24Hours, dateEnd.getTime());
+    }
+
+    public String getStartDate() {
+        return EventBuilder.getDate(dateStart.getTime());
+    }
+
+    public String getEndDate() {
+        return EventBuilder.getDate(dateEnd.getTime());
     }
 
     @Override
-    public EventType getType()
-    {
+    public EventType getType() {
         return type;
     }
 
-    public void setType(EventType type)
-    {
-        this.type = type;
-    }
+    protected abstract void setType();
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public String getStateName() {
+        return state.toString();
+    }
+
+    public void changeState(EventAction eventAction) {
+        state.changeState(this, eventAction);
     }
 
     public int getImportance() {
@@ -118,75 +159,211 @@ public abstract class Event implements Item
         this.importance = importance;
     }
 
-
-
-    //TODO: setter interests of task. Not sure if I have to leave it here(maybe just add to straight field)?
-    protected void setInterests(int interests)
-    {
-        this.interests = interests;
-    }
-
-    public void addInterest(Interest interest)
-    {
-        list_interests.add(interest);
-    }
-
-    private void countInterest()
-    {
-        int sum = 0;
-
-        for (Interest interest: list_interests)
-        {
-            sum += interest.getValue();
-
-            setInterests(sum / list_interests.size());
-        }
-    }
-
-    public int getInterestsAverage()
-    {
+    public int getInterests() {
         return interests;
     }
 
-    public List<Interest> getListInterests()
-    {
-        return list_interests;
+    public List<Interest> getListInterests() {
+        return interestList;
     }
 
     public void setListInterests(List<Interest> list_interests) {
-        this.list_interests = list_interests;
+        this.interestList = list_interests;
     }
 
-    public int getDuration()
-    {
-        int startTime = convertTime(time_start);
-        int endTime = convertTime(time_end);
-
-        this.duration = endTime - startTime;
-
-        /*int minutes = duration % 60;
-        int hours = duration - minutes;*/
-
-        //TODO: what if end time is greater than start (when tasks starts before midnight)?
-        return duration > 0 ? duration : 0  /*(hours * 60) + minutes*/;
+    public void setState(State state) {
+        this.state = state;
     }
 
-    //TODO: think about AM - PM
-    private int convertTime(String timeString)
-    {
-        char[] timeCharacters = timeString.toCharArray();
-        int result = 0;
-        int numbPosition = 1;
-        for(int charPosition = timeCharacters.length - 1; charPosition >= 0; charPosition--)
-        {
-            if(timeCharacters[charPosition] >= '0' && timeCharacters[charPosition] <= '9')
-            {
-                int number = Character.getNumericValue(timeCharacters[charPosition]);
-                result += number * numbPosition;
-                numbPosition *= 10;
-            }
+    public void addInterest(Interest interest) {
+        interestList.add(interest);
+    }
+
+    public boolean is24Hours() {
+        return is24Hours;
+    }
+
+    public void set24Hours(boolean is24Hours) {
+        this.is24Hours = is24Hours;
+    }
+
+    private void toNextDay() {
+        if (EventBuilder.isEndingNextDay(dateStart, dateEnd)) dateEnd.add(Calendar.DAY_OF_MONTH, 1);
+    }
+
+    private void countInterest() {
+        int sum = 0;
+
+        for (Interest interest : interestList) {
+            sum += interest.getValue();
+
+            interests = (sum / interestList.size());
+        }
+    }
+
+    //TODO: try to understand it better! (Debug trough code).
+    protected abstract static class EventBuilder<E extends Event, B extends EventBuilder<E, B>> {
+        private int id;
+        private final String title;
+        private final Calendar dateStart;
+        private final Calendar dateEnd;
+        private int importance;
+
+        //12 hours - false, 24 hours - true.
+        private boolean is24Hours;
+
+       // protected E event;
+        protected B thisObject;
+
+        protected abstract E getEvent(); //Each concrete implementing subclass overrides this so that T becomes an object of the concrete subclass
+
+        protected abstract B thisObject(); //Each concrete implementing subclass builder overrides this for the same reason, but for B for the builder
+
+        public EventBuilder(String title) {
+            this.title = title;
+
+            this.dateStart = Calendar.getInstance();
+            this.dateEnd = Calendar.getInstance();
+
+            //TODO: doesn't have all the fields this way.
+            //event = getEvent();
+            thisObject = thisObject();
         }
 
-        return result;
+        public EventBuilder setId(int id) {
+            this.id = id;
+            return thisObject;
+        }
+
+        public EventBuilder setDate(String date) {
+            if (DateTimeValidator.validateDate(date)) {
+                Calendar givenDate = convertDate(date);
+
+                copyDate(dateStart, givenDate);
+                copyDate(dateEnd, givenDate);
+            }
+            toNextDay();
+            return thisObject;
+        }
+
+        public EventBuilder setStartTime(String startTime) {
+            is24Hours = getTimeFormat(startTime);
+
+            if (DateTimeValidator.validateTime(is24Hours, startTime)) {
+                copyTime(dateStart, convertTime(is24Hours, startTime));
+            }
+            toNextDay();
+            return thisObject;
+        }
+
+        public EventBuilder setEndTime(String endTime) {
+            is24Hours = getTimeFormat(endTime);
+
+            if (DateTimeValidator.validateTime(is24Hours, endTime)) {
+                copyTime(dateEnd, convertTime(is24Hours, endTime));
+            }
+            toNextDay();
+            return thisObject;
+        }
+
+        public EventBuilder setImportance(int importance) {
+            this.importance = importance;
+            return thisObject;
+        }
+
+        public E build() {
+            return getEvent();
+        }
+
+        private static boolean getTimeFormat(String time) {
+            if (time != null && time.length() > 2) {
+                String am_pm = time.substring(time.length() - 2);
+
+                if (am_pm.equals("am") || am_pm.equals("pm")) return false;
+            }
+            return true;
+        }
+
+        private static boolean isEndingNextDay(Calendar startDate, Calendar endDate) {
+            long startMilliseconds = startDate.getTimeInMillis();
+            long endMilliseconds = endDate.getTimeInMillis();
+
+            if (endMilliseconds < startMilliseconds) return true;
+            return false;
+        }
+
+        private void toNextDay() {
+            if (isEndingNextDay(dateStart, dateEnd)) dateEnd.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        private static String getTime(boolean is24Hours, Date time) {
+            SimpleDateFormat endTime = null;
+
+            if (is24Hours)
+                endTime = new SimpleDateFormat(TIME_FORMAT_24_HOURS);
+            else endTime = new SimpleDateFormat(TIME_FORMAT_12_HOURS);
+
+            if (endTime != null) return endTime.format(time);
+            return null;
+        }
+
+        private static String getDate(Date date) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            return dateFormat.format(date);
+        }
+
+        private static Calendar convertDate(String date) {
+            Calendar givenDate = Calendar.getInstance();
+
+            try {
+                givenDate.setTime(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return givenDate;
+        }
+
+        private static Calendar convertTime(boolean is24Hours, String startTime) {
+            Calendar time = Calendar.getInstance();
+
+            String hourFormat24 = "kk:mm";
+            String hourFormat12 = "hh:mm a";
+
+            try {
+                if (is24Hours) time.setTime(new SimpleDateFormat(hourFormat24).parse(startTime));
+                else time.setTime(new SimpleDateFormat(hourFormat12).parse(startTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return time;
+        }
+
+        private static void copyDate(Calendar date, Calendar sourceDate) {
+            date.set(Calendar.YEAR, sourceDate.get(Calendar.YEAR));
+            date.set(Calendar.MONTH, sourceDate.get(Calendar.MONTH));
+            date.set(Calendar.DAY_OF_MONTH, sourceDate.get(Calendar.DAY_OF_MONTH));
+        }
+
+        private static void copyTime(Calendar time, Calendar sourceTime) {
+            time.set(Calendar.HOUR_OF_DAY, sourceTime.get(Calendar.HOUR_OF_DAY));
+            time.set(Calendar.MINUTE, sourceTime.get(Calendar.MINUTE));
+        }
+    }
+
+    private static class EventTest {
+        public static void main(String... args) {
+            Event event = new ToDo();
+
+            //event.setDateTime("23/07/2017", "13:31", "01:29");
+
+            event.setStartTime("17:31");
+            event.setEndTime("14:29");
+            event.setDate("23/07/2017");
+
+            System.out.println(event.getStartTime());
+            System.out.println(event.getEndTime());
+            System.out.println(event.getStartDate());
+            System.out.println(event.getEndDate());
+        }
     }
 }
