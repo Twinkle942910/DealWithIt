@@ -1,20 +1,17 @@
 package com.example.twinkle94.dealwithit.events.task_types;
 
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.Interest;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
-
-import java.util.List;
 
 public class Schedule extends Event
 {
     private ScheduleType scheduleType;
 
-    public Schedule(int id, String title, ScheduleType scheduleType, String time_start, String time_end, String date, String state, int importance)
+    public Schedule(EventBuilder eventBuilder)
     {
-     //   super(id, title, time_start, time_end, date, EventType.SCHEDULE, state, importance);
-        this.scheduleType = scheduleType;
+        super(eventBuilder);
+        this.scheduleType = ((Builder)eventBuilder).scheduleType;
     }
 
     public Schedule()
@@ -28,13 +25,53 @@ public class Schedule extends Event
         type = EventType.SCHEDULE;
     }
 
-    public void setScheduleType(ScheduleType scheduleType)
-    {
-        this.scheduleType = scheduleType;
-    }
-
     public ScheduleType getScheduleType()
     {
         return scheduleType;
+    }
+
+    public static final class Builder extends EventBuilder<Schedule, Schedule.Builder> {
+        private ScheduleType scheduleType;
+
+        @Override
+        protected Schedule getEvent() {
+            return new Schedule(this);
+        }
+
+        @Override
+        protected Schedule.Builder thisObject() {
+            return this;
+        }
+
+        public Builder(String title) {
+            super(title);
+        }
+
+        public Schedule.Builder setScheduleType(ScheduleType scheduleType){
+            this.scheduleType = scheduleType;
+            return this;
+        }
+    }
+
+    private static class BirthdayTest {
+        public static void main(String... args) {
+            Event event = new Schedule.Builder("Clean the room")
+                    .setStartTime("17:31")
+                    .setDate("23/07/2017")
+                    .setId(1)
+                    .setScheduleType(ScheduleType.LESSON)
+                    .setImportance(19)
+                    .setEndTime("14:29")
+                    .build();
+
+            System.out.println(event.getStartTime());
+            System.out.println(event.getEndTime());
+            System.out.println(event.getStartDate());
+            System.out.println(event.getEndDate());
+            System.out.println(((Schedule)event).getScheduleType().toString());
+            System.out.println(event.getId());
+            System.out.println(event.getImportance());
+            System.out.println(event.getTitle());
+        }
     }
 }

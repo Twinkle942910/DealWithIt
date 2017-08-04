@@ -79,7 +79,7 @@ public class ToDo extends Event
     public static final class Builder extends EventBuilder<ToDo, Builder> {
         @Override
         protected ToDo getEvent() {
-            return new ToDo(this);
+            return new ToDo(thisObject());
         }
 
         @Override

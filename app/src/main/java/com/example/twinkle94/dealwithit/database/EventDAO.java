@@ -476,7 +476,7 @@ public class EventDAO
 
                     case SCHEDULE:
                         ScheduleType scheduleType = getScheduleType(event_id);
-                        event = new Schedule(event_id, event_title, scheduleType, event_time_start, event_time_end, event_date, event_state, event_importance);
+                        event = new Schedule();
 
                         interestDAO.open();
                         event.setListInterests(interestDAO.getInterestsByEventId(event_id));

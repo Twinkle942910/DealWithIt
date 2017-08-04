@@ -106,7 +106,6 @@ public class Birthday extends Event
             super(title);
         }
 
-        //TODO: doesn't work.
         public Builder setLocation(Location location){
             this.location = location;
             return this;
@@ -119,6 +118,7 @@ public class Birthday extends Event
                     .setStartTime("17:31")
                     .setDate("23/07/2017")
                     .setId(1)
+                    .setLocation(new Location(1, 1, "Roksolany", "Lviv", "Ukraine"))
                     .setImportance(19)
                     .setEndTime("14:29")
                     .build();

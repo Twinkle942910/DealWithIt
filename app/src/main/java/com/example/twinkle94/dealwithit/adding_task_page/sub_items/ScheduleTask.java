@@ -412,14 +412,14 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     {
         int schedule_id = schedule.getId();
 
-        schedule = new Schedule(schedule_id,
+      /*  schedule = new Schedule(schedule_id,
                 task_content_tv.getText().toString(),
                 scheduleType,
                 task_start_time_tv.getText().toString(),
                 task_end_time_tv.getText().toString(),
                 date,
                 "Waiting",
-                importance_value);
+                importance_value);*/
         new EventDAO(context).updateEventOnBG(schedule);
     }
 

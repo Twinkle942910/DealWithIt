@@ -201,7 +201,7 @@ public abstract class Event implements Item {
         }
     }
 
-    //TODO: try to understand it better! (Debug trough code).
+    //TODO: Can we do it without generics? (Debug trough code).
     protected abstract static class EventBuilder<E extends Event, B extends EventBuilder<E, B>> {
         private int id;
         private final String title;
@@ -212,7 +212,7 @@ public abstract class Event implements Item {
         //12 hours - false, 24 hours - true.
         private boolean is24Hours;
 
-       // protected E event;
+        protected E event;
         protected B thisObject;
 
         protected abstract E getEvent(); //Each concrete implementing subclass overrides this so that T becomes an object of the concrete subclass
@@ -230,12 +230,12 @@ public abstract class Event implements Item {
             thisObject = thisObject();
         }
 
-        public EventBuilder setId(int id) {
+        public B setId(int id) {
             this.id = id;
             return thisObject;
         }
 
-        public EventBuilder setDate(String date) {
+        public B setDate(String date) {
             if (DateTimeValidator.validateDate(date)) {
                 Calendar givenDate = convertDate(date);
 
@@ -246,7 +246,7 @@ public abstract class Event implements Item {
             return thisObject;
         }
 
-        public EventBuilder setStartTime(String startTime) {
+        public B setStartTime(String startTime) {
             is24Hours = getTimeFormat(startTime);
 
             if (DateTimeValidator.validateTime(is24Hours, startTime)) {
@@ -256,7 +256,7 @@ public abstract class Event implements Item {
             return thisObject;
         }
 
-        public EventBuilder setEndTime(String endTime) {
+        public B setEndTime(String endTime) {
             is24Hours = getTimeFormat(endTime);
 
             if (DateTimeValidator.validateTime(is24Hours, endTime)) {
@@ -266,13 +266,14 @@ public abstract class Event implements Item {
             return thisObject;
         }
 
-        public EventBuilder setImportance(int importance) {
+        public B setImportance(int importance) {
             this.importance = importance;
             return thisObject;
         }
 
         public E build() {
-            return getEvent();
+            event = getEvent();
+            return event;
         }
 
         private static boolean getTimeFormat(String time) {

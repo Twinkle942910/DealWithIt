@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initFAB();
 
-
        /* //calling background database
         FetchEventsTask fetchEventsTask = new FetchEventsTask(getApplicationContext());
         fetchEventsTask.execute();*/
