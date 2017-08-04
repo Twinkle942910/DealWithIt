@@ -1,6 +1,6 @@
 package com.example.twinkle94.dealwithit.adapter.today_page_adapter;
 
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 
 public class EventTypeSection implements Item
 {

@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.events.task_types.ToDo;
+import com.example.twinkle94.dealwithit.events.event_types.ToDo;
 import com.example.twinkle94.dealwithit.task_list_page.TaskListActivity;
 
 import java.util.ArrayList;

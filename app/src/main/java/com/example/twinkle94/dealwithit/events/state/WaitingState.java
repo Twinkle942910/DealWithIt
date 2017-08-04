@@ -1,8 +1,7 @@
 package com.example.twinkle94.dealwithit.events.state;
 
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.type_enums.EventAction;
-import com.example.twinkle94.dealwithit.events.type_enums.StateType;
+import com.example.twinkle94.dealwithit.events.EventAction;
 
 public class WaitingState extends State {
     public WaitingState() {
@@ -11,8 +10,15 @@ public class WaitingState extends State {
 
     @Override
     public void changeState(Event event, EventAction eventAction) {
-        //TODO: implement time checking.
-        if(event.getStartTime() == "Current time") event.setState(new NowState());
-        else event.setState(new InProcessState());
+        //TODO: what if none of this cases will work? (If eventAction will be different from them?)
+        switch (eventAction){
+            case DO:
+                event.setState(new InProcessState());
+                break;
+
+            case TIME:
+                event.setState(new NowState());
+                break;
+        }
     }
 }

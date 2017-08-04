@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.task_types.Schedule;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.event_types.Schedule;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 
 import java.util.ArrayList;
 import java.util.List;

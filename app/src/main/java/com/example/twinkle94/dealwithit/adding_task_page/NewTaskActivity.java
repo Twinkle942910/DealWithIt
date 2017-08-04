@@ -18,7 +18,7 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.fragments.AbstractAddingFragment;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.fragments.AddingTaskFragment;

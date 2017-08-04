@@ -1,8 +1,7 @@
 package com.example.twinkle94.dealwithit.events.state;
 
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.type_enums.EventAction;
-import com.example.twinkle94.dealwithit.events.type_enums.StateType;
+import com.example.twinkle94.dealwithit.events.EventAction;
 
 public abstract class State {
     private StateType mType;

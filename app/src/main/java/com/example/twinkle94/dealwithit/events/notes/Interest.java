@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events;
+package com.example.twinkle94.dealwithit.events.notes;
 
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestItem;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestItemType;

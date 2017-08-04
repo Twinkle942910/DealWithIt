@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events.type_enums;
+package com.example.twinkle94.dealwithit.events.event_types;
 
 //For choosing the type of schedule (Move to Schedule class)
 public enum ScheduleType

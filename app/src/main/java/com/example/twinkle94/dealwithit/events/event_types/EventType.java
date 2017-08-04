@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events.type_enums;
+package com.example.twinkle94.dealwithit.events.event_types;
 
 import com.example.twinkle94.dealwithit.util.Constants;
 

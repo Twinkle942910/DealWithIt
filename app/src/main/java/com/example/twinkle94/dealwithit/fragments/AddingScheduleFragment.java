@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.ScheduleTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

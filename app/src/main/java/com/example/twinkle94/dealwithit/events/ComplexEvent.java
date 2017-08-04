@@ -1,5 +1,9 @@
 package com.example.twinkle94.dealwithit.events;
 
+import com.example.twinkle94.dealwithit.events.notes.Comment;
+import com.example.twinkle94.dealwithit.events.notes.Note;
+import com.example.twinkle94.dealwithit.events.notes.Sub_task;
+
 import java.util.List;
 
 public abstract class ComplexEvent extends Event {

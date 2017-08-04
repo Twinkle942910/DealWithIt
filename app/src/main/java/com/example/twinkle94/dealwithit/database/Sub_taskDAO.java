@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.notes.Sub_task;
 
 import java.util.ArrayList;
 import java.util.List;

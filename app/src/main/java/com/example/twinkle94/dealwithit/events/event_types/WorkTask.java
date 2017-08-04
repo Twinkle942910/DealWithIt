@@ -1,34 +1,32 @@
-package com.example.twinkle94.dealwithit.events.task_types;
+package com.example.twinkle94.dealwithit.events.event_types;
 
-import com.example.twinkle94.dealwithit.events.Comment;
 import com.example.twinkle94.dealwithit.events.ComplexEvent;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
-public class ToDo extends ComplexEvent
+public class WorkTask extends ComplexEvent
 {
-    public ToDo(EventBuilder eventBuilder)
+    public WorkTask(EventBuilder eventBuilder)
     {
-        super(eventBuilder);
+      super(eventBuilder);
     }
 
-    public ToDo()
+    public WorkTask()
     {
         super();
     }
 
     @Override
     protected void setType() {
-        type = EventType.TODO;
+        type = EventType.WORKTASK;
     }
 
-    public static final class Builder extends EventBuilder<ToDo, Builder> {
+    public static final class Builder extends EventBuilder<WorkTask, WorkTask.Builder> {
         @Override
-        protected ToDo getEvent() {
-            return new ToDo(thisObject());
+        protected WorkTask getEvent() {
+            return new WorkTask(this);
         }
 
         @Override
-        protected Builder thisObject() {
+        protected WorkTask.Builder thisObject() {
             return this;
         }
 
@@ -37,17 +35,15 @@ public class ToDo extends ComplexEvent
         }
     }
 
-    private static class ToDoTest {
+    private static class WorkTaskTest {
         public static void main(String... args) {
-            ComplexEvent event = new ToDo.Builder("Clean the room")
+            ComplexEvent event = new WorkTask.Builder("Clean the room")
                     .setStartTime("17:31")
                     .setDate("23/07/2017")
                     .setId(1)
                     .setImportance(19)
                     .setEndTime("14:29")
                     .build();
-
-            event.addComment(new Comment(1, 1, "Lol"));
 
             System.out.println(event.getStartTime());
             System.out.println(event.getEndTime());
@@ -56,9 +52,6 @@ public class ToDo extends ComplexEvent
             System.out.println(event.getId());
             System.out.println(event.getImportance());
             System.out.println(event.getTitle());
-
-            System.out.println(event.getListComments().get(0).getContent());
         }
     }
-
 }

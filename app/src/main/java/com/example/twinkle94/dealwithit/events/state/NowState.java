@@ -1,8 +1,7 @@
 package com.example.twinkle94.dealwithit.events.state;
 
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.type_enums.EventAction;
-import com.example.twinkle94.dealwithit.events.type_enums.StateType;
+import com.example.twinkle94.dealwithit.events.EventAction;
 
 public class NowState extends State {
     public NowState() {
@@ -11,6 +10,19 @@ public class NowState extends State {
 
     @Override
     public void changeState(Event event, EventAction eventAction) {
+        switch (eventAction){
+            case DO:
+                event.setState(new InProcessState());
+                break;
 
+            case CANCEL:
+                event.setState(new CanceledState());
+                break;
+
+            case TIME:
+                //Time passed.
+                event.setState(new MissedState());
+                break;
+        }
     }
 }

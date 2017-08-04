@@ -1,8 +1,6 @@
-package com.example.twinkle94.dealwithit.events.task_types;
+package com.example.twinkle94.dealwithit.events.event_types;
 
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
-import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
 
 public class Schedule extends Event
 {

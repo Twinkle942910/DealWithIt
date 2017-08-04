@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.notes.Interest;
 import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
 
 import java.util.ArrayList;

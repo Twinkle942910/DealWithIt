@@ -26,12 +26,12 @@ import com.example.twinkle94.dealwithit.adding_task_page.sub_items.Task;
 import com.example.twinkle94.dealwithit.database.EventDAO;
 import com.example.twinkle94.dealwithit.database.InterestDAO;
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.events.EventInterest;
-import com.example.twinkle94.dealwithit.events.Location;
-import com.example.twinkle94.dealwithit.events.task_types.Birthday;
-import com.example.twinkle94.dealwithit.events.task_types.ToDo;
-import com.example.twinkle94.dealwithit.events.task_types.WorkTask;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.notes.EventInterest;
+import com.example.twinkle94.dealwithit.events.notes.Location;
+import com.example.twinkle94.dealwithit.events.event_types.Birthday;
+import com.example.twinkle94.dealwithit.events.event_types.ToDo;
+import com.example.twinkle94.dealwithit.events.event_types.WorkTask;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 

@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.util.Constants;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 

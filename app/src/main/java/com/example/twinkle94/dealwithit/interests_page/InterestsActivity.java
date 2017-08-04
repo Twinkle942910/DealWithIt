@@ -28,7 +28,7 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestsAdapter;
 import com.example.twinkle94.dealwithit.database.InterestDAO;
-import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.notes.Interest;
 import com.example.twinkle94.dealwithit.util.SnackBarMessage;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 

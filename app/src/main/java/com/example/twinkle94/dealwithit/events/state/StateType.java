@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events.type_enums;
+package com.example.twinkle94.dealwithit.events.state;
 
 import com.example.twinkle94.dealwithit.R;
 

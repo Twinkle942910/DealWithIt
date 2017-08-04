@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.database.CommentDAO;
 import com.example.twinkle94.dealwithit.database.Sub_taskDAO;
-import com.example.twinkle94.dealwithit.events.Comment;
-import com.example.twinkle94.dealwithit.events.Sub_task;
+import com.example.twinkle94.dealwithit.events.notes.Comment;
+import com.example.twinkle94.dealwithit.events.notes.Sub_task;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 
 import java.util.Locale;

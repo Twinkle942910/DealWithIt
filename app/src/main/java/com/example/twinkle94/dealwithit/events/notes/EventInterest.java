@@ -1,4 +1,4 @@
-package com.example.twinkle94.dealwithit.events;
+package com.example.twinkle94.dealwithit.events.notes;
 
 public class EventInterest
 {

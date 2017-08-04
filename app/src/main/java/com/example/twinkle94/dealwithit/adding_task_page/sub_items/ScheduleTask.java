@@ -21,10 +21,9 @@ import android.widget.Toast;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.database.EventDAO;
 import com.example.twinkle94.dealwithit.database.InterestDAO;
-import com.example.twinkle94.dealwithit.events.EventInterest;
-import com.example.twinkle94.dealwithit.events.task_types.Schedule;
-import com.example.twinkle94.dealwithit.events.type_enums.EventType;
-import com.example.twinkle94.dealwithit.events.type_enums.ScheduleType;
+import com.example.twinkle94.dealwithit.events.notes.EventInterest;
+import com.example.twinkle94.dealwithit.events.event_types.Schedule;
+import com.example.twinkle94.dealwithit.events.event_types.ScheduleType;
 import com.example.twinkle94.dealwithit.fragments.AddingScheduleFragment;
 import com.example.twinkle94.dealwithit.util.TextValidator;
 

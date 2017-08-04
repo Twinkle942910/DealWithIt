@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestHeader;
 import com.example.twinkle94.dealwithit.adapter.interests_page_adapter.InterestsAdapter;
-import com.example.twinkle94.dealwithit.events.EventInterest;
-import com.example.twinkle94.dealwithit.events.Interest;
+import com.example.twinkle94.dealwithit.events.notes.EventInterest;
+import com.example.twinkle94.dealwithit.events.notes.Interest;
 
 import java.util.ArrayList;
 import java.util.List;
