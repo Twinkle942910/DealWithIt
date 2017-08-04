@@ -1,33 +1,22 @@
 package com.example.twinkle94.dealwithit.events.task_types;
 
-import com.example.twinkle94.dealwithit.events.Comment;
-import com.example.twinkle94.dealwithit.events.Event;
+import com.example.twinkle94.dealwithit.events.ComplexEvent;
 import com.example.twinkle94.dealwithit.events.Location;
-import com.example.twinkle94.dealwithit.events.Note;
-import com.example.twinkle94.dealwithit.events.Sub_task;
 import com.example.twinkle94.dealwithit.events.type_enums.EventType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Birthday extends Event
+public class Birthday extends ComplexEvent
 {
-    //TODO: refactor this to take same code from tree classes(Birthday, TODO, Work Task).
-    private Note notes;
-
     private Location location;
 
     public Birthday(EventBuilder eventBuilder)
     {
         super(eventBuilder);
         this.location = ((Builder)eventBuilder).location;
-        notes = new Note();
     }
 
     public Birthday()
     {
         super();
-        notes = new Note();
     }
 
     @Override
@@ -41,52 +30,6 @@ public class Birthday extends Event
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public void addComment(Comment comment){
-        notes.addComment(comment);
-    }
-
-    public void addSubtask(Sub_task sub_task){
-        notes.addSubtask(sub_task);
-    }
-
-    public void removeComment(Comment comment){
-        notes.removeComment(comment);
-    }
-
-    public void removeSubtask(Sub_task sub_task){
-        notes.removeSubtask(sub_task);
-    }
-
-    public int commentsCount(){
-        return notes.commentsCount();
-    }
-
-    public int subtasksCount(){
-        return notes.subtasksCount();
-    }
-
-    public int doneSubtasksCount(){
-        return notes.doneSubtasksCount();
-    }
-
-    public List<Sub_task> getListSubTasks()
-    {
-        return notes.getListSubTasks();
-    }
-
-    public List<Comment> getListComments()
-    {
-        return notes.getListComments();
-    }
-
-    public void setListComments(List<Comment> comments) {
-        this.notes.setListComments(comments);
-    }
-
-    public void setListSubTasks(List<Sub_task> subTasks) {
-        this.notes.setListSubTasks(subTasks);
     }
 
     public static final class Builder extends EventBuilder<Birthday, Birthday.Builder> {
@@ -114,7 +57,7 @@ public class Birthday extends Event
 
     private static class BirthdayTest {
         public static void main(String... args) {
-            Event event = new Birthday.Builder("Clean the room")
+            ComplexEvent event = new Birthday.Builder("Clean the room")
                     .setStartTime("17:31")
                     .setDate("23/07/2017")
                     .setId(1)

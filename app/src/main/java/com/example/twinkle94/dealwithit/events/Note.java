@@ -1,10 +1,16 @@
 package com.example.twinkle94.dealwithit.events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Note {
     private List<Sub_task> subTasks;
     private List<Comment> comments;
+
+    public Note() {
+        this.subTasks = new ArrayList<>();
+        this.comments = new ArrayList<>();
+    }
 
     public void addComment(Comment comment){
         comments.add(comment);
