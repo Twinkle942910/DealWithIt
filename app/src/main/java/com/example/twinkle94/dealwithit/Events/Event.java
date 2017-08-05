@@ -25,6 +25,7 @@ import java.util.Locale;
 //TODO: Does it have to somehow know about current time?
 public abstract class Event implements Item {
     public static final String DATE_FORMAT = "EEEE, MMMM dd";
+    public static final String VALID_DATE_FORMAT = "dd/MM/yyyy";
     public static final String TIME_FORMAT_24_HOURS = "kk:mm";
     public static final String TIME_FORMAT_12_HOURS = "hh:mm a";
 
@@ -131,11 +132,15 @@ public abstract class Event implements Item {
     }
 
     public String getStartDate() {
-        return EventBuilder.getDate(dateStart.getTime());
+        return EventBuilder.getDate(dateStart.getTime(), DATE_FORMAT);
     }
 
     public String getEndDate() {
-        return EventBuilder.getDate(dateEnd.getTime());
+        return EventBuilder.getDate(dateEnd.getTime(), DATE_FORMAT);
+    }
+
+    public String getValidDate() {
+        return EventBuilder.getDate(dateEnd.getTime(), VALID_DATE_FORMAT);
     }
 
     @Override
@@ -328,9 +333,9 @@ public abstract class Event implements Item {
             return null;
         }
 
-        private static String getDate(Date date) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-            return dateFormat.format(date);
+        private static String getDate(Date date, String dateFormat) {
+            SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+            return format.format(date);
         }
 
         private static Calendar convertDate(String date) {

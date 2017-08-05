@@ -138,7 +138,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -155,7 +155,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -180,7 +180,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -197,7 +197,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -228,7 +228,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -252,7 +252,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -268,7 +268,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
@@ -298,7 +298,7 @@ public class EventDAO {
         ContentValues event_values = new ContentValues();
 
         event_values.put(EventInfoContract.EventEntry.TITLE, event.getTitle());
-        event_values.put(EventInfoContract.EventEntry.DATE, event.getStartDate());
+        event_values.put(EventInfoContract.EventEntry.DATE, event.getValidDate());
         event_values.put(EventInfoContract.EventEntry.TIME_START, event.getStartTime());
         event_values.put(EventInfoContract.EventEntry.TIME_END, event.getEndTime());
         event_values.put(EventInfoContract.EventEntry.TYPE, event.getType().toString());
