@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.database.EventDAO;
 import com.example.twinkle94.dealwithit.database.InterestDAO;
+import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.notes.EventInterest;
 import com.example.twinkle94.dealwithit.events.event_types.Schedule;
 import com.example.twinkle94.dealwithit.events.event_types.ScheduleType;
@@ -40,7 +41,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     private ImageView task_expand_collapse_iv;
 
     //Title view
-    private TextInputEditText task_content_tv;
+    private TextInputEditText task_title_tv;
 
     //Type views
     private RelativeLayout task_type_rl;
@@ -77,7 +78,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     //TODO: awful callback, think of something better!
     private OnInterestPickedListener onInterestPickedListener = null;
 
-    private Schedule schedule;
+    private Event schedule;
     private ScheduleType scheduleType;
     private List<EventInterest> pickedInterests = new ArrayList<>();
     private int importance_value;
@@ -109,7 +110,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
         //=======================================Input views==============================================
         //Title view
-        task_content_tv = (TextInputEditText) subTaskView_v.findViewById(R.id.schedule_task_content);
+        task_title_tv = (TextInputEditText) subTaskView_v.findViewById(R.id.schedule_task_content);
 
         //Type views
         task_type_rl = (RelativeLayout) subTaskView_v.findViewById(R.id.schedule_type_title_section);
@@ -157,7 +158,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     public void setComponentsListeners()
     {
         //enable task content input
-        task_content_tv.setEnabled(true);
+        task_title_tv.setEnabled(true);
 
         //Type listener
         task_type_rl.setOnClickListener(this);
@@ -201,7 +202,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     public void removeComponentsListeners()
     {
         //disable task content input
-        task_content_tv.setEnabled(false);
+        task_title_tv.setEnabled(false);
 
         //disable type listener
         task_type_rl.setOnClickListener(null);
@@ -221,7 +222,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     @Override
     public void initComponentsValidators()
     {
-        task_title_validator = validator(task_content_tv);
+        task_title_validator = validator(task_title_tv);
         task_type_validator = validator(task_type_tv);
         task_start_time_validator = validator(task_start_time_tv);
         task_end_time_validator = validator(task_end_time_tv);
@@ -230,7 +231,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     @Override
     public void addComponentsValidators()
     {
-        task_content_tv.addTextChangedListener(task_title_validator);
+        task_title_tv.addTextChangedListener(task_title_validator);
         task_type_tv.addTextChangedListener(task_type_validator);
         task_start_time_tv.addTextChangedListener(task_start_time_validator);
         task_end_time_tv.addTextChangedListener(task_end_time_validator);
@@ -239,7 +240,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     @Override
     public void removeComponentsValidators()
     {
-        task_content_tv.removeTextChangedListener(task_title_validator);
+        task_title_tv.removeTextChangedListener(task_title_validator);
         task_type_tv.removeTextChangedListener(task_type_validator);
         task_start_time_tv.removeTextChangedListener(task_start_time_validator);
         task_end_time_tv.removeTextChangedListener(task_end_time_validator);
@@ -324,14 +325,14 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
 
             case R.id.schedule_input_done:
 
-                boolean isTitleEmpty  = isInputEmpty(task_content_tv);
+                boolean isTitleEmpty  = isInputEmpty(task_title_tv);
                 boolean isTypeEmpty  = isInputEmpty(task_type_tv);
                 boolean isStartTimeEmpty  = isInputEmpty(task_start_time_tv);
                 boolean isEndTimeEmpty  =  isInputEmpty(task_end_time_tv);
 
                 if (isTitleEmpty || isTypeEmpty || isStartTimeEmpty || isEndTimeEmpty)
                 {
-                    setInputError(task_content_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_content_title)));
+                    setInputError(task_title_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_content_title)));
                     setInputError(task_type_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_type_title)));
                     setInputError(task_start_time_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_start_time_title)));
                     setInputError(task_end_time_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_end_time_title)));
@@ -375,7 +376,7 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
         switch (textView.getId())
         {
             case R.id.schedule_task_content:
-                setInputError(task_content_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_content_title)));
+                setInputError(task_title_tv, ((TextView) subTaskView_v.findViewById(R.id.schedule_content_title)));
                 break;
 
             case R.id.schedule_type_of_task:
@@ -411,14 +412,15 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     {
         int schedule_id = schedule.getId();
 
-      /*  schedule = new Schedule(schedule_id,
-                task_content_tv.getText().toString(),
-                scheduleType,
-                task_start_time_tv.getText().toString(),
-                task_end_time_tv.getText().toString(),
-                date,
-                "Waiting",
-                importance_value);*/
+        schedule = new Schedule.Builder(task_title_tv.getText().toString())
+                .setScheduleType(scheduleType)
+                .setId(schedule_id)
+                .setDate(date)
+                .setStartTime(task_start_time_tv.getText().toString())
+                .setEndTime(task_end_time_tv.getText().toString())
+                .setImportance(  importance_value)
+                .build();
+
         new EventDAO(context).updateEventOnBG(schedule);
     }
 
@@ -454,7 +456,6 @@ public class ScheduleTask extends SubTask implements AddingScheduleFragment.OnIn
     private void addEmptySchedule()
     {
         schedule = new Schedule();
-      //  schedule.setType(EventType.SCHEDULE);
         new EventDAO(context).addEventOnBG(schedule);
     }
 

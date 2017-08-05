@@ -2,7 +2,13 @@ package com.example.twinkle94.dealwithit.events;
 
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
 import com.example.twinkle94.dealwithit.events.notes.Interest;
+import com.example.twinkle94.dealwithit.events.state.CanceledState;
+import com.example.twinkle94.dealwithit.events.state.FinishedState;
+import com.example.twinkle94.dealwithit.events.state.InProcessState;
+import com.example.twinkle94.dealwithit.events.state.MissedState;
+import com.example.twinkle94.dealwithit.events.state.NowState;
 import com.example.twinkle94.dealwithit.events.state.State;
+import com.example.twinkle94.dealwithit.events.state.StateType;
 import com.example.twinkle94.dealwithit.events.state.WaitingState;
 import com.example.twinkle94.dealwithit.events.event_types.ToDo;
 import com.example.twinkle94.dealwithit.events.event_types.EventType;
@@ -41,10 +47,10 @@ public abstract class Event implements Item {
     public Event(EventBuilder eventBuilder) {
         this.id = eventBuilder.id;
         this.title = eventBuilder.title;
+        this.state = eventBuilder.state;
         this.importance = eventBuilder.importance;
         this.dateStart = eventBuilder.dateStart;
         this.dateEnd = eventBuilder.dateEnd;
-        this.state = new WaitingState();
         this.interestList = new ArrayList<>();
 
         setType();
@@ -175,6 +181,11 @@ public abstract class Event implements Item {
         this.state = state;
     }
 
+    //TODO: refactor this)
+    public void setStateName(StateType state){
+        this.state = EventBuilder.pickState(state);
+    }
+
     public void addInterest(Interest interest) {
         interestList.add(interest);
     }
@@ -205,6 +216,7 @@ public abstract class Event implements Item {
     protected abstract static class EventBuilder<E extends Event, B extends EventBuilder<E, B>> {
         private int id;
         private final String title;
+        private State state;
         private final Calendar dateStart;
         private final Calendar dateEnd;
         private int importance;
@@ -224,6 +236,8 @@ public abstract class Event implements Item {
 
             this.dateStart = Calendar.getInstance();
             this.dateEnd = Calendar.getInstance();
+
+            this.state = new WaitingState();
 
             //TODO: doesn't have all the fields this way.
             //event = getEvent();
@@ -268,6 +282,12 @@ public abstract class Event implements Item {
 
         public B setImportance(int importance) {
             this.importance = importance;
+            return thisObject;
+        }
+
+        //TODO: refactor this)
+        public B setState(StateType state) {
+            this.state = pickState(state);
             return thisObject;
         }
 
@@ -348,6 +368,38 @@ public abstract class Event implements Item {
         private static void copyTime(Calendar time, Calendar sourceTime) {
             time.set(Calendar.HOUR_OF_DAY, sourceTime.get(Calendar.HOUR_OF_DAY));
             time.set(Calendar.MINUTE, sourceTime.get(Calendar.MINUTE));
+        }
+
+        private static State pickState(StateType state) {
+            final State pickedState;
+
+            switch (state){
+                case NOW:
+                    pickedState = new NowState();
+                    break;
+
+                case CANCELED:
+                    pickedState = new CanceledState();
+                    break;
+
+                case FINISHED:
+                    pickedState = new FinishedState();
+                    break;
+
+                case MISSED:
+                    pickedState = new MissedState();
+                    break;
+
+                case IN_PROCESS:
+                    pickedState = new InProcessState();
+                    break;
+
+                default:
+                    pickedState = new WaitingState();
+                    break;
+            }
+
+            return pickedState;
         }
     }
 

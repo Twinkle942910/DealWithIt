@@ -30,6 +30,18 @@ public enum StateType {
         this.name = name;
     }
 
+    public static StateType getName(String stringType)
+    {
+        for(StateType type : values())
+        {
+            if( type.name.equals(stringType))
+            {
+                return type;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return name;

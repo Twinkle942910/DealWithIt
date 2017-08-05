@@ -320,17 +320,15 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
             switch (task_type)
             {
-
-                //TODO: refactor!
                 case TODO:
-                    //TODO: Use builder pattern here.
-                   /* new_event = new ToDo(this_event_id,
-                            title_iet.getText().toString(),
-                            start_time_iet.getText().toString(),
-                            end_time_iet.getText().toString(),
-                            date_iet.getText().toString(),
-                            "Waiting",
-                            importance_value);*/
+
+                   new_event = new ToDo.Builder(title_iet.getText().toString())
+                           .setId(this_event_id)
+                           .setDate(date_iet.getText().toString())
+                           .setStartTime(start_time_iet.getText().toString())
+                           .setEndTime(end_time_iet.getText().toString())
+                           .setImportance(importance_value)
+                           .build();
 
                     new EventDAO(activity).updateEventOnBG(new_event);
 
@@ -338,13 +336,13 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                 case WORKTASK:
 
-                /*    new_event = new WorkTask(this_event_id,
-                            title_iet.getText().toString(),
-                            start_time_iet.getText().toString(),
-                            end_time_iet.getText().toString(),
-                            date_iet.getText().toString(),
-                            "Waiting",
-                            importance_value);*/
+                    new_event = new WorkTask.Builder(title_iet.getText().toString())
+                            .setId(this_event_id)
+                            .setDate(date_iet.getText().toString())
+                            .setStartTime(start_time_iet.getText().toString())
+                            .setEndTime(end_time_iet.getText().toString())
+                            .setImportance(importance_value)
+                            .build();
 
                     new EventDAO(activity).updateEventOnBG(new_event);
 
@@ -352,13 +350,14 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
 
                 case BIRTHDAY:
 
-                   /* new_event = new Birthday(this_event_id,
-                            title_iet.getText().toString(),
-                            start_time_iet.getText().toString(),
-                            end_time_iet.getText().toString(),
-                            date_iet.getText().toString(),
-                            "Waiting",
-                            importance_value, new Location(-1, -1, "Poor","Loov", "Boi"));*/
+                    //TODO: add location.
+                    new_event = new Birthday.Builder(title_iet.getText().toString())
+                            .setId(this_event_id)
+                            .setDate(date_iet.getText().toString())
+                            .setStartTime(start_time_iet.getText().toString())
+                            .setEndTime(end_time_iet.getText().toString())
+                            .setImportance(importance_value)
+                            .build();
 
                     EventDAO eventDAO = new EventDAO(activity);
                     eventDAO.updateEventOnBG(new_event);
@@ -794,23 +793,18 @@ public class AddingTaskFragment extends AbstractAddingFragment implements Compou
             case TODO:
                 clearEvent();
                 new_event = new ToDo();
-              //  new_event.setType(EventType.TODO);
                 break;
 
             case BIRTHDAY:
                 clearEvent();
-                new_event = new Birthday();
-              //  new_event.setType(EventType.BIRTHDAY);
 
-                //TODO: temporary!
-                ((Birthday)new_event).setLocation(new Location(-1, -1, "Poor","Loov", "Boi"));
+                //TODO: adding location!
+                new_event = new Birthday();
                 break;
 
             case WORKTASK:
                 clearEvent();
                 new_event = new WorkTask();
-                //TODO: add type in a constructor?!
-              //  new_event.setType(EventType.WORKTASK);
                 break;
 
             case SCHEDULE:
