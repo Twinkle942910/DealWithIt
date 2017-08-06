@@ -1,6 +1,7 @@
 package com.example.twinkle94.dealwithit.events;
 
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
+import com.example.twinkle94.dealwithit.events.event_types.WorkTask;
 import com.example.twinkle94.dealwithit.events.notes.Interest;
 import com.example.twinkle94.dealwithit.events.state.CanceledState;
 import com.example.twinkle94.dealwithit.events.state.FinishedState;
@@ -52,6 +53,7 @@ public abstract class Event implements Item {
         this.importance = eventBuilder.importance;
         this.dateStart = eventBuilder.dateStart;
         this.dateEnd = eventBuilder.dateEnd;
+        this.is24Hours = eventBuilder.is24Hours;
         this.interestList = new ArrayList<>();
 
         setType();
@@ -158,6 +160,14 @@ public abstract class Event implements Item {
         return state.toString();
     }
 
+    public int getStateImage(){
+        return state.getImage();
+    }
+
+    public int getStateColor(){
+        return state.getColor();
+    }
+
     public void changeState(EventAction eventAction) {
         state.changeState(this, eventAction);
     }
@@ -205,6 +215,8 @@ public abstract class Event implements Item {
 
     private void toNextDay() {
         if (EventBuilder.isEndingNextDay(dateStart, dateEnd)) dateEnd.add(Calendar.DAY_OF_MONTH, 1);
+            //TODO: refactor this.
+        else EventBuilder.copyDate(dateEnd, dateStart);
     }
 
     private void countInterest() {
@@ -215,6 +227,29 @@ public abstract class Event implements Item {
 
             interests = (sum / interestList.size());
         }
+    }
+
+    public int getDuration() {
+        long startTimeMilliseconds = dateStart.getTimeInMillis();
+        long endTimeMilliseconds = dateEnd.getTimeInMillis();
+
+        long durationInMilliseconds = endTimeMilliseconds - startTimeMilliseconds;
+
+        final int MILLISECONDS_IN_SECOND = 1000;
+        final int SECONDS_IN_MINUTE = 60;
+
+        duration = (int) ((durationInMilliseconds / MILLISECONDS_IN_SECOND) / SECONDS_IN_MINUTE);
+
+        return duration;
+    }
+
+    public String getFormatedDuration() {
+        final int MINUTES_IN_HOUR = 60;
+
+        int hours = duration / MINUTES_IN_HOUR;
+        int minutes = duration % MINUTES_IN_HOUR;
+
+        return hours + ":" + minutes + "h";
     }
 
     //TODO: Can we do it without generics? (Debug trough code).
@@ -266,7 +301,7 @@ public abstract class Event implements Item {
         }
 
         public B setStartTime(String startTime) {
-            is24Hours = getTimeFormat(startTime);
+            is24Hours = getTimeFormat(startTime.toLowerCase());
 
             if (DateTimeValidator.validateTime(is24Hours, startTime)) {
                 copyTime(dateStart, convertTime(is24Hours, startTime));
@@ -276,7 +311,7 @@ public abstract class Event implements Item {
         }
 
         public B setEndTime(String endTime) {
-            is24Hours = getTimeFormat(endTime);
+            is24Hours = getTimeFormat(endTime.toLowerCase());
 
             if (DateTimeValidator.validateTime(is24Hours, endTime)) {
                 copyTime(dateEnd, convertTime(is24Hours, endTime));
@@ -320,6 +355,8 @@ public abstract class Event implements Item {
 
         private void toNextDay() {
             if (isEndingNextDay(dateStart, dateEnd)) dateEnd.add(Calendar.DAY_OF_MONTH, 1);
+            //TODO: refactor this.
+            else copyDate(dateEnd, dateStart);
         }
 
         private static String getTime(boolean is24Hours, Date time) {
@@ -375,6 +412,7 @@ public abstract class Event implements Item {
             time.set(Calendar.MINUTE, sourceTime.get(Calendar.MINUTE));
         }
 
+        //TODO: Use Factory method?
         private static State pickState(StateType state) {
             final State pickedState;
 
@@ -410,7 +448,7 @@ public abstract class Event implements Item {
 
     private static class EventTest {
         public static void main(String... args) {
-            Event event = new ToDo();
+         /*   Event event = new ToDo();
 
             //event.setDateTime("23/07/2017", "13:31", "01:29");
 
@@ -421,7 +459,25 @@ public abstract class Event implements Item {
             System.out.println(event.getStartTime());
             System.out.println(event.getEndTime());
             System.out.println(event.getStartDate());
-            System.out.println(event.getEndDate());
+            System.out.println(event.getEndDate());*/
+
+           Event new_event = new WorkTask.Builder("Hello")
+                    .setId(1)
+                    .setDate("05/08/2017")
+                   .setStartTime("2:51 PM")
+                   .setEndTime("3:20 PM")
+                   .setImportance(90)
+                    .build();
+
+            new_event.setEndTime("1:35 PM");
+            new_event.setStartTime("12:35 PM");
+
+
+            System.out.println(new_event.getStartTime());
+            System.out.println(new_event.getEndTime());
+            System.out.println(new_event.getStartDate());
+            System.out.println(new_event.getEndDate());
+
         }
     }
 }

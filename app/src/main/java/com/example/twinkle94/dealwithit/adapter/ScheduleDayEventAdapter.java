@@ -2,6 +2,7 @@ package com.example.twinkle94.dealwithit.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import java.util.List;
 
 public class ScheduleDayEventAdapter extends BaseAdapter
 {
+    private int DEFAULT_DURATION_HEIGHT;
+
     private List<Event> eventList;
     private Context context;
     private String date;
@@ -85,6 +88,9 @@ public class ScheduleDayEventAdapter extends BaseAdapter
             scheduleDayEventViewHolder.tv_state_image =
                     (ImageView) convertView.findViewById(R.id.schedule_day_task_state_image);
 
+            //TODO: Possibly this is not right place for this.
+            DEFAULT_DURATION_HEIGHT = scheduleDayEventViewHolder.v_duration.getLayoutParams().height;
+
             convertView.setTag(scheduleDayEventViewHolder);
         }
         else scheduleDayEventViewHolder = (ScheduleDayEventViewHolder) convertView.getTag();
@@ -112,16 +118,14 @@ public class ScheduleDayEventAdapter extends BaseAdapter
                 break;
         }
 
-        //TODO: change size depending on time  (refactor this).
-       // int height =  40 + event.getDuration();
-  //      scheduleDayEventViewHolder.v_duration.getLayoutParams().height = height;
+        int height = DEFAULT_DURATION_HEIGHT + dpToPx(event.getDuration());
+        scheduleDayEventViewHolder.v_duration.getLayoutParams().height = height;
 
         scheduleDayEventViewHolder.tv_type.setText(event.getType().toString());
         scheduleDayEventViewHolder.tv_title.setText(event.getTitle());
         scheduleDayEventViewHolder.tv_state.setText(event.getStateName());
 
-        //TODO: set image using new enum for states, maybe?
-        //scheduleDayEventViewHolder.tv_state_image.setBackgroundResource();
+        scheduleDayEventViewHolder.tv_state_image.setImageResource(event.getStateImage());
 
         return convertView;
     }
@@ -167,5 +171,15 @@ public class ScheduleDayEventAdapter extends BaseAdapter
         TextView tv_title;
         TextView tv_state;
         ImageView tv_state_image;
+    }
+
+    private int pxToDp(int px) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    private int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

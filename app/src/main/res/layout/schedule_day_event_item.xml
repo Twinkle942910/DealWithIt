@@ -58,18 +58,18 @@
             android:layout_height="wrap_content"
             android:text="ToDo"
             android:textColor="@color/scheduleListBackgroundColor"
-            android:textSize="12sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/schedule_day_task_title"
             style="@style/TextRobotoLight"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="Clean the house"
             android:textColor="@color/scheduleListBackgroundColor"
             android:layout_below="@+id/schedule_day_task_type"
-            android:textSize="12sp"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/schedule_day_task_state"

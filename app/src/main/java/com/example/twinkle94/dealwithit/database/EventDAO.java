@@ -341,14 +341,17 @@ public class EventDAO {
         Cursor cursor = database.rawQuery(birthday_event_select_query,
                 new String[]{String.valueOf(eventId)});
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        Location location = null;
 
-        Location location = new Location((int) cursor.getLong(0),
-                cursor.getInt(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4));
+        cursor.moveToFirst();
+
+        if (cursor.moveToFirst()) {
+            location = new Location((int) cursor.getLong(0),
+                    cursor.getInt(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getString(4));
+        }
 
         cursor.close();
 
