@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-//TODO: Does it have to somehow know about current time?
 public abstract class Event implements Item {
     public static final String DATE_FORMAT = "EEEE, MMMM dd";
     public static final String VALID_DATE_FORMAT = "dd/MM/yyyy";
@@ -181,6 +180,7 @@ public abstract class Event implements Item {
     }
 
     public int getInterests() {
+        countInterest();
         return interests;
     }
 
@@ -213,6 +213,23 @@ public abstract class Event implements Item {
         this.is24Hours = is24Hours;
     }
 
+    public int getDuration() {
+        //TODO: maybe move this.
+        countDuration();
+        return duration;
+    }
+
+    public String getFormattedDuration() {
+        final int MINUTES_IN_HOUR = 60;
+        //TODO: maybe move this.
+        countDuration();
+
+        int hours = duration / MINUTES_IN_HOUR;
+        int minutes = duration % MINUTES_IN_HOUR;
+
+        return hours + ":" + minutes + " h";
+    }
+
     private void toNextDay() {
         if (EventBuilder.isEndingNextDay(dateStart, dateEnd)) dateEnd.add(Calendar.DAY_OF_MONTH, 1);
             //TODO: refactor this.
@@ -229,7 +246,7 @@ public abstract class Event implements Item {
         }
     }
 
-    public int getDuration() {
+    private void countDuration() {
         long startTimeMilliseconds = dateStart.getTimeInMillis();
         long endTimeMilliseconds = dateEnd.getTimeInMillis();
 
@@ -239,20 +256,9 @@ public abstract class Event implements Item {
         final int SECONDS_IN_MINUTE = 60;
 
         duration = (int) ((durationInMilliseconds / MILLISECONDS_IN_SECOND) / SECONDS_IN_MINUTE);
-
-        return duration;
     }
 
-    public String getFormatedDuration() {
-        final int MINUTES_IN_HOUR = 60;
-
-        int hours = duration / MINUTES_IN_HOUR;
-        int minutes = duration % MINUTES_IN_HOUR;
-
-        return hours + ":" + minutes + "h";
-    }
-
-    //TODO: Can we do it without generics? (Debug trough code).
+    //TODO: Can we do it without generics (Covariant types)? (Debug trough code).
     protected abstract static class EventBuilder<E extends Event, B extends EventBuilder<E, B>> {
         private int id;
         private final String title;

@@ -163,7 +163,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     from_time = ((Event)(event)).getStartTime();
                     to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
-                    interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
+                    interest = Integer.toString(((Event)(event)).getInterests()) + "%";
 
                     eventViewValues(eventViewHolder, type_color, task_title, schedule_type_image, schedule_type, from_time, to_time, importance, interest, View.VISIBLE, View.VISIBLE);
                     break;
@@ -174,7 +174,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     from_time = ((Event)(event)).getStartTime();
                     to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
-                    interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
+                    interest = Integer.toString(((Event)(event)).getInterests()) + "%";
 
                     eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
@@ -185,7 +185,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     from_time = ((Event)(event)).getStartTime();
                     to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
-                    interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
+                    interest = Integer.toString(((Event)(event)).getInterests()) + "%";
 
                     eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;
@@ -196,7 +196,7 @@ public class TodayTaskAdapter extends ArrayAdapter
                     from_time = ((Event)(event)).getStartTime();
                     to_time = ((Event)(event)).getEndTime();
                     importance = Integer.toString(((Event)(event)).getImportance()) + "%";
-                    interest = Integer.toString(((Event)(event)).getImportance() + 9) + "%";
+                    interest = Integer.toString(((Event)(event)).getInterests()) + "%";
 
                     eventViewValues(eventViewHolder, type_color, task_title, 0, "", from_time, to_time, importance, interest, View.GONE, View.GONE);
                     break;

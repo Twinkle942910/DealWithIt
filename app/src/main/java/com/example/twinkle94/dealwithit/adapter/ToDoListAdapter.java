@@ -50,14 +50,12 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
         holder.mTaskDate.setText(toDo.getStartDate());
         holder.mTaskFromTime.setText(toDo.getStartTime());
         holder.mTaskToTime.setText(toDo.getEndTime());
-       // holder.mTaskDuration.setText(String.valueOf(toDo.getDuration()));
-        //TODO: improve getting list size!
-        holder.mTaskSubtasks.setText(String.valueOf(toDo.getListSubTasks().size()));
-        holder.mTaskComments.setText(String.valueOf(toDo.getListComments().size()));
+        holder.mTaskDuration.setText(toDo.getFormattedDuration());
+        holder.mTaskSubtasks.setText(toDo.doneSubtasksCount() + "/" + toDo.subtasksCount());
+        holder.mTaskComments.setText(String.valueOf(toDo.commentsCount()));
         holder.mTaskImportance.setText(String.valueOf(toDo.getImportance()));
-        //TODO: improve hardcode!
-        holder.mTaskInterests.setText(String.valueOf(79));
-        holder.mTaskState.setText("Now");
+        holder.mTaskInterests.setText(String.valueOf(toDo.getInterests()));
+        holder.mTaskState.setText(toDo.getStateName());
 
         Log.i(TAG, "Rendered position: " + position);
     }
