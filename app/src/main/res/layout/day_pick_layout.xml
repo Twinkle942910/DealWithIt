@@ -15,8 +15,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Mon"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,8 +24,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Tue"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,8 +33,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Wed"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,8 +42,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Thu"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,8 +51,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Fri"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,8 +60,7 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Sat"/>
+        android:textColor="@color/colorNotificationText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,7 +69,6 @@
         android:layout_weight="1"
         style="@style/TextRobotoLight"
         android:gravity="center"
-        android:textColor="@color/colorNotificationText"
-        android:text="Sun"/>
+        android:textColor="@color/colorNotificationText" />
 
 </LinearLayout>

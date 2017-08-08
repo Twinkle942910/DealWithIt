@@ -1,6 +1,7 @@
 package com.example.twinkle94.dealwithit.events;
 
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.Item;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.events.event_types.WorkTask;
 import com.example.twinkle94.dealwithit.events.notes.Interest;
 import com.example.twinkle94.dealwithit.events.state.CanceledState;
@@ -11,8 +12,6 @@ import com.example.twinkle94.dealwithit.events.state.NowState;
 import com.example.twinkle94.dealwithit.events.state.State;
 import com.example.twinkle94.dealwithit.events.state.StateType;
 import com.example.twinkle94.dealwithit.events.state.WaitingState;
-import com.example.twinkle94.dealwithit.events.event_types.ToDo;
-import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.util.DateTimeValidator;
 
 import java.text.ParseException;

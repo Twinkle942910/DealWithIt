@@ -20,6 +20,7 @@ import com.example.twinkle94.dealwithit.adding_task_page.sub_items.ScheduleTask;
 import com.example.twinkle94.dealwithit.adding_task_page.sub_items.SubTask;
 import com.example.twinkle94.dealwithit.events.event_types.EventType;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -329,15 +330,21 @@ public class AddingScheduleFragment extends AbstractAddingFragment
         task_container_ly.setOnHierarchyChangeListener(null);
     }
 
-    //TODO: when task is created earlier than day, day is - " ".
+    //TODO: Refactor day picking methods.
     private void initializeDayPicker(View viewHierarchy)
     {
         final LinearLayout daysContainer = (LinearLayout) viewHierarchy.findViewById(R.id.day_container);
-        initWeek();
+        final int DAYS_IN_WEEK = 7;
+
+        final String[] shortNamesOfDays = new String[DAYS_IN_WEEK];
+        final String[] fullNamesOfDays = new String[DAYS_IN_WEEK];
+
+        initWeek(shortNamesOfDays, fullNamesOfDays);
 
         for (int i = 0; i < daysContainer.getChildCount(); i++)
         {
             final TextView day_tv = (TextView) daysContainer.getChildAt(i);
+            day_tv.setText(shortNamesOfDays[i]);
             day_tv.setTag(i);
             day_tv.setOnClickListener(new View.OnClickListener()
             {
@@ -345,7 +352,7 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                 public void onClick(View view)
                 {
                     clearScheduleContainer();
-                    clearDays(daysContainer);
+                    clearDays(daysContainer, shortNamesOfDays);
 
                     ((TextView) view).setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
@@ -358,16 +365,14 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                     }
 
                     setDate((int)view.getTag());
-                    ((TextView) view).setText(setFullDay((int)view.getTag()));
+                    ((TextView) view).setText(fullNamesOfDays[((int)view.getTag())]);
                 }
             });
         }
     }
 
-    private void clearDays(LinearLayout daysContainer)
+    private void clearDays(LinearLayout daysContainer, String[] shortNamesOfDays)
     {
-        String[] cut_day_names = getResources().getStringArray(R.array.days_cut_array);
-
         for (int i = 0; i < daysContainer.getChildCount(); i++)
         {
             final TextView day = (TextView) daysContainer.getChildAt(i);
@@ -383,29 +388,31 @@ public class AddingScheduleFragment extends AbstractAddingFragment
                 day.setTextAppearance(R.style.TextRobotoLight);
             }
 
-            day.setText(cut_day_names[i]);
+            day.setText(shortNamesOfDays[i]);
         }
     }
 
-    private String setFullDay(int day_index)
+    private void initWeek(String[] shortNamesOfDays, String[] fullNamesOfDays)
     {
-        String[] days_array = getResources().getStringArray(R.array.days_array);
-        return days_array[day_index];
-    }
+        final int DAYS_IN_WEEK = 7;
+        final Locale currentLocale = getLocale();
 
-    //TODO: problem, sometimes one day are missing (between saturday and sunday).
-    private void initWeek()
-    {
-        Calendar calendar = Calendar.getInstance();
-        week_dates = new String[7];
+        Calendar calendar = Calendar.getInstance(currentLocale);
+        week_dates = new String[DAYS_IN_WEEK];
 
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
-        for (int i = 0; i < 7; i++)
+        int firstDayIndex = calendar.getFirstDayOfWeek();
+        calendar.set(Calendar.DAY_OF_WEEK, firstDayIndex);
+
+        for (int i = 0; i < DAYS_IN_WEEK; i++)
         {
+            shortNamesOfDays[i] = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, currentLocale);
+            fullNamesOfDays[i] = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, currentLocale);
+
             week_dates[i] = dateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_WEEK, 1);
+
         }
     }
 
@@ -418,6 +425,18 @@ public class AddingScheduleFragment extends AbstractAddingFragment
     private void clearScheduleContainer()
     {
         if(task_container_ly.getChildCount() != 0) task_container_ly.removeAllViews();
+    }
+
+    private Locale getLocale() {
+        //TODO: Move this to somewhere more general.
+        Locale currentLocale;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            currentLocale = getResources().getConfiguration().getLocales().get(0);
+        } else{
+            currentLocale = getResources().getConfiguration().locale;
+        }
+        return currentLocale;
     }
 
     public interface OnInterestCallListener
