@@ -17,15 +17,17 @@ import android.view.View;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Event;
-import com.example.twinkle94.dealwithit.fragments.task_list_fragments.ToDoListFragment;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
+import com.example.twinkle94.dealwithit.fragments.task_list_fragments.TaskListFragment;
 
 public class TaskListActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_task_list;
     private static final int FRAGMENT_CONTAINER = R.id.task_list_container;
     public static final String TASK_TYPE = "task_type";
+    public static final String CALL_TYPE = "call_type";
 
     private Toolbar toolbar;
-    private ToDoListFragment mToDoListFragment;
+    private TaskListFragment mTaskListFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,34 +44,32 @@ public class TaskListActivity extends AppCompatActivity {
         //See who called this activity.
         Intent caller = getIntent();
 
-        switch (caller.getStringExtra(TASK_TYPE)) {
-            case "ToDo":
-                setToolbarTitle("ToDo List");
+        String taskType = caller.getStringExtra(TASK_TYPE);
+        String callType = caller.getStringExtra(CALL_TYPE);
 
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                mToDoListFragment = (ToDoListFragment) fragmentManager.findFragmentByTag(ToDoListFragment.TAG);
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        EventType eventType = EventType.getName(taskType);
+        int eventColor = EventType.getColor(taskType);
 
-                if (mToDoListFragment == null) {
-                    mToDoListFragment = new ToDoListFragment();
+        //TODO: set toolbar color depending on event type.
 
-                    fragmentTransaction.add(FRAGMENT_CONTAINER, mToDoListFragment, ToDoListFragment.TAG);
-                    fragmentTransaction.commit();
-                } else fragmentTransaction.replace(FRAGMENT_CONTAINER, mToDoListFragment);
+        if(callType.equals("Detail")){
+            //TODO: get item from DB by id and then add info to the fragment(inside fragment).
+            //TODO: load detail fragment.
+        }
+        else {
+            setToolbarTitle(taskType + " List");
 
-                break;
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            //TODO: make this fragment available for different types of events (1 fragment for 4 lists).
+            mTaskListFragment = (TaskListFragment) fragmentManager.findFragmentByTag(TaskListFragment.TAG);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            case "WorkTask":
+            if (mTaskListFragment == null) {
+                mTaskListFragment = TaskListFragment.newInstance(eventType);
 
-                break;
-
-            case "Birthday":
-
-                break;
-
-            case "Schedule":
-
-                break;
+                fragmentTransaction.add(FRAGMENT_CONTAINER, mTaskListFragment, TaskListFragment.TAG);
+                fragmentTransaction.commit();
+            } else fragmentTransaction.replace(FRAGMENT_CONTAINER, mTaskListFragment);
         }
     }
 

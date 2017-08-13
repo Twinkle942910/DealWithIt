@@ -9,9 +9,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.twinkle94.dealwithit.adapter.ScheduleDayEventAdapter;
-import com.example.twinkle94.dealwithit.adapter.ToDoListAdapter;
+import com.example.twinkle94.dealwithit.adapter.TaskListAdapter;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
 import com.example.twinkle94.dealwithit.adapter.today_page_adapter.TodayTaskAdapter;
+import com.example.twinkle94.dealwithit.events.ComplexEvent;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.notes.Location;
 import com.example.twinkle94.dealwithit.events.event_types.Birthday;
@@ -507,7 +508,7 @@ public class EventDAO {
         return events;
     }
 
-    public List<ToDo> getAllToDoList() {
+    public List<ComplexEvent> getAllComplexEventsByType(EventType eventType) {
         Cursor cursor = database.query(EventInfoContract.EventEntry.TABLE_NAME,
                 columns,
                 EventInfoContract.EventEntry.TYPE + "= ?",
@@ -516,7 +517,7 @@ public class EventDAO {
                 null,
                 null);
 
-        List<ToDo> toDoList = new ArrayList<>();
+        List<ComplexEvent> eventList = new ArrayList<>();
 
         Sub_taskDAO sub_taskDAO = new Sub_taskDAO(context);
         CommentDAO commentDAO = new CommentDAO(context);
@@ -531,31 +532,62 @@ public class EventDAO {
             String state = cursor.getString(cursor.getColumnIndex(EventInfoContract.EventEntry.STATE));
             int importance = cursor.getInt(cursor.getColumnIndex(EventInfoContract.EventEntry.IMPORTANCE));
 
-            ToDo toDo = new ToDo.Builder(title)
-                    .setId(id)
-                    .setDate(date)
-                    .setStartTime(startTime)
-                    .setEndTime(endTime)
-                    .setState(StateType.getName(state))
-                    .setImportance(importance)
-                    .build();
+            ComplexEvent event = null;
+
+            switch (eventType) {
+                case TODO:
+                    event = new ToDo.Builder(title)
+                            .setId(id)
+                            .setDate(date)
+                            .setStartTime(startTime)
+                            .setEndTime(endTime)
+                            .setState(StateType.getName(state))
+                            .setImportance(importance)
+                            .build();
+                    break;
+
+                case WORKTASK:
+                    event = new WorkTask.Builder(title)
+                            .setId(id)
+                            .setDate(date)
+                            .setStartTime(startTime)
+                            .setEndTime(endTime)
+                            .setImportance(importance)
+                            .setState(StateType.getName(state))
+                            .build();
+                    break;
+
+                case BIRTHDAY:
+                    Location location = getLocation(id);
+
+                    event = new Birthday.Builder(title)
+                            .setId(id)
+                            .setDate(date)
+                            .setStartTime(startTime)
+                            .setEndTime(endTime)
+                            .setLocation(location)
+                            .setImportance(importance)
+                            .setState(StateType.getName(state))
+                            .build();
+                    break;
+            }
 
             commentDAO.open();
-            toDo.setListComments(commentDAO.getCommentsByEventId(id));
+            event.setListComments(commentDAO.getCommentsByEventId(id));
             commentDAO.close();
 
             sub_taskDAO.open();
-            toDo.setListSubTasks(sub_taskDAO.getSubTasksByEventId(id));
+            event.setListSubTasks(sub_taskDAO.getSubTasksByEventId(id));
             sub_taskDAO.close();
 
             interestDAO.open();
-            toDo.setListInterests(interestDAO.getInterestsByEventId(id));
+            event.setListInterests(interestDAO.getInterestsByEventId(id));
             interestDAO.close();
 
-            toDoList.add(toDo);
+            eventList.add(event);
         }
 
-        return toDoList;
+        return eventList;
     }
 
     public void addEventOnBG(Event event) {
@@ -583,9 +615,9 @@ public class EventDAO {
         new BackgroundEventQueries().execute("get_data_by_date", scheduleDayEventAdapter);
     }
 
-    public void getToDoListOnBG(ToDoListAdapter toDoListAdapter) {
+    public void getComplexEventListByTypeOnBG(TaskListAdapter taskListAdapter, EventType eventType) {
         open();
-        new BackgroundEventQueries().execute("get_todo_list", toDoListAdapter);
+        new BackgroundEventQueries().execute("get_events_by_type", taskListAdapter, eventType);
     }
 
     private class BackgroundEventQueries extends AsyncTask<Object, Event, String> {
@@ -594,7 +626,7 @@ public class EventDAO {
         //Adapters
         private TodayTaskAdapter todayTaskAdapter;
         private ScheduleDayEventAdapter scheduleDayEventAdapter;
-        private ToDoListAdapter toDoListAdapter;
+        private TaskListAdapter taskListAdapter;
 
         @Override
         protected String doInBackground(Object... params) {
@@ -629,9 +661,10 @@ public class EventDAO {
                     result = TAG + " " + "got list of events on picked date on Background";
                     break;
 
-                case "get_todo_list":
-                    this.toDoListAdapter = (ToDoListAdapter) params[1];
-                    getToDoList();
+                case "get_events_by_type":
+                    this.taskListAdapter = (TaskListAdapter) params[1];
+                    EventType eventType = (EventType) params[2];
+                    getComplextEventList(eventType);
                     result = TAG + " " + "got ToDo list on Background";
                     break;
             }
@@ -642,10 +675,10 @@ public class EventDAO {
         protected void onProgressUpdate(Event... events) {
             Event event = events[0];
 
-            if (todayTaskAdapter == null && toDoListAdapter == null) {
+            if (todayTaskAdapter == null && taskListAdapter == null) {
                 scheduleDayEventAdapter.add(event);
             } else if (scheduleDayEventAdapter == null && todayTaskAdapter == null) {
-                toDoListAdapter.add((ToDo) event);
+                taskListAdapter.add((ComplexEvent) event);
             } else {
                 if (todayTaskAdapter.headerPosition(event.getType().toString()) == -1) {
                     todayTaskAdapter.add(new EventTypeSection(event.getType().toString()));
@@ -662,7 +695,7 @@ public class EventDAO {
             else if (s.equals(TAG + " " + "got list of events on picked date on Background"))
                 scheduleDayEventAdapter.updateAll();
             else if (s.equals(TAG + " " + "got ToDo list on Background"))
-                toDoListAdapter.updateAll();
+                taskListAdapter.updateAll();
 
             Log.i(TAG_THIS, s);
             close();
@@ -680,10 +713,10 @@ public class EventDAO {
                 publishProgress(events.get(i));
         }
 
-        public void getToDoList() {
-            List<ToDo> toDoList = getAllToDoList();
-            for (int i = 0; i < toDoList.size(); i++)
-                publishProgress(toDoList.get(i));
+        public void getComplextEventList(EventType eventType) {
+            List<ComplexEvent> eventList = getAllComplexEventsByType(eventType);
+            for (int i = 0; i < eventList.size(); i++)
+                publishProgress(eventList.get(i));
         }
     }
 }

@@ -11,14 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.twinkle94.dealwithit.R;
-import com.example.twinkle94.dealwithit.adapter.ToDoListAdapter;
+import com.example.twinkle94.dealwithit.adapter.TaskListAdapter;
 import com.example.twinkle94.dealwithit.database.EventDAO;
+import com.example.twinkle94.dealwithit.events.event_types.EventType;
 
-public class ToDoListFragment extends Fragment {
-    public static final String TAG  = ToDoListFragment.class.getSimpleName();
-    private ToDoListAdapter mToDoListAdapter;
+public class TaskListFragment extends Fragment {
+    public static final String TAG  = TaskListFragment.class.getSimpleName();
+    private static final String TASK_TYPE  = "task_type";
+
+    private TaskListAdapter mTaskListAdapter;
     private RecyclerView mTaskList;
     private Context mContext;
+
+    private EventType taskType;
+
+    public static TaskListFragment newInstance(EventType taskType){
+        Bundle args = new Bundle();
+        args.putString(TASK_TYPE, taskType.toString());
+
+        final TaskListFragment thisFragment = new TaskListFragment();
+        thisFragment.setArguments(args);
+
+        return thisFragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -31,11 +46,13 @@ public class ToDoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        mTaskList = (RecyclerView) view.findViewById(R.id.task_list);
-        mToDoListAdapter = new ToDoListAdapter(mContext);
+        taskType = getArguments() != null ? EventType.getName(getArguments().getString(TASK_TYPE)) : EventType.NO_TYPE;
 
-        new EventDAO(mContext).getToDoListOnBG(mToDoListAdapter);
-        mTaskList.setAdapter(mToDoListAdapter);
+        mTaskList = (RecyclerView) view.findViewById(R.id.task_list);
+        mTaskListAdapter = new TaskListAdapter(mContext);
+
+        new EventDAO(mContext).getComplexEventListByTypeOnBG(mTaskListAdapter, taskType);
+        mTaskList.setAdapter(mTaskListAdapter);
 
         mTaskList.setLayoutManager(new LinearLayoutManager(mContext));
 

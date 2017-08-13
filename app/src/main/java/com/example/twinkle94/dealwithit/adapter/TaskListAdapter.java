@@ -13,29 +13,42 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
+import com.example.twinkle94.dealwithit.events.ComplexEvent;
 import com.example.twinkle94.dealwithit.events.event_types.ToDo;
 import com.example.twinkle94.dealwithit.task_list_page.TaskListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHolder> {
-    private static final String TAG = ToDoListAdapter.class.getSimpleName();
-    private Context mContext;
-    private List<ToDo> mToDoList;
+public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
+    private static final String TAG = TaskListAdapter.class.getSimpleName();
+    private static final int BIRTHDAY = 1;
 
-    public ToDoListAdapter(Context mContext) {
+    private Context mContext;
+    private List<ComplexEvent> taskList;
+
+    public TaskListAdapter(Context mContext) {
         this.mContext = mContext;
-        mToDoList = new ArrayList<>();
+        taskList = new ArrayList<>();
     }
 
     @Override
-    public ToDoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater layoutInflater =
                 (LayoutInflater) mContext.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 
-        View taskCard = layoutInflater.inflate(R.layout.card_task, parent, false);
+        View taskCard = null;
+
+        switch (viewType) {
+            case BIRTHDAY:                        //TODO: implement this card.
+                taskCard = layoutInflater.inflate(R.layout.card_birthday_task, parent, false);
+                break;
+
+            default:
+                taskCard = layoutInflater.inflate(R.layout.card_task, parent, false);
+                break;
+        }
 
         Log.i(TAG, "Created holder");
 
@@ -44,25 +57,34 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ToDo toDo = mToDoList.get(position);
+        ComplexEvent event = taskList.get(position);
 
-        holder.mTaskTitle.setText(toDo.getTitle());
-        holder.mTaskDate.setText(toDo.getStartDate());
-        holder.mTaskFromTime.setText(toDo.getStartTime());
-        holder.mTaskToTime.setText(toDo.getEndTime());
-        holder.mTaskDuration.setText(toDo.getFormattedDuration());
-        holder.mTaskSubtasks.setText(toDo.doneSubtasksCount() + "/" + toDo.subtasksCount());
-        holder.mTaskComments.setText(String.valueOf(toDo.commentsCount()));
-        holder.mTaskImportance.setText(String.valueOf(toDo.getImportance()));
-        holder.mTaskInterests.setText(String.valueOf(toDo.getInterests()));
-        holder.mTaskState.setText(toDo.getStateName());
+        holder.mTaskTitle.setText(event.getTitle());
+        holder.mTaskDate.setText(event.getStartDate());
+        holder.mTaskFromTime.setText(event.getStartTime());
+        holder.mTaskToTime.setText(event.getEndTime());
+        holder.mTaskDuration.setText(event.getFormattedDuration());
+        holder.mTaskSubtasks.setText(event.doneSubtasksCount() + "/" + event.subtasksCount());
+        holder.mTaskComments.setText(String.valueOf(event.commentsCount()));
+        holder.mTaskImportance.setText(String.valueOf(event.getImportance()));
+        holder.mTaskInterests.setText(String.valueOf(event.getInterests()));
+        holder.mTaskState.setText(event.getStateName());
+
+        if(holder.getItemViewType() == BIRTHDAY){
+           //TODO: set holder fields for location info.
+        }
 
         Log.i(TAG, "Rendered position: " + position);
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return taskList.get(position).getType().ordinal();
+    }
+
+    @Override
     public int getItemCount() {
-        return mToDoList.size();
+        return taskList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,6 +99,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
         private TextView mTaskInterests;
         private RelativeLayout mTaskStateLayout;
         private TextView mTaskState;
+
+        //TODO: add fields for location.
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -95,31 +119,28 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
         }
     }
 
-    public void add(ToDo toDo){
-        mToDoList.add(toDo);
+    public void add(ComplexEvent event) {
+        taskList.add(event);
     }
 
-    public void updateAll(){
+    public void updateAll() {
         notifyDataSetChanged();
     }
 
-    private void showPopup(View v, final ToDo task)
-    {
+    //TODO: make this work.
+    private void showPopup(View v, final ToDo task) {
         PopupMenu popup = new PopupMenu(mContext, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_interests_item, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-        {
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item)
-            {
-                switch (item.getItemId())
-                {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
                     case R.id.edit:
-                        ((TaskListActivity)mContext).editTaskDialog(task);
+                        ((TaskListActivity) mContext).editTaskDialog(task);
                         return true;
                     case R.id.delete:
-                        ((TaskListActivity)mContext).deleteTaskDialog(task);
+                        ((TaskListActivity) mContext).deleteTaskDialog(task);
                         return true;
                     default:
                         return false;
