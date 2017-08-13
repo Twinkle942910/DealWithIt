@@ -43,10 +43,12 @@ public class TaskListFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        taskType = getArguments() != null ? EventType.getName(getArguments().getString(TASK_TYPE)) : EventType.NO_TYPE;
+        taskType = getArguments() != null ? EventType.getName(getArguments().getString(TASK_TYPE))
+                : EventType.NO_TYPE;
 
         mTaskList = (RecyclerView) view.findViewById(R.id.task_list);
         mTaskListAdapter = new TaskListAdapter(mContext);

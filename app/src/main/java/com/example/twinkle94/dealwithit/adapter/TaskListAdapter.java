@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.ComplexEvent;
+import com.example.twinkle94.dealwithit.events.event_types.Birthday;
 import com.example.twinkle94.dealwithit.events.event_types.ToDo;
 import com.example.twinkle94.dealwithit.task_list_page.TaskListActivity;
 
@@ -38,21 +39,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         LayoutInflater layoutInflater =
                 (LayoutInflater) mContext.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 
-        View taskCard = null;
-
-        switch (viewType) {
-            case BIRTHDAY:                        //TODO: implement this card.
-                taskCard = layoutInflater.inflate(R.layout.card_birthday_task, parent, false);
-                break;
-
-            default:
-                taskCard = layoutInflater.inflate(R.layout.card_task, parent, false);
-                break;
-        }
+        View taskCard = layoutInflater.inflate(R.layout.card_task, parent, false);
 
         Log.i(TAG, "Created holder");
 
-        return new ViewHolder(taskCard);
+        return new ViewHolder(taskCard, viewType);
     }
 
     @Override
@@ -71,7 +62,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskState.setText(event.getStateName());
 
         if(holder.getItemViewType() == BIRTHDAY){
-           //TODO: set holder fields for location info.
+           holder.mBirthdayLocation.setText(((Birthday)event).getLocation().getStreet());
         }
 
         Log.i(TAG, "Rendered position: " + position);
@@ -100,9 +91,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         private RelativeLayout mTaskStateLayout;
         private TextView mTaskState;
 
-        //TODO: add fields for location.
+        private TextView mBirthdayLocation;
+        private RelativeLayout mBirthdayLocationLayout;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, int viewType) {
             super(itemView);
 
             mTaskTitle = (TextView) itemView.findViewById(R.id.today_task_title);
@@ -116,6 +108,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             mTaskInterests = (TextView) itemView.findViewById(R.id.task_interests);
             mTaskStateLayout = (RelativeLayout) itemView.findViewById(R.id.task_state_layout);
             mTaskState = (TextView) itemView.findViewById(R.id.task_state);
+
+            if(viewType == BIRTHDAY){
+                mBirthdayLocationLayout = (RelativeLayout) itemView.findViewById(R.id.task_location_layout);
+                mBirthdayLocationLayout.setVisibility(View.VISIBLE);
+                mBirthdayLocation = (TextView) itemView.findViewById(R.id.task_location);
+            }
         }
     }
 

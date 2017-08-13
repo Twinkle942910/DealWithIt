@@ -309,6 +309,47 @@
 
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/task_location_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/task_location_title"
+                        style="@style/TextRobotoRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="1dp"
+                        android:text="Location"
+                        android:textColor="@color/fontColor87"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/task_location"
+                        style="@style/TextRobotoRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="1dp"
+                        android:text="Roksolany 25 str."
+                        android:textColor="@color/fontColor87"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/task_location_image"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_toLeftOf="@+id/task_location"
+                        app:srcCompat="@drawable/ic_location" />
+
+                </RelativeLayout>
+
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -25,6 +25,7 @@ public class TaskListActivity extends AppCompatActivity {
     private static final int FRAGMENT_CONTAINER = R.id.task_list_container;
     public static final String TASK_TYPE = "task_type";
     public static final String CALL_TYPE = "call_type";
+    public static final String TASK_ID = "task_id";
 
     private Toolbar toolbar;
     private TaskListFragment mTaskListFragment;
@@ -47,6 +48,8 @@ public class TaskListActivity extends AppCompatActivity {
         String taskType = caller.getStringExtra(TASK_TYPE);
         String callType = caller.getStringExtra(CALL_TYPE);
 
+        int taskId = caller.getIntExtra(TASK_ID, -1);
+
         EventType eventType = EventType.getName(taskType);
         int eventColor = EventType.getColor(taskType);
 
@@ -55,6 +58,8 @@ public class TaskListActivity extends AppCompatActivity {
         if(callType.equals("Detail")){
             //TODO: get item from DB by id and then add info to the fragment(inside fragment).
             //TODO: load detail fragment.
+
+            //TODO: add id to detail fragment (handle -1 case).
         }
         else {
             setToolbarTitle(taskType + " List");
