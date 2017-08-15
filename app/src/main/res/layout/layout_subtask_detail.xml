@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="28dp"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/subtask_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MyCheckBox"
+        android:checked="true"/>
+
+
+    <TextView
+        android:id="@+id/comment_content"
+        style="@style/TextRobotoLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="Check mate"
+        android:textColor="@color/fontColor"
+        android:textSize="16sp" />
+
+</LinearLayout>

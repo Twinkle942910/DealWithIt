@@ -20,7 +20,7 @@ import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.fragments.task_list_fragments.TaskListFragment;
 
-public class TaskListActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_task_list;
     private static final int FRAGMENT_CONTAINER = R.id.task_list_container;
     public static final String TASK_TYPE = "task_type";

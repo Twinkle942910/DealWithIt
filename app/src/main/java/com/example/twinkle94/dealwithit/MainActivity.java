@@ -18,11 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.twinkle94.dealwithit.adapter.TabPagerFragmentAdapter;
-import com.example.twinkle94.dealwithit.adapter.today_page_adapter.EventTypeSection;
 import com.example.twinkle94.dealwithit.adding_task_page.NewTaskActivity;
 import com.example.twinkle94.dealwithit.events.event_types.EventType;
 import com.example.twinkle94.dealwithit.interests_page.InterestsActivity;
-import com.example.twinkle94.dealwithit.task_list_page.TaskListActivity;
+import com.example.twinkle94.dealwithit.task_list_page.TaskActivity;
 import com.example.twinkle94.dealwithit.util.Constants;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -172,9 +171,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             case R.id.todo_page:
-                Intent taskType = new Intent(this, TaskListActivity.class);
-                taskType.putExtra(TaskListActivity.TASK_TYPE, EventType.TODO.toString());
-                taskType.putExtra(TaskListActivity.CALL_TYPE, "List");
+                Intent taskType = new Intent(this, TaskActivity.class);
+                taskType.putExtra(TaskActivity.TASK_TYPE, EventType.TODO.toString());
+                taskType.putExtra(TaskActivity.CALL_TYPE, "List");
                 startActivity(taskType);
                 return true;
 

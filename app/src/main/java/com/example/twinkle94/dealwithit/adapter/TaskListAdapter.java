@@ -16,7 +16,7 @@ import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.ComplexEvent;
 import com.example.twinkle94.dealwithit.events.event_types.Birthday;
 import com.example.twinkle94.dealwithit.events.event_types.ToDo;
-import com.example.twinkle94.dealwithit.task_list_page.TaskListActivity;
+import com.example.twinkle94.dealwithit.task_list_page.TaskActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,10 +135,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        ((TaskListActivity) mContext).editTaskDialog(task);
+                        ((TaskActivity) mContext).editTaskDialog(task);
                         return true;
                     case R.id.delete:
-                        ((TaskListActivity) mContext).deleteTaskDialog(task);
+                        ((TaskActivity) mContext).deleteTaskDialog(task);
                         return true;
                     default:
                         return false;

@@ -27,7 +27,7 @@
             android:label="@string/activity_interests_name"
             android:theme="@style/InterestsTheme"/>
 
-        <activity android:name=".task_list_page.TaskListActivity"
+        <activity android:name=".task_list_page.TaskActivity"
             android:label="@string/activity_task_list_name"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
