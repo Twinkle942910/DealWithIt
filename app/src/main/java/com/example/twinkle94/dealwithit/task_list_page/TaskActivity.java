@@ -18,6 +18,7 @@ import android.view.View;
 import com.example.twinkle94.dealwithit.R;
 import com.example.twinkle94.dealwithit.events.Event;
 import com.example.twinkle94.dealwithit.events.event_types.EventType;
+import com.example.twinkle94.dealwithit.fragments.TaskDetailFragment;
 import com.example.twinkle94.dealwithit.fragments.task_list_fragments.TaskListFragment;
 
 public class TaskActivity extends AppCompatActivity {
@@ -29,6 +30,8 @@ public class TaskActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TaskListFragment mTaskListFragment;
+    private TaskDetailFragment mTaskDetailFragment;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,18 +56,31 @@ public class TaskActivity extends AppCompatActivity {
         EventType eventType = EventType.getName(taskType);
         int eventColor = EventType.getColor(taskType);
 
+        fragmentManager = getSupportFragmentManager();
+
         //TODO: set toolbar color depending on event type.
 
+        //TODO: refactoring.
         if(callType.equals("Detail")){
             //TODO: get item from DB by id and then add info to the fragment(inside fragment).
             //TODO: load detail fragment.
 
             //TODO: add id to detail fragment (handle -1 case).
+            mTaskDetailFragment = (TaskDetailFragment) fragmentManager.findFragmentByTag(TaskDetailFragment.TAG);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            if(mTaskDetailFragment == null){
+
+                mTaskDetailFragment = new TaskDetailFragment();
+
+                fragmentTransaction.add(FRAGMENT_CONTAINER, mTaskDetailFragment, TaskDetailFragment.TAG);
+                fragmentTransaction.commit();
+            }
+            else fragmentTransaction.replace(FRAGMENT_CONTAINER, mTaskDetailFragment);
         }
         else {
             setToolbarTitle(taskType + " List");
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
             //TODO: make this fragment available for different types of events (1 fragment for 4 lists).
             mTaskListFragment = (TaskListFragment) fragmentManager.findFragmentByTag(TaskListFragment.TAG);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

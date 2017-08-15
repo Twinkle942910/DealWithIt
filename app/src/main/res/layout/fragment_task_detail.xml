@@ -31,7 +31,7 @@
             android:paddingRight="16dp"
             android:paddingTop="3dp"
             android:text="NOW"
-            android:textColor="@color/mainBackgroundColor"
+            android:textColor="@color/colorBackground"
             android:textSize="16sp" />
 
         <ImageView
@@ -140,6 +140,11 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="@color/fontColor" />
+
     <LinearLayout
         android:id="@+id/task_duration_layout"
         android:layout_width="match_parent"
@@ -179,11 +184,6 @@
             android:textSize="18sp" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="@color/fontColor" />
 
     <View
         android:layout_width="match_parent"
@@ -322,9 +322,11 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/location_divider"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:background="@color/fontColor" />
+        android:background="@color/fontColor"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/task_comments_layout"
@@ -413,7 +415,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            style="@style/MyCheckBox"/>
+            android:theme="@style/MyCheckBox"/>
 
         <TextView
             android:id="@+id/task_subtasks"

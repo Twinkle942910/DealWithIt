@@ -10,7 +10,7 @@
         android:id="@+id/subtask_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/MyCheckBox"
+        android:theme="@style/MyCheckBox"
         android:checked="true"/>
 
 

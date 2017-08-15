@@ -178,7 +178,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             case R.id.work_tasks_page:
-
+                //TODO: remove this, coz it was for test purposes.
+                Intent ass = new Intent(this, TaskActivity.class);
+                ass.putExtra(TaskActivity.TASK_TYPE, EventType.TODO.toString());
+                ass.putExtra(TaskActivity.CALL_TYPE, "Detail");
+                startActivity(ass);
                 return true;
 
             case R.id.birthday_page:
