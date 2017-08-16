@@ -71,7 +71,7 @@ public class TaskActivity extends AppCompatActivity {
 
             if(mTaskDetailFragment == null){
 
-                mTaskDetailFragment = new TaskDetailFragment();
+                mTaskDetailFragment = TaskDetailFragment.newInstance(taskId);
 
                 fragmentTransaction.add(FRAGMENT_CONTAINER, mTaskDetailFragment, TaskDetailFragment.TAG);
                 fragmentTransaction.commit();
